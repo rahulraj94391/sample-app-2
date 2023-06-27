@@ -3,6 +3,7 @@ package com.example.instagram.database.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity(
     tableName = "likes",
@@ -24,6 +25,7 @@ import androidx.room.PrimaryKey
 data class Likes(
     val post_id: Int,
     val profile_id: Int,
+    val like_time: Date,
 ) {
     @PrimaryKey(autoGenerate = true)
     val like_id: Int = 0
