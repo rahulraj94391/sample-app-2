@@ -25,7 +25,6 @@ import androidx.room.PrimaryKey
 data class Tag(
     val post_id: Int,
     val profile_id: Int,
-) {
     @PrimaryKey(autoGenerate = true)
-    val tag_id: Int = 0
-}
+    val tag_id: Int = 0,
+)

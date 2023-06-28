@@ -3,7 +3,6 @@ package com.example.instagram.database.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.util.Date
 
 
 @Entity(
@@ -20,8 +19,7 @@ import java.util.Date
 
 data class Post(
     val profile_id: Int,
-    val post_time: Date,
-) {
+    val post_time: Long,
     @PrimaryKey(autoGenerate = true)
-    val post_id: Int = 0
-}
+    val post_id: Int = 0,
+)

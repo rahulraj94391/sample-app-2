@@ -5,14 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.instagram.database.dao.CommentDao
-import com.example.instagram.database.dao.FollowDao
-import com.example.instagram.database.dao.LikesDao
 import com.example.instagram.database.dao.LoginCredDao
-import com.example.instagram.database.dao.PostDao
 import com.example.instagram.database.dao.ProfileDao
-import com.example.instagram.database.dao.SavedPostDao
-import com.example.instagram.database.dao.TagPeopleDao
 import com.example.instagram.database.entity.Comment
 import com.example.instagram.database.entity.Follow
 import com.example.instagram.database.entity.Likes
@@ -27,14 +21,14 @@ import com.example.instagram.database.entity.Tag
 @Database(entities = [Comment::class, Follow::class, Likes::class, LoginCred::class, Post::class, PostImage::class, PostText::class, Profile::class, SavedPost::class, Tag::class], version = 1)
 @TypeConverters()
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun commentDao(): CommentDao
-    abstract fun followDao(): FollowDao
-    abstract fun likesDao(): LikesDao
+//    abstract fun commentDao(): CommentDao
+//    abstract fun followDao(): FollowDao
+//    abstract fun likesDao(): LikesDao
     abstract fun loginCredDao(): LoginCredDao
-    abstract fun postDao(): PostDao
+//    abstract fun postDao(): PostDao
     abstract fun profileDao(): ProfileDao
-    abstract fun savedPostDao(): SavedPostDao
-    abstract fun tagPeopleDao(): TagPeopleDao
+//    abstract fun savedPostDao(): SavedPostDao
+//    abstract fun tagPeopleDao(): TagPeopleDao
 
     companion object {
         @Volatile
