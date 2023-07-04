@@ -17,8 +17,10 @@ import androidx.room.PrimaryKey
     ]
 )
 data class LoginCred(
-    val profile_id: Int,
-    @PrimaryKey
-    val username: String,
-    val password: String,
-)
+    var profile_id: Long,
+    var username: String,
+    var password: String,
+) {
+    @PrimaryKey(autoGenerate = true)
+    var login_cred_id: Long = 0
+}

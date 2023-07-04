@@ -17,8 +17,8 @@ import androidx.room.PrimaryKey
 )
 
 data class PostText(
-    val post_id: Int,
+    val post_id: Long,
     val post_text: String,
     @PrimaryKey(autoGenerate = true)
-    val post_text_id: Int = 0,
+    val post_text_id: Long = 0,
 )

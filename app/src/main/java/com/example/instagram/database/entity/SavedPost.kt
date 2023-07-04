@@ -24,8 +24,8 @@ import androidx.room.PrimaryKey
 )
 
 data class SavedPost(
-    val profile_id: Int,
-    val post_id: Int,
+    val profile_id: Long,
+    val post_id: Long,
     @PrimaryKey(autoGenerate = true)
-    val saved_post_id: Int = 0
+    val saved_post_id: Long = 0
 )

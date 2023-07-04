@@ -22,9 +22,9 @@ import androidx.room.PrimaryKey
     ]
 )
 data class Likes(
-    val post_id: Int,
-    val profile_id: Int,
+    val post_id: Long,
+    val profile_id: Long,
     val like_time: Long,
     @PrimaryKey(autoGenerate = true)
-    val like_id: Int = 0
+    val like_id: Long = 0
 )

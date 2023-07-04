@@ -40,7 +40,7 @@ object DateTime {
             }
         }
 
-        if (formatting == TimeFormatting.POST && PostTimeNotation.JUST_NOW.timeNotation == notation)
+        if (TimeFormatting.POST == formatting && PostTimeNotation.JUST_NOW.timeNotation == notation)
             return notation
         else if (formatting == TimeFormatting.POST) {
             return "$timeToPrint $notation"

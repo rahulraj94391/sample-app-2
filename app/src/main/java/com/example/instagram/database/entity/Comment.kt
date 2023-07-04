@@ -23,10 +23,10 @@ import androidx.room.PrimaryKey
     ]
 )
 data class Comment(
-    val post_id: Int,
-    val commenter_id: Int,
+    val post_id: Long,
+    val commenter_id: Long,
     val comment_text: String,
     val comment_time: Long,
     @PrimaryKey(autoGenerate = true)
-    val comment_id: Int = 0,
+    val comment_id: Long = 0,
 )

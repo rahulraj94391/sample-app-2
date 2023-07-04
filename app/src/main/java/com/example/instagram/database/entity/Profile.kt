@@ -12,13 +12,13 @@ data class Profile(
     var dob: Long,
     var phone_number: String,
     var email_id: String,
-    var bio: String,
+    var bio: String?,
     var gender: String,
     @Ignore
     var profile_img: Bitmap? = null,
     @PrimaryKey(autoGenerate = true)
-    var profile_id: Int,
+    var profile_id: Long,
 ) {
-    constructor(first_name: String, last_name: String, dob: Long, phone_number: String, email_id: String, bio: String, gender: String)
-            : this(first_name, last_name, dob, phone_number, email_id, bio, gender, null, 0)
+    constructor(first_name: String, last_name: String, dob: Long, phone_number: String, email_id: String, gender: String)
+            : this(first_name, last_name, dob, phone_number, email_id, null, gender, null, 0)
 }

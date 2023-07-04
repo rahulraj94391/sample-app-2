@@ -47,9 +47,9 @@
                     android:id="@+id/usernameField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/outline_person_24"
+                    android:drawableStart="@drawable/person_outlined"
                     android:drawablePadding="16dp"
-                    android:hint="Username ╳ ✓"
+                    android:hint="Username"
                     android:inputType="text"
 
                     />

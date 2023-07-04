@@ -16,8 +16,8 @@ import androidx.room.PrimaryKey
     ]
 )
 data class PostImage(
-    val post_id: Int,
+    val post_id: Long,
     val post_image_path: String,
     @PrimaryKey(autoGenerate = true)
-    val post_img_id: Int = 0,
+    val post_img_id: Long = 0,
 )

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/selector_home_icon"
+        android:title="Home"
+
+        />
+    <item
+        android:id="@+id/postFragment"
+        android:icon="@drawable/selector_post_icon"
+        android:title="Post"
+
+        />
+    <item
+        android:id="@+id/searchFragment"
+        android:icon="@drawable/search_outlined"
+        android:title="Search"
+
+        />
+    <item
+        android:id="@+id/accountFragment"
+        android:icon="@drawable/selector_account_icon"
+        android:title="Account"
+
+        />
+</menu>
