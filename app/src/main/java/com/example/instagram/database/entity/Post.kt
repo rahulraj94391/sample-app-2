@@ -20,6 +20,8 @@ import androidx.room.PrimaryKey
 data class Post(
     val profile_id: Long,
     val post_time: Long,
+
+    ) {
     @PrimaryKey(autoGenerate = true)
-    val post_id: Long = 0,
-)
+    var post_id: Long = 0
+}

@@ -24,9 +24,10 @@ class HomeActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragContainerView) as NavHostFragment
         navController = navHostFragment.findNavController()
         binding.bottomNavView.setupWithNavController(navController)
-
+        binding.bottomNavView.setOnItemReselectedListener {/* do nothing on reselect */ }
 
     }
+
 
     override fun onNavigateUp(): Boolean {
         Log.d(TAG, "onNavigateUp: ")
@@ -42,5 +43,4 @@ class HomeActivity : AppCompatActivity() {
         super.onDestroy()
         Log.d(TAG, "onDestroy")
     }
-
 }

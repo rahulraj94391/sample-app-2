@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="400dp"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/selected_post_pics_bottomsheet_bg"
+        android:orientation="vertical">
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDone"
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Done"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/auto_complete_textview_bg"
+            android:hint="Type username to tag profile"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:inputType="textPersonName"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnDone"
+
+
+            />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipTagProfile"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/autoCompleteTV" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

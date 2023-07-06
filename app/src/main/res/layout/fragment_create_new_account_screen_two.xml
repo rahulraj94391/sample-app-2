@@ -30,7 +30,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/circleImageView"
                 app:strokeColor="@color/black"
-                app:strokeWidth="1dp" />
+                app:strokeWidth="1dp"
+
+                />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_bio"

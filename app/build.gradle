@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -11,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.instagram"
-        minSdk 26
+        minSdk 29
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -42,6 +43,8 @@ dependencies {
     // nav component
     implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"
     implementation "androidx.navigation:navigation-ui-ktx:2.6.0"
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.6.1'
+    implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
 
     // room
     def room_version = "2.5.2"

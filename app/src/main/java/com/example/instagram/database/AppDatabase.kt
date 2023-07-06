@@ -6,8 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.instagram.database.dao.LoginCredDao
+import com.example.instagram.database.dao.PostDao
+import com.example.instagram.database.dao.PostTextDao
 import com.example.instagram.database.dao.ProfileDao
 import com.example.instagram.database.dao.SearchDao
+import com.example.instagram.database.dao.TagPeopleDao
 import com.example.instagram.database.entity.Comment
 import com.example.instagram.database.entity.Follow
 import com.example.instagram.database.entity.Likes
@@ -26,11 +29,12 @@ abstract class AppDatabase : RoomDatabase() {
 //    abstract fun followDao(): FollowDao
 //    abstract fun likesDao(): LikesDao
     abstract fun loginCredDao(): LoginCredDao
-//    abstract fun postDao(): PostDao
+    abstract fun postDao(): PostDao
     abstract fun profileDao(): ProfileDao
 //    abstract fun savedPostDao(): SavedPostDao
-//    abstract fun tagPeopleDao(): TagPeopleDao
+    abstract fun tagPeopleDao(): TagPeopleDao
     abstract fun searchDao() : SearchDao
+    abstract fun postTextDao(): PostTextDao
 
     companion object {
         @Volatile

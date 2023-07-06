@@ -19,9 +19,9 @@
 
         />
     <item
-        android:id="@+id/accountFragment"
+        android:id="@+id/profileFragment"
         android:icon="@drawable/selector_account_icon"
-        android:title="Account"
+        android:title="Profile"
 
         />
 </menu>

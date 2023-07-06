@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/person/baseline_person_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/power_settings_new/baseline_power_settings_new_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,8 +33,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="person_filled" />
-                            <entry key="sourceFile" value="$USER_HOME$/Desktop/instagram-text-icon.svg" />
+                            <entry key="outputName" value="power_24" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/grid.svg" />
                           </map>
                         </option>
                       </PersistentState>
