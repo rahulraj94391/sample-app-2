@@ -46,7 +46,7 @@ class SplashFragment : Fragment() {
         }
 
         scope.launch {
-            delay(2000)
+            delay(400)
             if (sharedPref.getBoolean(IS_LOGGED_IN, false)) {
                 // launch activity for home screen when user is logged in.
                 startActivity(Intent(requireContext(), HomeActivity::class.java))

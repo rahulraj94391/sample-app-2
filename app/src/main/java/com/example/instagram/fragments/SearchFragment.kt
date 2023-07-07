@@ -32,7 +32,7 @@ class SearchFragment : Fragment(), SearchUsernameClickListener {
         super.onViewCreated(view, savedInstanceState)
         searchFragViewModel = ViewModelProvider(this)[SearchFragViewModel::class.java]
         val searchRV = binding.searchRV
-        searchAdapter = SearchUserAdapter(mutableListOf(), this)
+        searchAdapter = SearchUserAdapter(mutableListOf(), this, R.layout.row_user_search)
         searchRV.adapter = searchAdapter
         searchRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         searchFragViewModel.searchLiveData.observe(viewLifecycleOwner) {
@@ -46,6 +46,7 @@ class SearchFragment : Fragment(), SearchUsernameClickListener {
                 binding.searchRV.visibility = View.VISIBLE
             }
         }
+
         binding.searchViewBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 lifecycleScope.launch {

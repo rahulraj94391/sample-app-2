@@ -13,6 +13,7 @@ import com.example.instagram.database.model.SearchResult
 class SearchUserAdapter(
     var searchResultList: MutableList<SearchResult>,
     var listener: SearchUsernameClickListener,
+    val layoutRes: Int,
 ) : RecyclerView.Adapter<SearchUserAdapter.SearchResultViewHolder>() {
 
     private lateinit var context: Context
@@ -23,7 +24,7 @@ class SearchUserAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_user_search, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
         return SearchResultViewHolder(view)
     }
 

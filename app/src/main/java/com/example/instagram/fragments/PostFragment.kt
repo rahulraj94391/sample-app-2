@@ -1,8 +1,10 @@
 package com.example.instagram.fragments
 
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,27 +14,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.contains
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.R
 import com.example.instagram.adapters.KeepAtLeastOneImage
+import com.example.instagram.adapters.SearchUserAdapter
+import com.example.instagram.adapters.SearchUsernameClickListener
 import com.example.instagram.adapters.SelectedPostImageAdapter
 import com.example.instagram.databinding.FragmentPostBinding
 import com.example.instagram.viewmodels.PostFragmentViewModel
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
+import kotlinx.coroutines.launch
 
-const val IMAGE_PICKER_REQ_CODE = 976
 private const val TAG = "CommTag_PostFragment"
 
-class PostFragment : Fragment(), KeepAtLeastOneImage {
+class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListener {
     private lateinit var binding: FragmentPostBinding
     private lateinit var viewModel: PostFragmentViewModel
 
@@ -49,8 +58,10 @@ class PostFragment : Fragment(), KeepAtLeastOneImage {
     // select profile tag bottom sheet dialog ___ START
     private lateinit var tagDialog: Dialog
     private lateinit var doneBtnTag: MaterialButton
-    private lateinit var autoCompleteTextView: AutoCompleteTextView
+    private lateinit var searchView: SearchView
     private lateinit var chipGroup: ChipGroup
+    private lateinit var searchForTagRV: RecyclerView
+    private lateinit var searchTagAdapter: SearchUserAdapter
     // select profile tag bottom sheet dialog ___ END
 
 
@@ -65,24 +76,73 @@ class PostFragment : Fragment(), KeepAtLeastOneImage {
         binding.postText.addTextChangedListener(CustomTextWatcher())
         binding.btnPost.setOnClickListener { onPostBtnClicked() }
 
+
+        //
         selectedPicsDialog = createPicsBottomSheetDialog()
         initializePicBottomSheet()
         binding.btnSelectPics.setOnClickListener { selectedPicsDialog.show() }
 
 
+        //
         tagDialog = createTagBottomSheetDialog()
         initializeTagBottomSheet()
         binding.btnTagPerson.setOnClickListener { tagDialog.show() }
 
-
     }
+
 
     private fun initializeTagBottomSheet() {
         doneBtnTag = tagDialog.findViewById(R.id.btnDone)
-        autoCompleteTextView = tagDialog.findViewById(R.id.autoCompleteTV)
-        chipGroup = tagDialog.findViewById(R.id.chipTagProfile)
+        searchView = tagDialog.findViewById(R.id.tagSearchView)
 
-        doneBtnTag.setOnClickListener { tagDialog.dismiss() }
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    lifecycleScope.launch {
+                        viewModel.getSearchResult(newText)
+                    }
+                }
+                return true
+            }
+        })
+        chipGroup = tagDialog.findViewById(R.id.chipTagProfile)
+        searchForTagRV = tagDialog.findViewById(R.id.searchForTagRV)
+        searchTagAdapter = SearchUserAdapter(mutableListOf(), this, R.layout.row_user_search_slim)
+        searchForTagRV.adapter = searchTagAdapter
+        searchForTagRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, true)
+        doneBtnTag.setOnClickListener {
+            tagDialog.dismiss()
+        }
+
+
+        viewModel.tempListTagUser.observe(viewLifecycleOwner) {
+            Log.d(TAG, "initializeTagBottomSheet: ${viewModel.tempListTagUser.value}")
+            searchTagAdapter.setNewList(it)
+        }
+
+    }
+
+    private fun addTagChipToChipGroup(profileId: Long): Chip {
+        val chip = Chip(requireContext())
+        val chipDrawable: ChipDrawable = ChipDrawable.createFromAttributes(requireContext(), null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Entry)
+        chip.setChipDrawable(chipDrawable)
+        chip.isCheckable = false
+        chip.isClickable = false
+        chip.setChipIconResource(R.drawable.person_filled)
+        chip.iconStartPadding = 4f
+        chip.setPadding(60, 10, 60, 10)
+        lifecycleScope.launch {
+            chip.text = viewModel.getNameOfUser(profileId)
+        }
+        chip.setOnCloseIconClickListener {
+            chipGroup.removeView(chip)
+        }
+        chipGroup.addView(chip)
+        return chip
     }
 
     private fun createTagBottomSheetDialog(): Dialog {
@@ -122,6 +182,10 @@ class PostFragment : Fragment(), KeepAtLeastOneImage {
         val text = viewModel.postText
         val imagesSize = viewModel.postImagesUri.size
 
+        if (!isInternetActive(requireContext())) {
+            Toast.makeText(requireContext(), "Internet not active.", Toast.LENGTH_SHORT).show()
+        }
+
         if (text.isBlank()) {
             Toast.makeText(requireContext(), "Text can't be blank.", Toast.LENGTH_SHORT).show()
             return
@@ -130,12 +194,32 @@ class PostFragment : Fragment(), KeepAtLeastOneImage {
             Toast.makeText(requireContext(), "Select photos to upload.", Toast.LENGTH_SHORT).show()
             return
         }
+        prepareTagsOnPost()
         viewModel.insertPost()
         binding.postText.setText("")
 
         recyclerView2.visibility = View.GONE
         insLabel.visibility = View.VISIBLE
         reselectBtn.isEnabled = false
+        chipGroup.removeAllViews()
+
+    }
+
+    private fun prepareTagsOnPost() {
+        for (i in viewModel.finalTagUserIds) {
+            if (chipGroup.contains(i.first)) {
+                viewModel.tagsToUpload.add(i.second)
+            }
+        }
+    }
+
+    private fun isInternetActive(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        if (activeNetworkInfo != null && activeNetworkInfo.isConnected) {
+            return true
+        }
+        return false
     }
 
     private val resultLauncherInitial = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
@@ -186,6 +270,13 @@ class PostFragment : Fragment(), KeepAtLeastOneImage {
 
     override fun postAtLeastOnePhoto() {
         Toast.makeText(requireContext(), "Post at least one photo.", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onClick(pos: Int) {
+        val chip = addTagChipToChipGroup(viewModel.tempListTagUser.value!![pos].profile_id)
+        viewModel.finalTagUserIds.add(Pair(chip, viewModel.tempListTagUser.value!![pos].profile_id))
+        searchView.setQuery("", false)
+        viewModel.tempListTagUser.postValue(mutableListOf())
     }
 }
 

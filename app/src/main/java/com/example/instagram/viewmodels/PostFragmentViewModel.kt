@@ -6,14 +6,18 @@ import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.instagram.MSharedPreferences
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Post
 import com.example.instagram.database.entity.PostText
 import com.example.instagram.database.entity.Tag
+import com.example.instagram.database.model.SearchResult
+import com.google.android.material.chip.Chip
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 private const val TAG = "CommTag_PostFragmentViewModel"
@@ -22,10 +26,11 @@ class PostFragmentViewModel(private val app: Application) : AndroidViewModel(app
     var postImagesUri: MutableList<Uri> = mutableListOf()
     var postText: String = ""
     var profileId: Long = -1
-    var tagProfile: MutableList<Tag> = mutableListOf()
     private var storageRef: FirebaseStorage
     private var firebaseFirestore: FirebaseFirestore
-
+    var tempListTagUser = MutableLiveData<MutableList<SearchResult>>()
+    var finalTagUserIds = mutableListOf<Pair<Chip, Long>>()
+    var tagsToUpload = mutableListOf<Long>()
 
     init {
         val sharedPreferences = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -38,6 +43,7 @@ class PostFragmentViewModel(private val app: Application) : AndroidViewModel(app
         viewModelScope.launch { uploadPost() }
     }
 
+
     private suspend fun uploadPost() {
         val timeStamp = System.currentTimeMillis()
         val db = AppDatabase.getDatabase(app)
@@ -45,15 +51,43 @@ class PostFragmentViewModel(private val app: Application) : AndroidViewModel(app
         val postText = db.postTextDao().insertPostText(PostText(postId, postText))
         uploadPostImages(postId, postImagesUri)
 
-        if (tagProfile.size > 0) {
-            db.tagPeopleDao().insertPostTags(tagProfile)
+        if (tagsToUpload.size > 0) {
+            db.tagPeopleDao().insertPostTags(prepareTagsOnPost(postId))
         }
 
 
         this.postText = ""
         postImagesUri = mutableListOf()
-        tagProfile = mutableListOf()
+        finalTagUserIds.clear()
+        tagsToUpload.clear()
 
+    }
+
+    private fun prepareTagsOnPost(postId: Long): MutableList<Tag> {
+        val list = mutableListOf<Tag>()
+        for (i in tagsToUpload) {
+            list.add(Tag(postId, i))
+        }
+        return list
+    }
+
+
+    suspend fun getSearchResult(name: String) {
+        val sharedPref = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val ownID = sharedPref.getLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
+        val db = AppDatabase.getDatabase(app)
+
+        val usersRes = viewModelScope.async {
+            db.searchDao().getSearchResult(name, ownID)
+        }
+        tempListTagUser.postValue(usersRes.await())
+
+    }
+
+    suspend fun getNameOfUser(profileId: Long): String {
+        val db = AppDatabase.getDatabase(app)
+        val fullName = db.profileDao().getFullName(profileId)
+        return "${fullName.first_name} ${fullName.last_name}"
     }
 
     private fun uploadPostImages(postId: Long, listOfImageUris: List<Uri>) {
