@@ -27,6 +27,8 @@ data class Comment(
     val commenter_id: Long,
     val comment_text: String,
     val comment_time: Long,
+
+    ) {
     @PrimaryKey(autoGenerate = true)
-    val comment_id: Long = 0,
-)
+    var comment_id: Long = 0
+}

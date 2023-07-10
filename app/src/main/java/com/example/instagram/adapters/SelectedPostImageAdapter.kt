@@ -29,7 +29,7 @@ class SelectedPostImageAdapter(Uris: MutableList<Uri>, listener: KeepAtLeastOneI
     }
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val image: ImageView = view.findViewById(R.id.postSelectedImage)
+        val image: ImageView = view.findViewById(R.id.gridImage)
 
         init {
             image.setOnLongClickListener {
@@ -46,7 +46,7 @@ class SelectedPostImageAdapter(Uris: MutableList<Uri>, listener: KeepAtLeastOneI
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_selected_photo, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_photo, parent, false)
         return MyViewHolder(view)
     }
 

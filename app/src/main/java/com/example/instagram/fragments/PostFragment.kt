@@ -202,7 +202,6 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
         insLabel.visibility = View.VISIBLE
         reselectBtn.isEnabled = false
         chipGroup.removeAllViews()
-
     }
 
     private fun prepareTagsOnPost() {

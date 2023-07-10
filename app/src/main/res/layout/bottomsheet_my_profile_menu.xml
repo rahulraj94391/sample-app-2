@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/bottomSheetLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -11,20 +12,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <View
+                android:layout_width="40dp"
+                android:layout_height="3dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:background="@color/black" />
+
             <!--1st row-->
             <LinearLayout
+                android:id="@+id/editProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
+                android:padding="8dp"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-
-                >
+                android:paddingEnd="16dp">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginEnd="16dp"
                     android:src="@drawable/person_outlined" />
 
@@ -33,52 +41,51 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="Edit profile"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-
-                    />
-
-
+                    android:textSize="18sp" />
             </LinearLayout>
 
 
             <!--2nd row-->
             <LinearLayout
+                android:id="@+id/settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:orientation="horizontal"
+                android:padding="8dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginEnd="16dp"
                     android:src="@drawable/outline_settings" />
 
                 <TextView
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="Settings"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
 
             <!--3rd row-->
             <LinearLayout
+                android:id="@+id/savedPost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:orientation="horizontal"
+                android:padding="8dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginEnd="16dp"
                     android:src="@drawable/outline_bookmark_border_24" />
 
@@ -87,24 +94,25 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="Saved posts"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
 
             <!--4th row-->
             <LinearLayout
+                android:id="@+id/logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:orientation="horizontal"
+                android:padding="8dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginEnd="16dp"
                     android:src="@drawable/power_24" />
 
@@ -113,8 +121,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="Logout"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
 

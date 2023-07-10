@@ -50,17 +50,15 @@ class PostFragmentViewModel(private val app: Application) : AndroidViewModel(app
         val postId = db.postDao().insertPost(Post(profileId, timeStamp))
         val postText = db.postTextDao().insertPostText(PostText(postId, postText))
         uploadPostImages(postId, postImagesUri)
-
         if (tagsToUpload.size > 0) {
             db.tagPeopleDao().insertPostTags(prepareTagsOnPost(postId))
         }
 
-
+        // clear all variables after inserting.
         this.postText = ""
         postImagesUri = mutableListOf()
         finalTagUserIds.clear()
         tagsToUpload.clear()
-
     }
 
     private fun prepareTagsOnPost(postId: Long): MutableList<Tag> {
