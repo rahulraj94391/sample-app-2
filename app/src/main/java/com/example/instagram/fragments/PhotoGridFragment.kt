@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.PhotoGridAdapter
 import com.example.instagram.databinding.FragmentProfilePostBinding
 import com.example.instagram.viewmodels.ProfileViewModel
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
 const val LIST_REF: String = "list_ref"
@@ -22,6 +25,7 @@ private const val TAG = "CommTag_PhotoGridFragment"
 class PhotoGridFragment : Fragment() {
     private lateinit var binding: FragmentProfilePostBinding
     private lateinit var viewModel: ProfileViewModel
+    private lateinit var mainViewModel: MainViewModel
     private lateinit var userPostedPhotoAdapter: PhotoGridAdapter
     private var listRef: Int by Delegates.notNull()
 
@@ -58,13 +62,21 @@ class PhotoGridFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[ProfileViewModel::class.java]
         userPostedPhotoAdapter = PhotoGridAdapter()
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+
 
         if (listRef == 0) {
+            lifecycleScope.launch {
+                viewModel.getProfilePost(mainViewModel.loggedInProfileId!!)
+            }
             viewModel.usersPost.observe(viewLifecycleOwner) {
                 userPostedPhotoAdapter.setNewList(it)
             }
         }
         else {
+            lifecycleScope.launch {
+                viewModel.getAllPostInWhichProfileIsTagged(mainViewModel.loggedInProfileId!!)
+            }
             viewModel.usersTaggedPost.observe(viewLifecycleOwner) {
                 userPostedPhotoAdapter.setNewList(it)
             }
@@ -74,6 +86,4 @@ class PhotoGridFragment : Fragment() {
         binding.profilePosts.adapter = userPostedPhotoAdapter
         binding.profilePosts.layoutManager = GridLayoutManager(requireContext(), 3)
     }
-
-
 }

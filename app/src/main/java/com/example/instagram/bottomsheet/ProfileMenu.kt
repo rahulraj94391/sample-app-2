@@ -1,12 +1,17 @@
 package com.example.instagram.bottomsheet
 
 import android.app.Dialog
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import com.example.instagram.MSharedPreferences
+import com.example.instagram.MainActivity
 import com.example.instagram.R
 import com.example.instagram.databinding.BottomsheetMyProfileMenuBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -71,15 +76,15 @@ class ProfileMenu : BottomSheetDialogFragment() {
     fun onLogoutClicked() {
         Log.d(TAG, "onLogoutClicked")
 
-        /*val sharedPref: SharedPreferences = requireActivity().getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPref: SharedPreferences = requireActivity().getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         sharedPref.edit().apply {
             putLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
             putBoolean(MSharedPreferences.IS_LOGGED_IN, false)
             apply()
         }
         startActivity(Intent(requireContext(), MainActivity::class.java))
-        requireActivity().finish()*/
         this.dismiss()
+        requireActivity().finish()
 
     }
 

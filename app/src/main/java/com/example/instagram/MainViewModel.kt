@@ -1,11 +1,15 @@
 package com.example.instagram
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import com.example.instagram.database.entity.Profile
 
-class MainViewModel() : ViewModel() {
+class MainViewModel(app: Application) : AndroidViewModel(app) {
+
+
+
     var newProfileSignup: Profile? = null
-    var loggedInUserId: Long? = null
+    var loggedInProfileId: Long? = null
 
 
     /**

@@ -99,6 +99,7 @@ class PostFragmentViewModel(private val app: Application) : AndroidViewModel(app
                         storageRef.downloadUrl.addOnSuccessListener { uri2 ->
                             val map = HashMap<String, Any>()
                             map[postId.toString()] = uri2.toString()
+                            map["serial"] = "${postId}_${i}"
 
                             firebaseFirestore.collection("postImages").add(map).addOnCompleteListener { firestoreTask ->
                                 if (firestoreTask.isSuccessful) {

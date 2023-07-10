@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.ProfileAdapter
 import com.example.instagram.bottomsheet.ProfileMenu
@@ -25,9 +25,8 @@ private const val TAG = "CommTag_ProfileFragment"
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
-    private lateinit var parentRecyclerView: RecyclerView
     private lateinit var profileAdapter: ProfileAdapter
-
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
