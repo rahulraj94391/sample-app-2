@@ -15,6 +15,7 @@ interface PostDao {
     @Query("SELECT post_id FROM post WHERE profile_id = :profileId")
     suspend fun getAllPostOfProfile(profileId: Long): MutableList<Long>
 
-
+    @Query("SELECT COUNT(profile_id) FROM post WHERE profile_id = :profileId")
+    suspend fun getPostCount(profileId: Long): Int
 
 }

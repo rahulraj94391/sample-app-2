@@ -5,40 +5,104 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.ProfileAdapter
 import com.example.instagram.bottomsheet.ProfileMenu
-import com.example.instagram.database.model.ProfileSummary
+import com.example.instagram.database.AppDatabase
 import com.example.instagram.databinding.FragmentProfileBinding
-
-const val EDIT_PROFILE = "Edit Profile"
-const val SHARE_PROFILE = "Share Profile"
-const val FOLLOW = "Follow"
-const val UNFOLLOW = "Unfollow"
-const val MESSAGE = "Message"
+import com.example.instagram.viewmodels.ProfileFragViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.properties.Delegates
 
 private const val TAG = "CommTag_ProfileFragment"
+private const val PROFILE_ID_KEY = "profileId"
+const val POST_ID_OPEN_REQ_KEY = "postId"
+const val POST_ID_REF_KEY = "postIdToOpenInNextFrag"
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var profileAdapter: ProfileAdapter
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var viewModel: ProfileFragViewModel
+    private var profileId: Long by Delegates.notNull()
+    private lateinit var db: AppDatabase
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    /*companion object {
+        fun newInstance(profileId: Long): ProfileFragment {
+            val args = Bundle()
+            args.putLong(PROFILE_ID_KEY, profileId)
+            val fragment = ProfileFragment()
+            fragment.arguments = args
+            return fragment
+        }
+    }*/
+
+    val profilePicUri = registerForActivityResult(ActivityResultContracts.GetContent()) {
+        viewModel.uploadProfileImage(mainViewModel.loggedInProfileId!!, it)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        db = AppDatabase.getDatabase(requireContext())
+        viewModel = ViewModelProvider(requireActivity())[ProfileFragViewModel::class.java]
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        val id = savedInstanceState?.getLong(PROFILE_ID_KEY, mainViewModel.loggedInProfileId!!)
+        profileId = id ?: mainViewModel.loggedInProfileId!!
+
+
+        requireActivity().supportFragmentManager.setFragmentResultListener(POST_ID_OPEN_REQ_KEY, requireActivity()) { requestKey, bundle ->
+            val result = bundle.getLong(POST_ID_REF_KEY)
+            val action = ProfileFragmentDirections.actionProfileFragmentToOnePostFragment(result)
+            findNavController().navigate(action)
+        }
+
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnProfileBottomSheet.setOnClickListener { showMenu() }
+        lifecycleScope.launch { showImages() }
+    }
+
+    private suspend fun showImages() {
+        val ownProfileId = mainViewModel.loggedInProfileId!!
+        val userProfileId = profileId
+        val count = db.followDao().isUserFollowingUser(ownProfileId, userProfileId)
+        val isFollowing = count > 0
+        val profileSummary = viewModel.getProfileSummary(profileId)
+        withContext(Dispatchers.Main) {
+            if (ownProfileId != userProfileId) binding.btnProfileBottomSheet.visibility = View.INVISIBLE
+            binding.toolbarProfileUsername.text = "${profileSummary.first_name} ${profileSummary.last_name}"
+        }
+
         profileAdapter = ProfileAdapter(
-            ProfileSummary("hrrdas", "Raj", "Rahul", "asdhas", 23, 3430, 2333),
-            ::showFollowerFragment, ::showFollowingFragment, buttonConfigurator(1, 2, true)
+            profileSummary = profileSummary,
+            isFollowing = isFollowing,
+            ownId = ownProfileId,
+            userProfileId = userProfileId,
+            OnFollowViewClicked = this::showFollowerFragment,
+            OnFollowingViewClicked = this::showFollowingFragment,
+            OnEditProfileClicked = this::editProfile,
+            OnShareProfileClicked = this::shareProfile,
+            OnUnfollowClicked = this::unFollowProfile,
+            OnFollowClicked = this::followProfile,
+            OnMessageClicked = this::messageProfile
         )
         binding.profileRV.adapter = profileAdapter
         binding.profileRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -47,36 +111,6 @@ class ProfileFragment : Fragment() {
     private fun showMenu() {
         val profileMenu = ProfileMenu()
         profileMenu.show(parentFragmentManager, "profile_menu")
-    }
-
-    private fun buttonConfigurator(currentUserId: Long, profileUserId: Long, isCurrentUserFollowingProfileUser: Boolean): Pair<Pair<String, String>, Pair<() -> Unit, () -> Unit>> {
-        val listener1: (() -> Unit)?
-        val listener2: (() -> Unit)?
-        val btnText1: String?
-        val btnText2: String?
-
-
-        if (currentUserId == profileUserId) {
-            btnText1 = EDIT_PROFILE
-            btnText2 = SHARE_PROFILE
-            listener1 = ::editProfile
-            listener2 = ::shareProfile
-        }
-        else if (isCurrentUserFollowingProfileUser) {
-            // current user is following the other user
-
-            btnText1 = UNFOLLOW
-            btnText2 = MESSAGE
-            listener1 = ::unFollowProfile
-            listener2 = ::messageProfile
-        }
-        else {
-            btnText1 = FOLLOW
-            btnText2 = MESSAGE
-            listener1 = ::followProfile
-            listener2 = ::messageProfile
-        }
-        return Pair(Pair(btnText1, btnText2), Pair(listener1, listener2))
     }
 
     private fun showFollowingFragment() {
@@ -93,6 +127,7 @@ class ProfileFragment : Fragment() {
 
     private fun shareProfile() {
         Log.d(TAG, "shareProfile clicked.")
+        profilePicUri.launch("image/*")
     }
 
     private fun unFollowProfile() {

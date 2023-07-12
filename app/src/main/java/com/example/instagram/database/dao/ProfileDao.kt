@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.instagram.database.entity.Profile
 import com.example.instagram.database.model.FullName
+import com.example.instagram.database.model.FullNameBio
 
 @Dao
 interface ProfileDao {
@@ -18,5 +19,10 @@ interface ProfileDao {
 
     @Query("SELECT first_name, last_name FROM profile WHERE profile_id = :profileId")
     suspend fun getFullName(profileId: Long): FullName
+
+    @Query("SELECT first_name, last_name, bio FROM profile WHERE profile_id = :profileId")
+    suspend fun getFullNameBio(profileId: Long): FullNameBio
+
+
 
 }

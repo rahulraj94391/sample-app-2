@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.instagram.database.dao.FollowDao
 import com.example.instagram.database.dao.LoginCredDao
 import com.example.instagram.database.dao.PostDao
 import com.example.instagram.database.dao.PostTextDao
@@ -26,7 +27,7 @@ import com.example.instagram.database.entity.Tag
 @TypeConverters()
 abstract class AppDatabase : RoomDatabase() {
 //    abstract fun commentDao(): CommentDao
-//    abstract fun followDao(): FollowDao
+    abstract fun followDao(): FollowDao
 //    abstract fun likesDao(): LikesDao
     abstract fun loginCredDao(): LoginCredDao
     abstract fun postDao(): PostDao

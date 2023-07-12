@@ -2,3 +2,4 @@ Strange:
 1. the value of id in 'nav_graph' of a top level destination on BNV should be same as in the 'menu.xml' for the BNV, otherwise the bnv will not switch between destinations.
 
 
+Picasso.get().load(listOfImages[position].imageURl).resize(720, 720).centerCrop().into(holder.image)

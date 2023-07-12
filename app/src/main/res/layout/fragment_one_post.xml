@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+
+        >
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingTop="4dp"
+                android:text="Post"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".fragments.OnePostFragment">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/ic_launcher_background"
+                    android:src="@drawable/ic_launcher_foreground"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/circleImageView"
+                    app:strokeColor="@color/black" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/profileImage"
+                    app:layout_constraintTop_toTopOf="@+id/profileImage"
+                    tools:text="Username" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/allImagesInAPostVP2"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:background="#FFC8C8"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/profileImage"
+
+                    />
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/indicatorVP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:clickable="false"
+                    android:elevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2"
+
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/likeBtn"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    app:icon="@drawable/like_outline"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2"
+
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/comment"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    app:icon="@drawable/outline_comment_24"
+                    app:layout_constraintStart_toEndOf="@+id/likeBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSavePost"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    app:icon="@drawable/outline_bookmark_border_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2" />
+
+                <TextView
+                    android:id="@+id/likeCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="50 likes"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/indicatorVP" />
+
+                <TextView
+                    android:id="@+id/postDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:justificationMode="inter_word"
+                    android:maxLines="2"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nunc ipsum, mollis et magna eu, ullamcorper lacinia nibh. PellentesqueLorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nunc ipsum, mollis et magna eu, ullamcorper lacinia nibh. PellentesqueLorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nunc ipsum, mollis et magna eu, ullamcorper lacinia nibh. PellentesqueLorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nunc ipsum, mollis et magna eu, ullamcorper lacinia nibh. PellentesqueLorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nunc ipsum, mollis et magna eu, ullamcorper lacinia nibh. PellentesqueLorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nunc ipsum, mollis et magna eu, ullamcorper lacinia nibh. Pellentesque"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/likeCount" />
+
+                <TextView
+                    android:id="@+id/viewAllComments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="View all 50 comments"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/postDesc" />
+
+                <TextView
+                    android:id="@+id/timeOfPost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="100dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="2 week ago"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/viewAllComments"
+                    app:layout_constraintVertical_bias="0.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </LinearLayout>
+</layout>

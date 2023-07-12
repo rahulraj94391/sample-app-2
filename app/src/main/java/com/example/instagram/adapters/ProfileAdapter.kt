@@ -2,6 +2,9 @@ package com.example.instagram.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,22 +21,66 @@ import com.example.instagram.fragments.PhotoGridFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.squareup.picasso.Picasso
+import java.net.URL
 
 private const val PROFILE_SUMMARY_ROW = 0
 private const val BUTTON_ROW = 1
 private const val VP = 3
 
+const val EDIT_PROFILE = "Edit Profile"
+const val SHARE_PROFILE = "Share Profile"
+const val FOLLOW = "Follow"
+const val UNFOLLOW = "Unfollow"
+const val MESSAGE = "Message"
+
+private const val TAG = "CommTag_ProfileAdapter"
+
 class ProfileAdapter(
     val profileSummary: ProfileSummary,
     val OnFollowViewClicked: () -> Unit,
     val OnFollowingViewClicked: () -> Unit,
-    val btnConfig: Pair<Pair<String, String>, Pair<() -> Unit, () -> Unit>>,
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    val OnEditProfileClicked: () -> Unit,
+    val OnShareProfileClicked: () -> Unit,
+    val OnUnfollowClicked: () -> Unit,
+    val OnFollowClicked: () -> Unit,
+    val OnMessageClicked: () -> Unit,
+    val isFollowing: Boolean,
+    val ownId: Long,
+    val userProfileId: Long,
+
+    ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mContext: Context
-    val startBtnListener: () -> Unit = btnConfig.second.first
-    val endBtnListener: () -> Unit = btnConfig.second.second
-    val btnStartText: String = btnConfig.first.first
-    val btnEndText: String = btnConfig.first.second
+
+
+    private fun btn(btnStart: MaterialButton, btnEnd: MaterialButton) {
+        if (ownId == userProfileId) {
+            btnStart.text = EDIT_PROFILE
+            btnEnd.text = SHARE_PROFILE
+            btnStart.setOnClickListener { OnEditProfileClicked.invoke() }
+            btnEnd.setOnClickListener { OnShareProfileClicked.invoke() }
+        }
+        else if (isFollowing) {
+            btnStart.text = UNFOLLOW
+            btnEnd.text = MESSAGE
+            btnStart.setOnClickListener {
+                OnUnfollowClicked.invoke()
+                btnStart.text = FOLLOW
+                btnStart.setOnClickListener { OnFollowClicked.invoke() }
+            }
+            btnEnd.setOnClickListener { OnMessageClicked.invoke() }
+        }
+        else {
+            btnStart.text = FOLLOW
+            btnEnd.text = MESSAGE
+            btnStart.setOnClickListener {
+                OnFollowClicked.invoke()
+                btnStart.text = UNFOLLOW
+                btnStart.setOnClickListener { OnUnfollowClicked.invoke() }
+            }
+            btnEnd.setOnClickListener { OnMessageClicked.invoke() }
+        }
+    }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         mContext = recyclerView.context
@@ -57,20 +104,17 @@ class ProfileAdapter(
     }
 
     inner class Buttons(view: View) : RecyclerView.ViewHolder(view) {
-        val btnStart: MaterialButton = view.findViewById(R.id.btnStart)
-        val btnEnd: MaterialButton = view.findViewById(R.id.btnEnd)
+        private val btnStart: MaterialButton = view.findViewById(R.id.btnStart)
+        private val btnEnd: MaterialButton = view.findViewById(R.id.btnEnd)
 
         init {
-            btnStart.text = btnStartText
-            btnEnd.text = btnEndText
-            btnStart.setOnClickListener { startBtnListener.invoke() }
-            btnEnd.setOnClickListener { endBtnListener.invoke() }
+            btn(btnStart, btnEnd)
         }
     }
 
     inner class ViewPagerTabLayout(view: View) : RecyclerView.ViewHolder(view) {
-        val viewPager: ViewPager2 = view.findViewById(R.id.viewPagerPostAndTagPhoto)
-        val tabLayout: TabLayout = view.findViewById(R.id.tabLayout)
+        private val viewPager: ViewPager2 = view.findViewById(R.id.viewPagerPostAndTagPhoto)
+        private val tabLayout: TabLayout = view.findViewById(R.id.tabLayout)
 
         init {
             /*tabLayout.setupWithViewPager(viewPager as ViewPager)*/
@@ -106,8 +150,19 @@ class ProfileAdapter(
         when (holder.itemViewType) {
             PROFILE_SUMMARY_ROW -> {
                 (holder as ProfileSummaryView).apply {
-                    profilePicture.setBackgroundResource(R.drawable.ic_launcher_background)
-                    fullName.text = "${profileSummary.f_name} ${profileSummary.l_name}"
+//                    CoroutineScope(Dispatchers.IO).launch {
+//                        var bitmap: Bitmap? = null
+//                        if (profileSummary.profilePic != null) {
+//                            bitmap = downloadBitmap(profileSummary.profilePic)
+//                        }
+//                        if (bitmap != null)
+//                            withContext(Dispatchers.Main) { holder.profilePicture.setImageBitmap(bitmap) }
+//                        else
+//                            withContext(Dispatchers.Main) { holder.profilePicture.setImageDrawable(holder.profilePicture.context.resources.getDrawable(R.drawable.ic_launcher_background)) }
+//                    }
+                    Picasso.get().load(profileSummary.profilePic).into(profilePicture)
+
+                    fullName.text = "${profileSummary.first_name} ${profileSummary.last_name}"
                     bio.text = profileSummary.bio
                     postCount.text = profileSummary.postCount.toString()
                     followerCount.text = profileSummary.followerCount.toString()
@@ -152,5 +207,19 @@ private class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapt
 
     override fun createFragment(position: Int): Fragment {
         return PhotoGridFragment.newInstance(position)
+    }
+}
+
+private fun downloadBitmap(imageUrl: String): Bitmap? {
+    return try {
+        val conn = URL(imageUrl).openConnection()
+        conn.connect()
+        val inputStream = conn.getInputStream()
+        val bitmap = BitmapFactory.decodeStream(inputStream)
+        inputStream.close()
+        bitmap
+    } catch (e: Exception) {
+        Log.d(TAG, "Exception $e")
+        null
     }
 }

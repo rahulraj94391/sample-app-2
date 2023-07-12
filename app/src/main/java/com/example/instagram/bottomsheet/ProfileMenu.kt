@@ -35,7 +35,7 @@ class ProfileMenu : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.editProfile.setOnClickListener { onEditProfileClicked() }
+
         binding.savedPost.setOnClickListener { onSavedPostClicked() }
         binding.settings.setOnClickListener { onSettingsClicked() }
         binding.logout.setOnClickListener { onLogoutClicked() }
@@ -51,12 +51,6 @@ class ProfileMenu : BottomSheetDialogFragment() {
 //        val layout = dialog!!.findViewById<CoordinatorLayout>(R.id.bottomSheetLayout)
 //        layout.minimumHeight = Resources.getSystem().displayMetrics.heightPixels
 
-    }
-
-    private fun onEditProfileClicked() {
-        Log.d(TAG, "onEditProfileClicked")
-
-        this.dismiss()
     }
 
     private fun onSettingsClicked() {

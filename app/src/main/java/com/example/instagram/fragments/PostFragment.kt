@@ -32,7 +32,7 @@ import com.example.instagram.adapters.SearchUserAdapter
 import com.example.instagram.adapters.SearchUsernameClickListener
 import com.example.instagram.adapters.SelectedPostImageAdapter
 import com.example.instagram.databinding.FragmentPostBinding
-import com.example.instagram.viewmodels.PostFragmentViewModel
+import com.example.instagram.viewmodels.PostFragViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
@@ -43,7 +43,7 @@ private const val TAG = "CommTag_PostFragment"
 
 class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListener {
     private lateinit var binding: FragmentPostBinding
-    private lateinit var viewModel: PostFragmentViewModel
+    private lateinit var viewModel: PostFragViewModel
 
     // select pic bottom sheet dialog refs ___ START
     private lateinit var selectedPicsDialog: Dialog
@@ -72,7 +72,7 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[PostFragmentViewModel::class.java]
+        viewModel = ViewModelProvider(this)[PostFragViewModel::class.java]
         binding.postText.addTextChangedListener(CustomTextWatcher())
         binding.btnPost.setOnClickListener { onPostBtnClicked() }
 

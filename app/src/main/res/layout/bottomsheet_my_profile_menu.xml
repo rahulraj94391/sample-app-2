@@ -20,7 +20,7 @@
                 android:background="@color/black" />
 
             <!--1st row-->
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/editProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -28,7 +28,9 @@
                 android:orientation="horizontal"
                 android:padding="8dp"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp">
+                android:paddingEnd="16dp"
+
+                >
 
                 <ImageView
                     android:layout_width="24dp"
@@ -42,7 +44,7 @@
                     android:gravity="center_vertical"
                     android:text="Edit profile"
                     android:textSize="18sp" />
-            </LinearLayout>
+            </LinearLayout>-->
 
 
             <!--2nd row-->
