@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -23,13 +24,13 @@ private const val TAG = "CommTag_PostFragmentViewModel"
 
 class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
     var postImagesUri: MutableList<Uri> = mutableListOf()
-    var postText: String = ""
     var profileId: Long = -1
     private var storageRef: FirebaseStorage
     private var firebaseFirestore: FirebaseFirestore
     var tempListTagUser = MutableLiveData<MutableList<SearchResult>>()
     var finalTagUserIds = mutableListOf<Pair<Chip, Long>>()
     var tagsToUpload = mutableListOf<Long>()
+    var finalTextToUpload = ""
 
     init {
         val sharedPreferences = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -47,14 +48,14 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
         val timeStamp = System.currentTimeMillis()
         val db = AppDatabase.getDatabase(app)
         val postId = db.postDao().insertPost(Post(profileId, timeStamp))
-        val postText = db.postTextDao().insertPostText(PostText(postId, postText))
+        val postText = viewModelScope.async { db.postTextDao().insertPostText(PostText(postId, finalTextToUpload)) }
         uploadPostImages(postId, postImagesUri)
         if (tagsToUpload.size > 0) {
             db.tagPeopleDao().insertPostTags(prepareTagsOnPost(postId))
         }
 
+
         // clear all variables after inserting.
-        this.postText = ""
         postImagesUri = mutableListOf()
         finalTagUserIds.clear()
         tagsToUpload.clear()
@@ -89,6 +90,8 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
 
     private fun uploadPostImages(postId: Long, listOfImageUris: List<Uri>) {
         Log.d(TAG, "Uri Length = ${listOfImageUris.size}")
+        var passCounter = 0
+        var failCounter = 0
         for (i in listOfImageUris.indices) {
             val storageRef = storageRef.reference.child("${postId}_$i")
             val imageUri = listOfImageUris[i]
@@ -101,12 +104,12 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
                             map["serial"] = "${postId}_${i}"
 
                             firebaseFirestore.collection("postImages").add(map).addOnCompleteListener { firestoreTask ->
-//                                if (firestoreTask.isSuccessful) {
-//                                    Toast.makeText(app, "Uploaded successfully", Toast.LENGTH_SHORT).show()
-//                                }
-//                                else {
-//                                    Toast.makeText(app, "Uploaded failed", Toast.LENGTH_SHORT).show()
-//                                }
+                                if (firestoreTask.isSuccessful) {
+                                    passCounter++
+                                }
+                                else {
+                                    failCounter++
+                                }
 
                                 // attach placeholder image when unsuccessful while adding path to firestore(DB)
                                 /*binding.imageView.setImageResource(R.drawable.ic_launcher_background)
@@ -124,6 +127,15 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
                 }
             }
         }
+
+        val message = if (failCounter > 0) {
+            "$passCounter/$failCounter uploaded successfully"
+        }
+        else {
+            "Photos uploaded successfully"
+        }
+
+        Toast.makeText(app, message, Toast.LENGTH_SHORT).show()
     }
 
 }

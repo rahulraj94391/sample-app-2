@@ -14,26 +14,29 @@ import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.PhotoGridAdapter
 import com.example.instagram.databinding.FragmentPhotoGridBinding
-import com.example.instagram.viewmodels.ProfileFragViewModel
+import com.example.instagram.viewmodels.PhotoGridFragViewModel
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
-const val LIST_REF: String = "list_ref"
+const val LIST_REF_KEY: String = "list_ref"
+const val USER_PROF_KEY = "userProf"
 
 private const val TAG = "CommTag_PhotoGridFragment"
 
 class PhotoGridFragment : Fragment() {
     private lateinit var binding: FragmentPhotoGridBinding
-    private lateinit var viewModel: ProfileFragViewModel
+    private lateinit var viewModel: PhotoGridFragViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var userPostedPhotoAdapter: PhotoGridAdapter
     private var listRef: Int by Delegates.notNull()
+    private var userProfId: Long by Delegates.notNull()
 
 
     companion object {
-        fun newInstance(pos: Int): PhotoGridFragment {
+        fun newInstance(pos: Int, userProfId: Long): PhotoGridFragment {
             val args = Bundle()
-            args.putInt(LIST_REF, pos)
+            args.putInt(LIST_REF_KEY, pos)
+            args.putLong(USER_PROF_KEY, userProfId)
             val fragment = PhotoGridFragment()
             fragment.arguments = args
             return fragment
@@ -44,7 +47,8 @@ class PhotoGridFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireArguments().let {
-            listRef = it.getInt(LIST_REF)
+            listRef = it.getInt(LIST_REF_KEY)
+            userProfId = it.getLong(USER_PROF_KEY)
         }
     }
 
@@ -60,13 +64,13 @@ class PhotoGridFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[ProfileFragViewModel::class.java]
+        viewModel = ViewModelProvider(this)[PhotoGridFragViewModel::class.java]
         userPostedPhotoAdapter = PhotoGridAdapter(this::onPostClicked)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
         if (listRef == 0) {
             lifecycleScope.launch {
-                viewModel.getProfilePost(mainViewModel.loggedInProfileId!!)
+                viewModel.getProfilePost(userProfId)
             }
             viewModel.usersPost.observe(viewLifecycleOwner) {
                 userPostedPhotoAdapter.setNewList(it)
@@ -74,7 +78,7 @@ class PhotoGridFragment : Fragment() {
         }
         else {
             lifecycleScope.launch {
-                viewModel.getAllPostInWhichProfileIsTagged(mainViewModel.loggedInProfileId!!)
+                viewModel.getAllPostInWhichProfileIsTagged(userProfId)
             }
             viewModel.usersTaggedPost.observe(viewLifecycleOwner) {
                 userPostedPhotoAdapter.setNewList(it)

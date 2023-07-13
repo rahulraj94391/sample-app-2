@@ -6,8 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -73,7 +71,7 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[PostFragViewModel::class.java]
-        binding.postText.addTextChangedListener(CustomTextWatcher())
+//        binding.postText.addTextChangedListener(CustomTextWatcher())
         binding.btnPost.setOnClickListener { onPostBtnClicked() }
 
 
@@ -179,14 +177,14 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
     }
 
     private fun onPostBtnClicked() {
-        val text = viewModel.postText
+        viewModel.finalTextToUpload = binding.postText.text.toString()
         val imagesSize = viewModel.postImagesUri.size
 
         if (!isInternetActive(requireContext())) {
             Toast.makeText(requireContext(), "Internet not active.", Toast.LENGTH_SHORT).show()
         }
 
-        if (text.isBlank()) {
+        if (binding.postText.text.isBlank()) {
             Toast.makeText(requireContext(), "Text can't be blank.", Toast.LENGTH_SHORT).show()
             return
         }
@@ -194,6 +192,7 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
             Toast.makeText(requireContext(), "Select photos to upload.", Toast.LENGTH_SHORT).show()
             return
         }
+
         prepareTagsOnPost()
         viewModel.insertPost()
         binding.postText.setText("")
@@ -251,7 +250,7 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
         return dialog
     }
 
-    inner class CustomTextWatcher : TextWatcher {
+    /*inner class CustomTextWatcher : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
         }
@@ -266,7 +265,7 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
             Log.d(TAG, "afterTextChanged: ${viewModel.postText}")
         }
     }
-
+*/
     override fun postAtLeastOnePhoto() {
         Toast.makeText(requireContext(), "Post at least one photo.", Toast.LENGTH_SHORT).show()
     }

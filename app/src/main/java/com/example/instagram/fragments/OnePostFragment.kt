@@ -1,7 +1,7 @@
 package com.example.instagram.fragments
 
+import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,14 +10,24 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.viewpager2.widget.ViewPager2
+import com.example.instagram.DateTime
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
+import com.example.instagram.TimeFormatting
 import com.example.instagram.adapters.PostAdapter
+import com.example.instagram.database.AppDatabase
+import com.example.instagram.database.entity.Likes
+import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.databinding.FragmentOnePostBinding
 import com.example.instagram.viewmodels.OnePostFragViewModel
-import com.google.android.material.button.MaterialButton
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
 private const val POST_ID = "postId"
@@ -29,29 +39,52 @@ class OnePostFragment : Fragment() {
     private lateinit var viewModel: OnePostFragViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var postPhotoAdapter: PostAdapter
+    private lateinit var db: AppDatabase
+    private val args: OnePostFragmentArgs? by navArgs()
+    private var profileId = 0.toLong()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
+        /*arguments?.let {
             postId = it.getLong(POST_ID)
+        }*/
+
+        db = AppDatabase.getDatabase(requireContext())
+
+        /*postId = if (args != null) {
+            Log.d(TAG, "args 1= $args")
+            args!!.postId
+        }
+        else {
+            Log.d(TAG, "args 2= $args")
+            Log.d(TAG, "args 3= ${args!!.postId}")
+
+            mainViewModel.loggedInProfileId!!
+        }*/
+        postId = args!!.postId
+
+        lifecycleScope.launch {
+            profileId = db.postDao().getProfileId(postId)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        db = AppDatabase.getDatabase(requireContext())
         viewModel = ViewModelProvider(this)[OnePostFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_one_post, container, false)
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             postDesc.setOnClickListener { onDescClicked(it as TextView) }
             comment.setOnClickListener { onCommentClicked() }
-            viewAllComments.setOnClickListener { onCommentClicked() }
-            btnSavePost.setOnClickListener { onSavePostClicked() }
-            likeBtn.setOnClickListener { onLikeClicked(it as MaterialButton) }
+            commentCount.setOnClickListener { onCommentClicked() }
+            btnSavePost.setOnClickListener { onSavePostClicked(it as MaterialCheckBox) }
+            likeBtn.setOnClickListener { onLikeClicked(it as MaterialCheckBox) }
         }
 
         postPhotoAdapter = PostAdapter()
@@ -59,8 +92,34 @@ class OnePostFragment : Fragment() {
 
 
         lifecycleScope.launch {
-            viewModel.getProfilePicture(mainViewModel.loggedInProfileId!!)
-            viewModel.getPostImages(postId)
+            with(viewModel) {
+                getProfilePicture(mainViewModel.loggedInProfileId!!)
+                getPostImages(postId)
+                getCommentCount(postId)
+                getLikeCount(postId)
+            }
+        }
+
+        lifecycleScope.launch {
+            val details = viewModel.getPostDetails(postId, mainViewModel.loggedInProfileId!!)
+            withContext(Dispatchers.Main) {
+                binding.apply {
+                    likeBtn.isChecked = details.isPostAlreadyLiked
+                    setLikeColorAsPerState(likeBtn, details.isPostAlreadyLiked)
+                    btnSavePost.isChecked = details.isPostAlreadySaved
+                    postDesc.text = details.postText
+                    timeOfPost.text = DateTime.timeFormatter(details.postTime, TimeFormatting.POST)
+                    username.text = details.profileName
+                }
+            }
+        }
+
+        binding.profileImage.setOnClickListener {
+            openProfile()
+        }
+
+        binding.allImagesInAPostVP2.setOnClickListener {
+            viewPagerDoubleClicked(it as ViewPager2)
         }
 
 
@@ -68,15 +127,52 @@ class OnePostFragment : Fragment() {
             // TODO: REMOVE PICASSO
             Picasso.get().load(it).resize(240, 240).centerCrop().into(binding.profileImage)
         }
+
         viewModel.postImagesUrl.observe(viewLifecycleOwner) {
             // add VP2 adapter new list here
             postPhotoAdapter.setNewList(it)
-            Log.d(TAG, "Post Photots RAHUL = $it")
+        }
+
+        viewModel.likeCount.observe(viewLifecycleOwner) {
+            binding.likeCount.text = "$it likes"
+        }
+
+        viewModel.commentCount.observe(viewLifecycleOwner) {
+            binding.commentCount.text = if (it == 0) {
+                "0 comment"
+            }
+            else if (it > 0) {
+                "View 1 comment"
+            }
+            else {
+                "View all $it comments"
+            }
         }
 
     }
 
-    private fun onSavePostClicked() {
+    private fun openProfile() {
+        val a = OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId)
+        findNavController().navigate(a)
+    }
+
+    private fun viewPagerDoubleClicked(viewPager2: ViewPager2) {
+        // Todo: double tap on viewpage to like post
+    }
+
+    private fun onSavePostClicked(it: MaterialCheckBox) {
+        if (it.isChecked) {
+            lifecycleScope.launch {
+                db.savedPostDao().savePost(SavedPost(mainViewModel.loggedInProfileId!!, postId))
+
+            }
+        }
+        else {
+            lifecycleScope.launch {
+                db.savedPostDao().deleteSavedPost(postId, mainViewModel.loggedInProfileId!!)
+
+            }
+        }
 
     }
 
@@ -85,11 +181,37 @@ class OnePostFragment : Fragment() {
         view.maxLines = Int.MAX_VALUE
     }
 
-    private fun onLikeClicked(it: MaterialButton) {
+    private fun onLikeClicked(it: MaterialCheckBox) {
+        if (it.isChecked) {
+            setLikeColorAsPerState(it, true)
+            lifecycleScope.launch {
+                db.likesDao().insertNewLike(Likes(postId, mainViewModel.loggedInProfileId!!, System.currentTimeMillis()))
+                viewModel.getLikeCount(postId)
+            }
+        }
+        else {
+            setLikeColorAsPerState(it, false)
+            lifecycleScope.launch {
+                db.likesDao().deleteLikeWithProfileId(mainViewModel.loggedInProfileId!!, postId)
+                viewModel.getLikeCount(postId)
+            }
+        }
+    }
 
+    private fun setLikeColorAsPerState(it: MaterialCheckBox, state: Boolean) {
+        if (state) {
+            it.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.red))
+        }
+        else {
+            it.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.black))
+        }
     }
 
     private fun onCommentClicked() {
 
+    }
+
+    override fun onStop() {
+        super.onStop()
     }
 }

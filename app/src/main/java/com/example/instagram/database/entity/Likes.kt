@@ -25,6 +25,7 @@ data class Likes(
     val post_id: Long,
     val profile_id: Long,
     val like_time: Long,
+) {
     @PrimaryKey(autoGenerate = true)
-    val like_id: Long = 0
-)
+    var like_id: Long = 0
+}

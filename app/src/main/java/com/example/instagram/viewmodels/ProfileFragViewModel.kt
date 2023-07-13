@@ -2,12 +2,9 @@ package com.example.instagram.viewmodels
 
 import android.app.Application
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.instagram.database.AppDatabase
-import com.example.instagram.database.model.OnePhotoPerPost
 import com.example.instagram.database.model.ProfileSummary
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -20,17 +17,11 @@ class ProfileFragViewModel(private val app: Application) : AndroidViewModel(app)
     private var storageRef: FirebaseStorage = FirebaseStorage.getInstance()
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val db: AppDatabase = AppDatabase.getDatabase(app)
-    val usersTaggedPost = MutableLiveData<MutableList<OnePhotoPerPost>>()
-    val usersPost = MutableLiveData<MutableList<OnePhotoPerPost>>()
+
+
 //    val profilePicToUpload = MutableLiveData<String>()
 
-    suspend fun getProfilePost(profileId: Long) {
-        val defList = viewModelScope.async {
-            db.postDao().getAllPostOfProfile(profileId)
-        }
-        val urlsOfOnePhotoPerPost = getOneImagePerPost(defList.await())
-        usersPost.postValue(urlsOfOnePhotoPerPost)
-    }
+
 
     suspend fun getProfileSummary(profileId: Long): ProfileSummary {
         val profilePic = viewModelScope.async { getProfilePicture(profileId) }
@@ -64,34 +55,9 @@ class ProfileFragViewModel(private val app: Application) : AndroidViewModel(app)
         return profileImageUrl
     }
 
-    private suspend fun getOneImagePerPost(postIds: MutableList<Long>): MutableList<OnePhotoPerPost> {
-        val imgURLList = mutableListOf<OnePhotoPerPost>()
 
-        for (postId in postIds) {
-            val snapShots = firebaseFireStore
-                .collection("postImages")
-                .whereEqualTo("serial", "${postId}_0")
-                .get()
-                .await()
 
-            for (i in snapShots) {
-                Log.d(TAG, "QueryDocumentSnapshot! size = $i")
-                val link = i.data["$postId"].toString()
-                imgURLList.add(OnePhotoPerPost(postId, link))
-                Log.d(TAG, "link for post = $link")
-            }
 
-        }
-        return imgURLList
-    }
-
-    suspend fun getAllPostInWhichProfileIsTagged(profileId: Long) {
-        val defList = viewModelScope.async {
-            db.tagPeopleDao().getAllTaggedPostOfProfile(profileId)
-        }
-        val urlsOfOnePhotoPerPost = getOneImagePerPost(defList.await())
-        usersTaggedPost.postValue(urlsOfOnePhotoPerPost)
-    }
 
 
     fun uploadProfileImage(profileId: Long, profilePicUri: Uri?) {

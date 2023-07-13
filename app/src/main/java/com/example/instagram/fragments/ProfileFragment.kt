@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
@@ -25,7 +26,7 @@ import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
 private const val TAG = "CommTag_ProfileFragment"
-private const val PROFILE_ID_KEY = "profileId"
+
 const val POST_ID_OPEN_REQ_KEY = "postId"
 const val POST_ID_REF_KEY = "postIdToOpenInNextFrag"
 
@@ -36,16 +37,8 @@ class ProfileFragment : Fragment() {
     private lateinit var viewModel: ProfileFragViewModel
     private var profileId: Long by Delegates.notNull()
     private lateinit var db: AppDatabase
+    private val args: ProfileFragmentArgs? by navArgs()
 
-    /*companion object {
-        fun newInstance(profileId: Long): ProfileFragment {
-            val args = Bundle()
-            args.putLong(PROFILE_ID_KEY, profileId)
-            val fragment = ProfileFragment()
-            fragment.arguments = args
-            return fragment
-        }
-    }*/
 
     val profilePicUri = registerForActivityResult(ActivityResultContracts.GetContent()) {
         viewModel.uploadProfileImage(mainViewModel.loggedInProfileId!!, it)
@@ -56,14 +49,36 @@ class ProfileFragment : Fragment() {
         db = AppDatabase.getDatabase(requireContext())
         viewModel = ViewModelProvider(requireActivity())[ProfileFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        val id = savedInstanceState?.getLong(PROFILE_ID_KEY, mainViewModel.loggedInProfileId!!)
-        profileId = id ?: mainViewModel.loggedInProfileId!!
+
+        try {
+            profileId = args!!.profileId
+        } catch (e: Exception) {
+            profileId = mainViewModel.loggedInProfileId!!
+            Log.d(TAG, "onCreate: ${e.message}")
+        }
+
+        /*profileId = if (args != null) {
+            Log.d(TAG, "args not null")
+            args!!.profileId
+        }
+        else {
+            Log.d(TAG, "args null")
+            mainViewModel.loggedInProfileId!!
+        }*/
+
+//        profileId = id ?: mainViewModel.loggedInProfileId!!
+        Log.d(TAG, "Profile ID = $profileId")
 
 
         requireActivity().supportFragmentManager.setFragmentResultListener(POST_ID_OPEN_REQ_KEY, requireActivity()) { requestKey, bundle ->
             val result = bundle.getLong(POST_ID_REF_KEY)
             val action = ProfileFragmentDirections.actionProfileFragmentToOnePostFragment(result)
-            findNavController().navigate(action)
+
+            lifecycleScope.launchWhenResumed {
+                Log.d(TAG, "launch when resumed.")
+                findNavController().navigate(action)
+            }
+
         }
 
     }

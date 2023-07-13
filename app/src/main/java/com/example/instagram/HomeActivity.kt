@@ -35,6 +35,23 @@ class HomeActivity : AppCompatActivity() {
         mainViewModel.loggedInProfileId = sharedPreferences.getLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
 
 
+        /*navController.addOnDestinationChangedListener { controller, dest, args ->
+            when (dest.id) {
+                R.id.profileFragment -> {
+                    *//*val profileId = NavArgument.Builder().setDefaultValue(mainViewModel.loggedInProfileId!!).build()
+                    dest.addArgument("profileId", profileId)*//*
+
+                    val updatedArguments = args ?: Bundle()
+                    updatedArguments.putLong("profileId", mainViewModel.loggedInProfileId!!)
+
+                    controller.currentDestination?.addInDefaultArgs(updatedArguments)
+
+
+
+                }
+            }
+        }*/
+
     }
 
 

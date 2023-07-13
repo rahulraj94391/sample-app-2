@@ -27,11 +27,14 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.instagram.fragments.ProfileFragment"
-        android:label="fragment_account"
-        tools:layout="@layout/fragment_profile" >
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_onePostFragment"
             app:destination="@id/onePostFragment" />
+        <argument
+            android:name="profileId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/photoGridFragment"
@@ -47,5 +50,8 @@
         <argument
             android:name="postId"
             app:argType="long" />
+        <action
+            android:id="@+id/action_onePostFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 </navigation>
