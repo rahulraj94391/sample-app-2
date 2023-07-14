@@ -22,7 +22,6 @@ class ProfileFragViewModel(private val app: Application) : AndroidViewModel(app)
 //    val profilePicToUpload = MutableLiveData<String>()
 
 
-
     suspend fun getProfileSummary(profileId: Long): ProfileSummary {
         val profilePic = viewModelScope.async { getProfilePicture(profileId) }
         val fullNameBio = viewModelScope.async { db.profileDao().getFullNameBio(profileId) }
@@ -54,11 +53,6 @@ class ProfileFragViewModel(private val app: Application) : AndroidViewModel(app)
         }
         return profileImageUrl
     }
-
-
-
-
-
 
     fun uploadProfileImage(profileId: Long, profilePicUri: Uri?) {
         profilePicUri?.let { uri ->

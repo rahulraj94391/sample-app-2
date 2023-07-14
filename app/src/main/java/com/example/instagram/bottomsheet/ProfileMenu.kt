@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,8 +33,6 @@ class ProfileMenu : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
         binding.savedPost.setOnClickListener { onSavedPostClicked() }
         binding.settings.setOnClickListener { onSettingsClicked() }
         binding.logout.setOnClickListener { onLogoutClicked() }
@@ -54,22 +51,15 @@ class ProfileMenu : BottomSheetDialogFragment() {
     }
 
     private fun onSettingsClicked() {
-        Log.d(TAG, "onSettingsClicked")
-
         this.dismiss()
 
     }
 
     private fun onSavedPostClicked() {
-        Log.d(TAG, "onSavedPostClicked")
-
         this.dismiss()
-
     }
 
-    fun onLogoutClicked() {
-        Log.d(TAG, "onLogoutClicked")
-
+    private fun onLogoutClicked() {
         val sharedPref: SharedPreferences = requireActivity().getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         sharedPref.edit().apply {
             putLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
@@ -79,7 +69,5 @@ class ProfileMenu : BottomSheetDialogFragment() {
         startActivity(Intent(requireContext(), MainActivity::class.java))
         this.dismiss()
         requireActivity().finish()
-
     }
-
 }

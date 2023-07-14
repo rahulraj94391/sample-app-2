@@ -1,16 +1,28 @@
 package com.example.instagram.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.instagram.ImageUtil
 import com.example.instagram.R
-import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PostAdapter() : RecyclerView.Adapter<PostAdapter.MyViewHolder>() {
-
     private var postImages: MutableList<String> = mutableListOf()
+    private lateinit var context: Context
+    private lateinit var imageUtil: ImageUtil
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        context = recyclerView.context
+        imageUtil = ImageUtil(context)
+        super.onAttachedToRecyclerView(recyclerView)
+    }
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.row_post_vp2)
@@ -22,8 +34,12 @@ class PostAdapter() : RecyclerView.Adapter<PostAdapter.MyViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        // TODO: REMOVE PICASSO
-        Picasso.get().load(postImages[position]).resize(720, 720).centerCrop().into(holder.image)
+        CoroutineScope(Dispatchers.IO).launch {
+            val bitmap = imageUtil.getBitmap(postImages[position])
+            withContext(Dispatchers.Main) {
+                holder.image.setImageBitmap(bitmap)
+            }
+        }
     }
 
     override fun getItemCount(): Int {

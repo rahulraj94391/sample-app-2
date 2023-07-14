@@ -68,7 +68,7 @@ class OnePostFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         db = AppDatabase.getDatabase(requireContext())
         viewModel = ViewModelProvider(this)[OnePostFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
@@ -93,7 +93,7 @@ class OnePostFragment : Fragment() {
 
         lifecycleScope.launch {
             with(viewModel) {
-                getProfilePicture(mainViewModel.loggedInProfileId!!)
+                getProfilePictureByPostId(postId)
                 getPostImages(postId)
                 getCommentCount(postId)
                 getLikeCount(postId)

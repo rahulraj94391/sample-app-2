@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import com.example.instagram.database.dao.CacheDao
 import com.example.instagram.database.dao.CommentDao
 import com.example.instagram.database.dao.FollowDao
 import com.example.instagram.database.dao.LikesDao
@@ -17,6 +17,7 @@ import com.example.instagram.database.dao.SearchDao
 import com.example.instagram.database.dao.TagPeopleDao
 import com.example.instagram.database.entity.Comment
 import com.example.instagram.database.entity.Follow
+import com.example.instagram.database.entity.ImageCache
 import com.example.instagram.database.entity.Likes
 import com.example.instagram.database.entity.LoginCred
 import com.example.instagram.database.entity.Post
@@ -26,8 +27,7 @@ import com.example.instagram.database.entity.Profile
 import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.database.entity.Tag
 
-@Database(entities = [Comment::class, Follow::class, Likes::class, LoginCred::class, Post::class, PostImage::class, PostText::class, Profile::class, SavedPost::class, Tag::class], version = 1)
-@TypeConverters()
+@Database(entities = [Comment::class, Follow::class, Likes::class, LoginCred::class, Post::class, PostImage::class, PostText::class, Profile::class, SavedPost::class, Tag::class, ImageCache::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun commentDao(): CommentDao
     abstract fun followDao(): FollowDao
@@ -37,8 +37,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun profileDao(): ProfileDao
     abstract fun savedPostDao(): SavedPostDao
     abstract fun tagPeopleDao(): TagPeopleDao
-    abstract fun searchDao() : SearchDao
+    abstract fun searchDao(): SearchDao
     abstract fun postTextDao(): PostTextDao
+    abstract fun cacheDao(): CacheDao
 
     companion object {
         @Volatile

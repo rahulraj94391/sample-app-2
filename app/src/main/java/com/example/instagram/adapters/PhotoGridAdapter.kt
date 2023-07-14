@@ -45,7 +45,7 @@ class PhotoGridAdapter(val listener: (Long) -> Unit) : RecyclerView.Adapter<Phot
                 withContext(Dispatchers.Main) { holder.image.setImageDrawable(holder.image.context.resources.getDrawable(R.drawable.ic_launcher_background)) }
         }*/
         // TODO: REMOVE PICASSO
-        Picasso.get().load(listOfImages[position].imageURl).resize(720, 720).rotate(90f).centerCrop().into(holder.image)
+        Picasso.get().load(listOfImages[position].imageURl).resize(720, 720).centerCrop().into(holder.image)
     }
 
     fun setNewList(newList: MutableList<OnePhotoPerPost>) {

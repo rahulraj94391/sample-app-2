@@ -75,7 +75,8 @@ class OnePostFragViewModel(app: Application) : AndroidViewModel(app) {
         )
     }
 
-    suspend fun getProfilePicture(profileId: Long) {
+    suspend fun getProfilePictureByPostId(postId: Long) {
+        val profileId = db.postDao().getProfileId(postId)
         var profPic: String? = null
         val snapShot = firebaseFireStore
             .collection("profileImages")
@@ -88,6 +89,4 @@ class OnePostFragViewModel(app: Application) : AndroidViewModel(app) {
         }
         this.profileImageUrl.postValue(profPic)
     }
-
-
 }

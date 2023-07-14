@@ -2,7 +2,6 @@ package com.example.instagram
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -34,6 +33,7 @@ class HomeActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         mainViewModel.loggedInProfileId = sharedPreferences.getLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
 
+        val drawable = getDrawable(R.drawable.loading_error)
 
         /*navController.addOnDestinationChangedListener { controller, dest, args ->
             when (dest.id) {
@@ -56,17 +56,17 @@ class HomeActivity : AppCompatActivity() {
 
 
     override fun onNavigateUp(): Boolean {
-        Log.d(TAG, "onNavigateUp: ")
+//        Log.d(TAG, "onNavigateUp: ")
         return super.onNavigateUp()
     }
 
     override fun onBackPressed() {
-        Log.d(TAG, "onBackPressed: ")
+//        Log.d(TAG, "onBackPressed: ")
         super.onBackPressed()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy")
+//        Log.d(TAG, "onDestroy")
     }
 }

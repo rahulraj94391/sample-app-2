@@ -114,6 +114,15 @@
                             <option name="y" value="369" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_onePostFragment_to_profileFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -122,8 +131,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="459" />
-                            <option name="y" value="-15" />
+                            <option name="x" value="498" />
+                            <option name="y" value="8" />
                           </Point>
                         </option>
                       </LayoutPositions>
