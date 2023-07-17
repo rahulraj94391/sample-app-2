@@ -19,6 +19,7 @@ import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.TimeFormatting
 import com.example.instagram.adapters.PostAdapter
+import com.example.instagram.bottomsheet.CommentSheet
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Likes
 import com.example.instagram.database.entity.SavedPost
@@ -47,24 +48,8 @@ class OnePostFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*arguments?.let {
-            postId = it.getLong(POST_ID)
-        }*/
-
         db = AppDatabase.getDatabase(requireContext())
-
-        /*postId = if (args != null) {
-            Log.d(TAG, "args 1= $args")
-            args!!.postId
-        }
-        else {
-            Log.d(TAG, "args 2= $args")
-            Log.d(TAG, "args 3= ${args!!.postId}")
-
-            mainViewModel.loggedInProfileId!!
-        }*/
         postId = args!!.postId
-
         lifecycleScope.launch {
             profileId = db.postDao().getProfileId(postId)
         }
@@ -217,10 +202,7 @@ class OnePostFragment : Fragment() {
     }
 
     private fun onCommentClicked() {
-
-    }
-
-    override fun onStop() {
-        super.onStop()
+        val commentBottomSheet = CommentSheet.newInstance(postId)
+        commentBottomSheet.show(parentFragmentManager, "comment_sheet")
     }
 }

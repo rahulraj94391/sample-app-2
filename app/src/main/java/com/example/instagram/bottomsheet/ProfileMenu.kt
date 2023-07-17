@@ -26,7 +26,7 @@ class ProfileMenu : BottomSheetDialogFragment() {
         return super.onCreateDialog(savedInstanceState) as BottomSheetDialog
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.bottomsheet_my_profile_menu, container, false)
         return binding.root
     }

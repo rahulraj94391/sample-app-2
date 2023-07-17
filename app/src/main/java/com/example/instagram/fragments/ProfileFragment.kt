@@ -55,10 +55,10 @@ class ProfileFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity())[ProfileFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
-        try {
-            profileId = args!!.profileId
+        profileId = try {
+            args!!.profileId
         } catch (e: Exception) {
-            profileId = mainViewModel.loggedInProfileId!!
+            mainViewModel.loggedInProfileId!!
         }
 
         requireActivity().supportFragmentManager.setFragmentResultListener(POST_ID_OPEN_REQ_KEY, requireActivity()) { _, bundle ->
