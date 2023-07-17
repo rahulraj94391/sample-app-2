@@ -13,11 +13,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.ProfileAdapter
 import com.example.instagram.bottomsheet.ProfileMenu
 import com.example.instagram.database.AppDatabase
+import com.example.instagram.database.entity.Follow
+import com.example.instagram.database.model.ProfileSummary
 import com.example.instagram.databinding.FragmentProfileBinding
 import com.example.instagram.viewmodels.ProfileFragViewModel
 import kotlinx.coroutines.Dispatchers
@@ -38,9 +41,11 @@ class ProfileFragment : Fragment() {
     private var profileId: Long by Delegates.notNull()
     private lateinit var db: AppDatabase
     private val args: ProfileFragmentArgs? by navArgs()
+    private lateinit var profileSummary: ProfileSummary
+    private var isFollowing = false
 
 
-    val profilePicUri = registerForActivityResult(ActivityResultContracts.GetContent()) {
+    private val profilePicUri = registerForActivityResult(ActivityResultContracts.GetContent()) {
         viewModel.uploadProfileImage(mainViewModel.loggedInProfileId!!, it)
     }
 
@@ -54,23 +59,9 @@ class ProfileFragment : Fragment() {
             profileId = args!!.profileId
         } catch (e: Exception) {
             profileId = mainViewModel.loggedInProfileId!!
-            Log.d(TAG, "onCreate: ${e.message}")
         }
 
-        /*profileId = if (args != null) {
-            Log.d(TAG, "args not null")
-            args!!.profileId
-        }
-        else {
-            Log.d(TAG, "args null")
-            mainViewModel.loggedInProfileId!!
-        }*/
-
-//        profileId = id ?: mainViewModel.loggedInProfileId!!
-        Log.d(TAG, "Profile ID = $profileId")
-
-
-        requireActivity().supportFragmentManager.setFragmentResultListener(POST_ID_OPEN_REQ_KEY, requireActivity()) { requestKey, bundle ->
+        requireActivity().supportFragmentManager.setFragmentResultListener(POST_ID_OPEN_REQ_KEY, requireActivity()) { _, bundle ->
             val result = bundle.getLong(POST_ID_REF_KEY)
             val action = ProfileFragmentDirections.actionProfileFragmentToOnePostFragment(result)
 
@@ -78,9 +69,7 @@ class ProfileFragment : Fragment() {
                 Log.d(TAG, "launch when resumed.")
                 findNavController().navigate(action)
             }
-
         }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -95,17 +84,20 @@ class ProfileFragment : Fragment() {
         lifecycleScope.launch { showImages() }
     }
 
+    private suspend fun refreshProfileSummary(ownProfileId: Long, userProfileId: Long) {
+        val count = db.followDao().isUserFollowingUser(ownProfileId, userProfileId)
+        profileSummary = viewModel.getProfileSummary(profileId)
+        isFollowing = count > 0
+    }
+
     private suspend fun showImages() {
         val ownProfileId = mainViewModel.loggedInProfileId!!
         val userProfileId = profileId
-        val count = db.followDao().isUserFollowingUser(ownProfileId, userProfileId)
-        val isFollowing = count > 0
-        val profileSummary = viewModel.getProfileSummary(profileId)
+        refreshProfileSummary(ownProfileId, userProfileId)
         withContext(Dispatchers.Main) {
             if (ownProfileId != userProfileId) binding.btnProfileBottomSheet.visibility = View.INVISIBLE
             binding.toolbarProfileUsername.text = "${profileSummary.first_name} ${profileSummary.last_name}"
         }
-
         profileAdapter = ProfileAdapter(
             profileSummary = profileSummary,
             isFollowing = isFollowing,
@@ -121,6 +113,12 @@ class ProfileFragment : Fragment() {
         )
         binding.profileRV.adapter = profileAdapter
         binding.profileRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (binding.profileRV.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false;
+
     }
 
     private fun showMenu() {
@@ -145,15 +143,25 @@ class ProfileFragment : Fragment() {
         profilePicUri.launch("image/*")
     }
 
-    private fun unFollowProfile() {
-        Log.d(TAG, "unFollowProfile")
-    }
-
     private fun messageProfile() {
         Log.d(TAG, "messageProfile")
     }
 
     private fun followProfile() {
-        Log.d(TAG, "followProfile")
+        lifecycleScope.launch {
+            db.followDao().insertNewFollow(Follow(mainViewModel.loggedInProfileId!!, profileId))
+            refreshProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
+            profileAdapter.setNewSummary(profileSummary)
+            profileAdapter.notifyItemChanged(1)
+        }
+    }
+
+    private fun unFollowProfile() {
+        lifecycleScope.launch {
+            db.followDao().deleteFollow(mainViewModel.loggedInProfileId!!, profileId)
+            refreshProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
+            profileAdapter.setNewSummary(profileSummary)
+            profileAdapter.notifyItemChanged(1)
+        }
     }
 }

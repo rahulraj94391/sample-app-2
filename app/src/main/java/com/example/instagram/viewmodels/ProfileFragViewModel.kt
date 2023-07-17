@@ -17,10 +17,7 @@ class ProfileFragViewModel(private val app: Application) : AndroidViewModel(app)
     private var storageRef: FirebaseStorage = FirebaseStorage.getInstance()
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val db: AppDatabase = AppDatabase.getDatabase(app)
-
-
 //    val profilePicToUpload = MutableLiveData<String>()
-
 
     suspend fun getProfileSummary(profileId: Long): ProfileSummary {
         val profilePic = viewModelScope.async { getProfilePicture(profileId) }

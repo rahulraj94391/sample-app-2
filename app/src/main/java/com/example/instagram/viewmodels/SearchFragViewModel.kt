@@ -2,18 +2,20 @@ package com.example.instagram.viewmodels
 
 import android.app.Application
 import android.content.Context
-import android.graphics.Bitmap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.instagram.MSharedPreferences
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.model.SearchResult
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
+import kotlinx.coroutines.tasks.await
 
 class SearchFragViewModel(private val application: Application) : AndroidViewModel(application) {
     val searchLiveData = MutableLiveData<MutableList<SearchResult>>()
-    val imagesLiveData = MutableLiveData<MutableList<Bitmap>>()
+    val imagesLiveData = MutableLiveData<MutableList<String>>()
+    private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
 
     suspend fun getSearchResults(name: String) {
@@ -25,21 +27,37 @@ class SearchFragViewModel(private val application: Application) : AndroidViewMod
         val searchResFormDB = viewModelScope.async {
             db.searchDao().getSearchResult(name, ownID)
         }
+        val finalResult = searchResFormDB.await()
+
+
         // get images from firebase
         /* Do the implementation of firebase here. */
-
-
-        val finalResult = searchResFormDB.await()
+        val imageUrlAsync = viewModelScope.async {
+            val tempList: MutableList<String> = mutableListOf()
+            for (i in finalResult) {
+                val profileId = i.profile_id
+                val img = getProfilePicture(profileId)
+                tempList.add(img.toString())
+            }
+            tempList
+        }
+        imagesLiveData.postValue(imageUrlAsync.await())
         searchLiveData.postValue(finalResult)
-        insertDummyData(name)
+
     }
 
-    private fun insertDummyData(name: String) {
-        val list = mutableListOf<SearchResult>()
-        for (i in 0 until 60) {
-            list.add(SearchResult((i).toLong(), name, "LastName $i", "username $i"))
+    private suspend fun getProfilePicture(profileId: Long): String? {
+        var profileImageUrl: String? = null
+        val snapShot = firebaseFireStore
+            .collection("profileImages")
+            .whereEqualTo("ppid", "$profileId")
+            .get()
+            .await()
+        for (i in snapShot) {
+            profileImageUrl = i.data["$profileId"].toString()
+            break
         }
-        searchLiveData.postValue(list)
+        return profileImageUrl
     }
 
 }

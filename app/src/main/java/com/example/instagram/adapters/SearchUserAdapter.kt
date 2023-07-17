@@ -7,19 +7,26 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.instagram.ImageUtil
 import com.example.instagram.R
 import com.example.instagram.database.model.SearchResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchUserAdapter(
     var searchResultList: MutableList<SearchResult>,
     var listener: SearchUsernameClickListener,
     val layoutRes: Int,
+    var imageList: MutableList<String>,
 ) : RecyclerView.Adapter<SearchUserAdapter.SearchResultViewHolder>() {
-
+    private lateinit var imgUtil: ImageUtil
     private lateinit var context: Context
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         context = recyclerView.context
+        imgUtil = ImageUtil(context)
         super.onAttachedToRecyclerView(recyclerView)
     }
 
@@ -30,10 +37,14 @@ class SearchUserAdapter(
 
     override fun onBindViewHolder(holder: SearchResultViewHolder, position: Int) {
         holder.apply {
-            profImg.background = context.resources.getDrawable(R.drawable.ic_launcher_background)
-            profImg.setImageDrawable(context.resources.getDrawable(R.drawable.ic_launcher_foreground))
+            CoroutineScope(Dispatchers.IO).launch {
+                val bitmap = imgUtil.getBitmap(imageList[position])
+                withContext(Dispatchers.Main) {
+                    profImg.setImageBitmap(bitmap)
+                }
+            }
             username.text = searchResultList[adapterPosition].username
-            fullName.text = searchResultList[adapterPosition].first_name + searchResultList[adapterPosition].last_name
+            fullName.text = searchResultList[adapterPosition].first_name + " " + searchResultList[adapterPosition].last_name
 
         }
     }
@@ -44,6 +55,11 @@ class SearchUserAdapter(
 
     fun setNewList(newList: MutableList<SearchResult>) {
         this.searchResultList = newList
+        notifyDataSetChanged()
+    }
+
+    fun setNewList2(imagesNewList: MutableList<String>?) {
+        this.imageList = imagesNewList!!
         notifyDataSetChanged()
     }
 

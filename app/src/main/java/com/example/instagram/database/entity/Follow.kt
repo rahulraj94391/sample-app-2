@@ -25,6 +25,7 @@ import androidx.room.PrimaryKey
 data class Follow(
     val owner_id: Long,
     val follower_id: Long,
+) {
     @PrimaryKey(autoGenerate = true)
-    val follow_row_id: Long = 0,
-)
+    var follow_row_id: Long = 0
+}

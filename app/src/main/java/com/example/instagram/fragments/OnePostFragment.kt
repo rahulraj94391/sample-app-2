@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.instagram.DateTime
+import com.example.instagram.ImageUtil
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.TimeFormatting
@@ -24,7 +25,7 @@ import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.databinding.FragmentOnePostBinding
 import com.example.instagram.viewmodels.OnePostFragViewModel
 import com.google.android.material.checkbox.MaterialCheckBox
-import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,6 +43,7 @@ class OnePostFragment : Fragment() {
     private lateinit var db: AppDatabase
     private val args: OnePostFragmentArgs? by navArgs()
     private var profileId = 0.toLong()
+    private lateinit var imageUtil: ImageUtil
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +89,8 @@ class OnePostFragment : Fragment() {
             likeBtn.setOnClickListener { onLikeClicked(it as MaterialCheckBox) }
         }
 
+        imageUtil = ImageUtil(requireContext())
+
         postPhotoAdapter = PostAdapter()
         binding.allImagesInAPostVP2.adapter = postPhotoAdapter
 
@@ -124,8 +128,13 @@ class OnePostFragment : Fragment() {
 
 
         viewModel.profileImageUrl.observe(viewLifecycleOwner) {
-            // TODO: REMOVE PICASSO
-            Picasso.get().load(it).resize(240, 240).centerCrop().into(binding.profileImage)
+            CoroutineScope(Dispatchers.IO).launch {
+                val bitmap = imageUtil.getBitmap(it)
+                withContext(Dispatchers.Main) {
+                    binding.profileImage.setImageBitmap(bitmap)
+
+                }
+            }
         }
 
         viewModel.postImagesUrl.observe(viewLifecycleOwner) {

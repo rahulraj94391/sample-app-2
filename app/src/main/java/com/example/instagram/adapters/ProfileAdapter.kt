@@ -3,26 +3,29 @@ package com.example.instagram.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.instagram.ImageUtil
 import com.example.instagram.R
 import com.example.instagram.database.model.ProfileSummary
 import com.example.instagram.fragments.PhotoGridFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.squareup.picasso.Picasso
-import java.net.URL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val PROFILE_SUMMARY_ROW = 0
 private const val BUTTON_ROW = 1
@@ -34,10 +37,8 @@ const val FOLLOW = "Follow"
 const val UNFOLLOW = "Unfollow"
 const val MESSAGE = "Message"
 
-private const val TAG = "CommTag_ProfileAdapter"
-
 class ProfileAdapter(
-    val profileSummary: ProfileSummary,
+    var profileSummary: ProfileSummary,
     val OnFollowViewClicked: () -> Unit,
     val OnFollowingViewClicked: () -> Unit,
     val OnEditProfileClicked: () -> Unit,
@@ -45,13 +46,18 @@ class ProfileAdapter(
     val OnUnfollowClicked: () -> Unit,
     val OnFollowClicked: () -> Unit,
     val OnMessageClicked: () -> Unit,
-    val isFollowing: Boolean,
+    var isFollowing: Boolean,
     val ownId: Long,
     val userProfileId: Long,
 
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mContext: Context
+    private lateinit var imageUtil: ImageUtil
 
+    fun setNewSummary(profileSummary: ProfileSummary) {
+        this.profileSummary = profileSummary
+        notifyItemChanged(0)
+    }
 
     private fun btn(btnStart: MaterialButton, btnEnd: MaterialButton) {
         if (ownId == userProfileId) {
@@ -65,8 +71,7 @@ class ProfileAdapter(
             btnEnd.text = MESSAGE
             btnStart.setOnClickListener {
                 OnUnfollowClicked.invoke()
-                btnStart.text = FOLLOW
-                btnStart.setOnClickListener { OnFollowClicked.invoke() }
+                isFollowing = !isFollowing
             }
             btnEnd.setOnClickListener { OnMessageClicked.invoke() }
         }
@@ -75,8 +80,7 @@ class ProfileAdapter(
             btnEnd.text = MESSAGE
             btnStart.setOnClickListener {
                 OnFollowClicked.invoke()
-                btnStart.text = UNFOLLOW
-                btnStart.setOnClickListener { OnUnfollowClicked.invoke() }
+                isFollowing = !isFollowing
             }
             btnEnd.setOnClickListener { OnMessageClicked.invoke() }
         }
@@ -84,6 +88,7 @@ class ProfileAdapter(
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         mContext = recyclerView.context
+        imageUtil = ImageUtil(mContext)
         super.onAttachedToRecyclerView(recyclerView)
     }
 
@@ -104,12 +109,8 @@ class ProfileAdapter(
     }
 
     inner class Buttons(view: View) : RecyclerView.ViewHolder(view) {
-        private val btnStart: MaterialButton = view.findViewById(R.id.btnStart)
-        private val btnEnd: MaterialButton = view.findViewById(R.id.btnEnd)
-
-        init {
-            btn(btnStart, btnEnd)
-        }
+        val btnStart: MaterialButton = view.findViewById(R.id.btnStart)
+        val btnEnd: MaterialButton = view.findViewById(R.id.btnEnd)
     }
 
     inner class ViewPagerTabLayout(view: View) : RecyclerView.ViewHolder(view) {
@@ -150,24 +151,23 @@ class ProfileAdapter(
         when (holder.itemViewType) {
             PROFILE_SUMMARY_ROW -> {
                 (holder as ProfileSummaryView).apply {
-//                    CoroutineScope(Dispatchers.IO).launch {
-//                        var bitmap: Bitmap? = null
-//                        if (profileSummary.profilePic != null) {
-//                            bitmap = downloadBitmap(profileSummary.profilePic)
-//                        }
-//                        if (bitmap != null)
-//                            withContext(Dispatchers.Main) { holder.profilePicture.setImageBitmap(bitmap) }
-//                        else
-//                            withContext(Dispatchers.Main) { holder.profilePicture.setImageDrawable(holder.profilePicture.context.resources.getDrawable(R.drawable.ic_launcher_background)) }
-//                    }
-                    Picasso.get().load(profileSummary.profilePic).into(profilePicture)
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val bitmap: Bitmap = if (profileSummary.profilePic != null)
+                            imageUtil.getBitmap(profileSummary.profilePic!!)
+                        else
+                            ContextCompat.getDrawable(mContext, R.drawable.person_outlined)!!.toBitmap()
+
+                        withContext(Dispatchers.Main) {
+                            profilePicture.setImageBitmap(bitmap)
+                        }
+                    }
 
                     fullName.text = "${profileSummary.first_name} ${profileSummary.last_name}"
                     bio.text = profileSummary.bio
                     postCount.text = profileSummary.postCount.toString()
                     followerCount.text = profileSummary.followerCount.toString()
                     followingCount.text = profileSummary.followingCount.toString()
-
                 }
             }
 
@@ -175,6 +175,7 @@ class ProfileAdapter(
             BUTTON_ROW -> {
                 (holder as Buttons).apply {
                     // already assigned values in init{} inside inner class
+                    btn(btnStart, btnEnd)
                 }
             }
 
@@ -207,22 +208,5 @@ class ProfileAdapter(
         override fun createFragment(position: Int): Fragment {
             return PhotoGridFragment.newInstance(position, userProfileId)
         }
-    }
-
-}
-
-
-
-private fun downloadBitmap(imageUrl: String): Bitmap? {
-    return try {
-        val conn = URL(imageUrl).openConnection()
-        conn.connect()
-        val inputStream = conn.getInputStream()
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        inputStream.close()
-        bitmap
-    } catch (e: Exception) {
-        Log.d(TAG, "Exception $e")
-        null
     }
 }

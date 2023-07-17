@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PostAdapter() : RecyclerView.Adapter<PostAdapter.MyViewHolder>() {
+class PostAdapter : RecyclerView.Adapter<PostAdapter.MyViewHolder>() {
     private var postImages: MutableList<String> = mutableListOf()
     private lateinit var context: Context
     private lateinit var imageUtil: ImageUtil

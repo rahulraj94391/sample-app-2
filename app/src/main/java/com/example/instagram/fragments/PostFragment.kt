@@ -109,7 +109,7 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
         })
         chipGroup = tagDialog.findViewById(R.id.chipTagProfile)
         searchForTagRV = tagDialog.findViewById(R.id.searchForTagRV)
-        searchTagAdapter = SearchUserAdapter(mutableListOf(), this, R.layout.row_user_search_slim)
+        searchTagAdapter = SearchUserAdapter(mutableListOf(), this, R.layout.row_user_search_slim, mutableListOf())
         searchForTagRV.adapter = searchTagAdapter
         searchForTagRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, true)
         doneBtnTag.setOnClickListener {

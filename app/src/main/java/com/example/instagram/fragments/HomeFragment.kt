@@ -18,16 +18,13 @@ class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnMessages.setOnClickListener { whenMessagesBtnClicked() }
         binding.btnNotifications.setOnClickListener { whenNotificationBtnClicked() }
-
     }
-
 
     private fun whenMessagesBtnClicked() {
         Log.d(TAG, "Messages Btn Clicked")
@@ -36,5 +33,4 @@ class HomeFragment : Fragment() {
     private fun whenNotificationBtnClicked() {
         Log.d(TAG, "Notification Btn Clicked")
     }
-
 }
