@@ -22,7 +22,4 @@ interface ProfileDao {
 
     @Query("SELECT first_name, last_name, bio FROM profile WHERE profile_id = :profileId")
     suspend fun getFullNameBio(profileId: Long): FullNameBio
-
-
-
 }

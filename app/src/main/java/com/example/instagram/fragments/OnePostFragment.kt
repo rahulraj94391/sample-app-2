@@ -19,7 +19,6 @@ import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.TimeFormatting
 import com.example.instagram.adapters.PostAdapter
-import com.example.instagram.bottomsheet.CommentSheet
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Likes
 import com.example.instagram.database.entity.SavedPost
@@ -150,6 +149,10 @@ class OnePostFragment : Fragment() {
         findNavController().navigate(a)
     }
 
+    private fun openProfileFromFrag() {
+
+    }
+
     private fun viewPagerDoubleClicked(viewPager2: ViewPager2) {
         // Todo: double tap on viewpage to like post
     }
@@ -202,7 +205,9 @@ class OnePostFragment : Fragment() {
     }
 
     private fun onCommentClicked() {
-        val commentBottomSheet = CommentSheet.newInstance(postId)
-        commentBottomSheet.show(parentFragmentManager, "comment_sheet")
+        val action = OnePostFragmentDirections.actionOnePostFragmentToCommentSheet(postId)
+        findNavController().navigate(action)
     }
+
+
 }

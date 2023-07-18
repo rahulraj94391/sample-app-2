@@ -50,7 +50,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/commentRV"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="200dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
                 app:layout_constraintBottom_toTopOf="@+id/commentBoxVG"
@@ -97,6 +98,7 @@
                     android:background="@drawable/search_view_bg"
                     android:hint="Add a comment"
                     android:inputType="text"
+                    android:maxLength="400"
                     android:maxLines="1"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
@@ -106,8 +108,8 @@
 
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/commentButton"
                     style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"

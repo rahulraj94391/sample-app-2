@@ -38,10 +38,15 @@ class SearchUserAdapter(
     override fun onBindViewHolder(holder: SearchResultViewHolder, position: Int) {
         holder.apply {
             CoroutineScope(Dispatchers.IO).launch {
-                val bitmap = imgUtil.getBitmap(imageList[position])
-                withContext(Dispatchers.Main) {
-                    profImg.setImageBitmap(bitmap)
+                try {
+                    val bitmap = imgUtil.getBitmap(imageList[position])
+                    withContext(Dispatchers.Main) {
+                        profImg.setImageBitmap(bitmap)
+                    }
+                } catch (e: Exception) {
+                    println(e.message)
                 }
+
             }
             username.text = searchResultList[adapterPosition].username
             fullName.text = searchResultList[adapterPosition].first_name + " " + searchResultList[adapterPosition].last_name

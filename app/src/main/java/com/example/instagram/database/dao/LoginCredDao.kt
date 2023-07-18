@@ -17,4 +17,7 @@ interface LoginCredDao {
     @Query("SELECT 1 FROM login_credential WHERE username = :username")
     suspend fun isUsernameUnique(username: String): Int?
 
+    @Query("SELECT username from login_credential WHERE profile_id = :profileId")
+    suspend fun getUsername(profileId: Long): String
+
 }

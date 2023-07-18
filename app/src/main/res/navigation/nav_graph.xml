@@ -9,7 +9,11 @@
         android:id="@+id/homeFragment"
         android:name="com.example.instagram.fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_commentSheet"
+            app:destination="@id/commentSheet" />
+    </fragment>
     <fragment
         android:id="@+id/postFragment"
         android:name="com.example.instagram.fragments.PostFragment"
@@ -55,5 +59,21 @@
             app:destination="@id/profileFragment"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_onePostFragment_to_commentSheet"
+            app:destination="@id/commentSheet" />
     </fragment>
+    <dialog
+        android:id="@+id/commentSheet"
+        android:name="com.example.instagram.bottomsheet.CommentSheet"
+        android:label="CommentSheet" >
+        <argument
+            android:name="postId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_commentSheet_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="true" />
+    </dialog>
 </navigation>
