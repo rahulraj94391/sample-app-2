@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.ProfileAdapter
-import com.example.instagram.bottomsheet.ProfileMenu
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Follow
 import com.example.instagram.database.model.ProfileSummary
@@ -80,7 +79,11 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnProfileBottomSheet.setOnClickListener { showMenu() }
+        binding.btnProfileBottomSheet.setOnClickListener {
+            /*val profileMenu = ProfileMenu()
+            profileMenu.show(parentFragmentManager, "profile_menu")*/
+            findNavController().navigate(R.id.action_profileFragment_to_profileMenu2)
+        }
         lifecycleScope.launch { showImages() }
     }
 
@@ -119,11 +122,6 @@ class ProfileFragment : Fragment() {
         super.onStart()
         (binding.profileRV.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false;
 
-    }
-
-    private fun showMenu() {
-        val profileMenu = ProfileMenu()
-        profileMenu.show(parentFragmentManager, "profile_menu")
     }
 
     private fun showFollowingFragment() {

@@ -17,10 +17,10 @@ class PhotoGridFragViewModel(app: Application): AndroidViewModel(app) {
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     suspend fun getProfilePost(profileId: Long) {
-        val defList = viewModelScope.async {
+        val postIds = viewModelScope.async {
             db.postDao().getAllPostOfProfile(profileId)
         }
-        val urlsOfOnePhotoPerPost = getOneImagePerPost(defList.await())
+        val urlsOfOnePhotoPerPost = getOneImagePerPost(postIds.await())
         usersPost.postValue(urlsOfOnePhotoPerPost)
     }
 
@@ -35,10 +35,8 @@ class PhotoGridFragViewModel(app: Application): AndroidViewModel(app) {
                 .await()
 
             for (i in snapShots) {
-//                Log.d(TAG, "QueryDocumentSnapshot! size = $i")
                 val link = i.data["$postId"].toString()
                 imgURLList.add(OnePhotoPerPost(postId, link))
-//                Log.d(TAG, "link for post = $link")
             }
 
         }

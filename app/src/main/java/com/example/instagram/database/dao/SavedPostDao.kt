@@ -16,5 +16,7 @@ interface SavedPostDao {
     @Query("DELETE FROM saved_post WHERE profile_id = :profileId AND post_id = :postId")
     suspend fun deleteSavedPost(postId: Long, profileId: Long): Int
 
+    @Query("SELECT post_id FROM saved_post WHERE profile_id = :profileId")
+    suspend fun getAllSavedPosts(profileId: Long): MutableList<Long>
 
 }

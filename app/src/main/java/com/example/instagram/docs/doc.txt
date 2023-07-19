@@ -3,3 +3,7 @@ Strange:
 
 
 Picasso.get().load(listOfImages[position].imageURl).resize(720, 720).centerCrop().into(holder.image)
+
+1. implemented updating profile picture on comment bottom sheet using payload.
+2. implemented saved post screen
+

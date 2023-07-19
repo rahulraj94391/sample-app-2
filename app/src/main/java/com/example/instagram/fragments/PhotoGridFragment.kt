@@ -1,5 +1,6 @@
 package com.example.instagram.fragments
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -79,8 +80,17 @@ class PhotoGridFragment : Fragment() {
                 userPostedPhotoAdapter.setNewList(it)
             }
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        val spanCount = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            5
+        }
+        else {
+            3
+        }
         binding.profilePosts.adapter = userPostedPhotoAdapter
-        binding.profilePosts.layoutManager = GridLayoutManager(requireContext(), 3)
+        binding.profilePosts.layoutManager = GridLayoutManager(requireContext(), spanCount)
     }
 }

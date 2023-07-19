@@ -1,7 +1,6 @@
 package com.example.instagram.bottomsheet
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +20,7 @@ import com.example.instagram.viewmodels.CommentDialogViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,9 +39,6 @@ class CommentSheet : BottomSheetDialogFragment() {
     private lateinit var viewModel: CommentDialogViewModel
     private lateinit var commentAdapter: CommentAdapter
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         postId = args.postId
@@ -100,12 +97,16 @@ class CommentSheet : BottomSheetDialogFragment() {
             }
         })*/
 
-        commentAdapter = CommentAdapter()
+        commentAdapter = CommentAdapter(this::showDeleteCommentDialog, mainViewModel.loggedInProfileId!!)
         binding.commentRV.adapter = commentAdapter
         binding.commentRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         viewModel.comments.observe(viewLifecycleOwner) {
             commentAdapter.updateList(it)
+        }
+
+        viewModel.commenterImages.observe(viewLifecycleOwner) {
+            commentAdapter.updateImages(it)
         }
 
         lifecycleScope.launch {
@@ -115,9 +116,12 @@ class CommentSheet : BottomSheetDialogFragment() {
                 binding.profileImage.setImageBitmap(bitmap)
             }
         }
-
         binding.commentButton.setOnClickListener { postComment() }
+    }
 
+    private suspend fun addProfilePicUrlWithOnNewComment() {
+        val url = viewModel.getProfilePicture(mainViewModel.loggedInProfileId!!)
+        commentAdapter.addImageUrlToList(url!!)
     }
 
     private fun postComment() {
@@ -128,9 +132,31 @@ class CommentSheet : BottomSheetDialogFragment() {
 
         lifecycleScope.launch {
             viewModel.insertComment(commentText, mainViewModel.loggedInProfileId!!, postId)
+            addProfilePicUrlWithOnNewComment()
             viewModel.getComments(postId, mainViewModel.loggedInProfileId!!)
         }
+        binding.commentBox.setText("")
     }
+
+    private fun showDeleteCommentDialog(pos: Int) {
+        if (viewModel.comments.value!![pos].profileId != mainViewModel.loggedInProfileId!!)
+            return
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage("Delete Comment ?")
+            .setCancelable(true)
+            .setPositiveButton("Yes") { _, _ ->
+                lifecycleScope.launch {
+                    val commentId = viewModel.comments.value!![pos].commentId
+                    viewModel.deleteComment(commentId)
+                    viewModel.getComments(postId, mainViewModel.loggedInProfileId!!)
+                }
+            }
+            .setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+            }
+            .show()
+    }
+
 
     private fun isCommentQualified(commentText: String): Boolean {
         return if (commentText.isBlank()) {
@@ -140,6 +166,5 @@ class CommentSheet : BottomSheetDialogFragment() {
         else {
             false
         }
-
     }
 }

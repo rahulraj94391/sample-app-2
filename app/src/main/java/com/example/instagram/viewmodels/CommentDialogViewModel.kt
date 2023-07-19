@@ -19,6 +19,7 @@ private const val TAG = "CommTag_CommentDialogViewModel"
 class CommentDialogViewModel(val app: Application) : AndroidViewModel(app) {
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     val comments = MutableLiveData<MutableList<Comment>>()
+    val commenterImages = MutableLiveData<MutableList<String>>()
 
     suspend fun insertComment(commentText: String, profileId: Long, postId: Long) {
         val time = System.currentTimeMillis()
@@ -40,13 +41,11 @@ class CommentDialogViewModel(val app: Application) : AndroidViewModel(app) {
         // commentsList is final from db
 
         val list = mutableListOf<Comment>()
-
+        val imageList = mutableListOf<String>()
         for (i: EComment in commentsList) {
             val username = db.loginCredDao().getUsername(i.commenter_id)
-            val imageUrl = getProfilePicture(i.commenter_id)
             val comment = Comment(
                 i.comment_id,
-                imageUrl!!,
                 i.commenter_id,
                 username,
                 DateTime.timeFormatter(i.comment_time, TimeFormatting.COMMENT),
@@ -54,10 +53,25 @@ class CommentDialogViewModel(val app: Application) : AndroidViewModel(app) {
             )
             list.add(comment)
         }
+
         comments.postValue(list)
+
+
+        for (i in list) {
+            val id = i.profileId
+            val imageUrl = getProfilePicture(id)
+            imageList.add(imageUrl!!)
+        }
+        commenterImages.postValue(imageList)
     }
 
-     suspend fun getProfilePicture(profileId: Long): String? {
+    suspend fun deleteComment(commentId: Long): Int {
+        val row = db.commentDao().deleteCommentById(commentId)
+        Log.d(TAG, "deleteComment: row deleted - $row")
+        return row
+    }
+
+    suspend fun getProfilePicture(profileId: Long): String? {
         var profileImageUrl: String? = null
         val snapShot = FirebaseFirestore
             .getInstance()
@@ -70,5 +84,10 @@ class CommentDialogViewModel(val app: Application) : AndroidViewModel(app) {
             break
         }
         return profileImageUrl
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d(TAG, "onCleared: called")
     }
 }

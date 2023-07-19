@@ -46,7 +46,7 @@ class SelectedPostImageAdapter(Uris: MutableList<Uri>, listener: KeepAtLeastOneI
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_photo_selected_to_upload, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_photo_one_grid, parent, false)
         return MyViewHolder(view)
     }
 

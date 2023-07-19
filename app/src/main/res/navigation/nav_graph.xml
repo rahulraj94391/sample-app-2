@@ -9,10 +9,13 @@
         android:id="@+id/homeFragment"
         android:name="com.example.instagram.fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_commentSheet"
             app:destination="@id/commentSheet" />
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
@@ -23,7 +26,7 @@
         android:id="@+id/searchFragment"
         android:name="com.example.instagram.fragments.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
+        tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_searchFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
@@ -39,18 +42,15 @@
         <argument
             android:name="profileId"
             app:argType="long" />
+        <action
+            android:id="@+id/action_profileFragment_to_profileMenu2"
+            app:destination="@id/profileMenu2" />
     </fragment>
-    <fragment
-        android:id="@+id/photoGridFragment"
-        android:name="com.example.instagram.fragments.PhotoGridFragment"
-        android:label="PhotoGridFragment"
-        tools:layout="@layout/fragment_photo_grid" />
     <fragment
         android:id="@+id/onePostFragment"
         android:name="com.example.instagram.fragments.OnePostFragment"
         android:label="OnePostFragment"
-        tools:layout="@layout/fragment_one_post"
-        >
+        tools:layout="@layout/fragment_one_post">
         <argument
             android:name="postId"
             app:argType="long" />
@@ -66,7 +66,8 @@
     <dialog
         android:id="@+id/commentSheet"
         android:name="com.example.instagram.bottomsheet.CommentSheet"
-        android:label="CommentSheet" >
+        android:label="CommentSheet"
+        tools:layout="@layout/bottomsheet_comments">
         <argument
             android:name="postId"
             app:argType="long" />
@@ -76,4 +77,22 @@
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="true" />
     </dialog>
+    <dialog
+        android:id="@+id/profileMenu2"
+        android:name="com.example.instagram.bottomsheet.ProfileMenu"
+        android:label="ProfileMenu"
+        tools:layout="@layout/bottomsheet_my_profile_menu">
+        <action
+            android:id="@+id/action_profileMenu2_to_savedPostFragment"
+            app:destination="@id/savedPostFragment" />
+    </dialog>
+    <fragment
+        android:id="@+id/savedPostFragment"
+        android:name="com.example.instagram.fragments.SavedPostFragment"
+        android:label="SavedPostFragment"
+        tools:layout="@layout/fragment_saved_post" >
+        <action
+            android:id="@+id/action_savedPostFragment_to_onePostFragment"
+            app:destination="@id/onePostFragment" />
+    </fragment>
 </navigation>

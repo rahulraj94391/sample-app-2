@@ -29,7 +29,7 @@ class PhotoGridAdapter(val listener: (Long) -> Unit) : RecyclerView.Adapter<Phot
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewVH {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_photo_selected_to_upload, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_photo_one_grid, parent, false)
         return PhotoViewVH(view)
     }
 

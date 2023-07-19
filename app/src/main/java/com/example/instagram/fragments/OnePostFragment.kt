@@ -131,17 +131,12 @@ class OnePostFragment : Fragment() {
         }
 
         viewModel.commentCount.observe(viewLifecycleOwner) {
-            binding.commentCount.text = if (it == 0) {
-                "0 comment"
-            }
-            else if (it > 0) {
-                "View 1 comment"
-            }
-            else {
-                "View all $it comments"
+            binding.commentCount.text = when (it) {
+                0 -> "0 comment"
+                1 -> "View 1 comment"
+                else -> "View all $it comments"
             }
         }
-
     }
 
     private fun openProfile() {
@@ -160,17 +155,14 @@ class OnePostFragment : Fragment() {
     private fun onSavePostClicked(it: MaterialCheckBox) {
         if (it.isChecked) {
             lifecycleScope.launch {
-                db.savedPostDao().savePost(SavedPost(mainViewModel.loggedInProfileId!!, postId))
-
+                db.savedPostDao().savePost(SavedPost(mainViewModel.loggedInProfileId!!, postId, System.currentTimeMillis()))
             }
         }
         else {
             lifecycleScope.launch {
                 db.savedPostDao().deleteSavedPost(postId, mainViewModel.loggedInProfileId!!)
-
             }
         }
-
     }
 
     private fun onDescClicked(view: TextView) {
@@ -208,6 +200,4 @@ class OnePostFragment : Fragment() {
         val action = OnePostFragmentDirections.actionOnePostFragmentToCommentSheet(postId)
         findNavController().navigate(action)
     }
-
-
 }

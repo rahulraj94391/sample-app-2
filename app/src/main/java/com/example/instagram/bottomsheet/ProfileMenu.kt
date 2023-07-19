@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import com.example.instagram.MSharedPreferences
 import com.example.instagram.MainActivity
 import com.example.instagram.R
@@ -56,6 +57,7 @@ class ProfileMenu : BottomSheetDialogFragment() {
     }
 
     private fun onSavedPostClicked() {
+        findNavController().navigate(R.id.action_profileMenu2_to_savedPostFragment)
         this.dismiss()
     }
 
