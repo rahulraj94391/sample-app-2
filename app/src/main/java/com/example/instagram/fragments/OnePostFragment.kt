@@ -181,7 +181,7 @@ class OnePostFragment : Fragment() {
         else {
             setLikeColorAsPerState(it, false)
             lifecycleScope.launch {
-                db.likesDao().deleteLikeWithProfileId(mainViewModel.loggedInProfileId!!, postId)
+                db.likesDao().deleteLike(mainViewModel.loggedInProfileId!!, postId)
                 viewModel.getLikeCount(postId)
             }
         }

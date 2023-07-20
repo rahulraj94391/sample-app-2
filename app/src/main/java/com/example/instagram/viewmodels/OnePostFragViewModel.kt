@@ -44,7 +44,7 @@ class OnePostFragViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     suspend fun getLikeCount(postId: Long) {
-        likeCount.postValue(db.likesDao().getLikeCountOnPost(postId))
+        likeCount.postValue(db.likesDao().likeCount(postId))
     }
 
     suspend fun getCommentCount(postId: Long) {
