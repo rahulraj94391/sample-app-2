@@ -1,7 +1,6 @@
 package com.example.instagram.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -21,14 +20,20 @@ private const val TAG = "CommTag_HomeFragViewModel"
 class HomeFragViewModel(app: Application) : AndroidViewModel(app) {
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val db = AppDatabase.getDatabase(app)
-    private val posts = MutableLiveData<MutableList<Post>>()
+    val postsToShow = MutableLiveData<MutableList<Post>>()
     private val postIdsAlreadyShown = mutableSetOf<Long>()
 
     fun addNewPostToList() {
-
+        viewModelScope.launch {
+            val tempList: MutableList<Post> = mutableListOf()
+            for (i in 1..3) {
+                tempList.add(getPost(i.toLong()))
+            }
+            postsToShow.postValue(tempList)
+        }
     }
 
-    suspend fun getNewPost(postId: Long): Post {
+    private suspend fun getPost(postId: Long): Post {
         val profileId = viewModelScope.async { getProfileId(postId) }
         val profImageUrl = viewModelScope.async { getProfilePicture(profileId.await()) }
         val profileUsername = viewModelScope.async { getProfileUserName(postId) }
@@ -54,7 +59,7 @@ class HomeFragViewModel(app: Application) : AndroidViewModel(app) {
             timeOfPost = postTime.await()
         )
 
-        Log.d(TAG, "Post generated = $post")
+//        Log.d(TAG, "Post generated = $post")
         return post
     }
 
@@ -82,7 +87,6 @@ class HomeFragViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-
     private suspend fun getFormattedTimeOfPost(postId: Long): String {
         val time = db.postDao().getPostTime(postId)
         return DateTime.timeFormatter(time, TimeFormatting.POST)
@@ -96,7 +100,7 @@ class HomeFragViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private suspend fun getFormattedLikeCount(postId: Long): String {
+    suspend fun getFormattedLikeCount(postId: Long): String {
         return "${db.likesDao().likeCount(postId)} like"
     }
 

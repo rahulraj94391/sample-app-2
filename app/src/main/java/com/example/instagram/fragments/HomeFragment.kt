@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instagram.MainViewModel
@@ -16,6 +17,7 @@ import com.example.instagram.adapters.HomeAdapter
 import com.example.instagram.databinding.FragmentHomeBinding
 import com.example.instagram.viewmodels.HomeFragViewModel
 import com.google.android.material.checkbox.MaterialCheckBox
+import kotlinx.coroutines.launch
 
 private const val TAG = "CommTag_HomeFragment"
 
@@ -34,38 +36,52 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[HomeFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-
-        homeAdapter = HomeAdapter()
+        viewModel.addNewPostToList()
+        homeAdapter = HomeAdapter(
+            ::openCommentBottomSheet,
+            ::openProfile,
+            ::onLikeClicked,
+            ::onSavePostClicked
+        )
         binding.btnMessages.setOnClickListener { whenMessagesBtnClicked() }
         binding.btnNotifications.setOnClickListener { whenNotificationBtnClicked() }
 
         binding.homeRV.adapter = homeAdapter
         binding.homeRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-    }
 
-    fun onLikeClicked(position: Int, view: MaterialCheckBox) {
-        // todo:
-        val postId = 393.toLong()
-        if (view.isChecked) {
-            viewModel.likePost(postId, mainViewModel.loggedInProfileId!!)
-        }
-        else {
-            viewModel.removeLike(postId, mainViewModel.loggedInProfileId!!)
+        viewModel.postsToShow.observe(viewLifecycleOwner) {
+            Log.d(TAG, "Observer called")
+            homeAdapter.addNewPosts(it)
         }
     }
 
-    fun onCommentClicked(position: Int) {
-        // todo:
-        val postId = 393.toLong() // get the postId from view model list
-        val action = HomeFragmentDirections.actionHomeFragmentToCommentSheet(postId)
+    private fun openProfile(pos: Int) {
+        val profileId: Long = homeAdapter.getProfileId(pos)
+        val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment(profileId)
         findNavController().navigate(action)
     }
 
-    fun onSavePostClicked(position: Int, view: MaterialCheckBox) {
-        // todo
-        val postId = 393.toLong() // get the postId from view model list
+    private fun onLikeClicked(pos: Int, checkedState: Int) {
+        val postId = homeAdapter.getPostId(pos)
+        if (checkedState == MaterialCheckBox.STATE_CHECKED) {
+            Log.d(TAG, "If-block")
+            viewModel.likePost(postId, mainViewModel.loggedInProfileId!!)
+        }
+        else {
+            Log.d(TAG, "else-block")
+            viewModel.removeLike(postId, mainViewModel.loggedInProfileId!!)
+        }
 
-        if (view.isChecked) {
+        lifecycleScope.launch {
+            val likeString = viewModel.getFormattedLikeCount(postId)
+            val likePayload = HomeAdapter.LikePayload(likeString, postId)
+            homeAdapter.notifyItemChanged(pos, likePayload)
+        }
+    }
+
+    private fun onSavePostClicked(pos: Int, checkedState: Int) {
+        val postId = homeAdapter.getPostId(pos)
+        if (checkedState == MaterialCheckBox.STATE_CHECKED) {
             viewModel.savePost(mainViewModel.loggedInProfileId!!, postId)
         }
         else {
@@ -73,6 +89,11 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun openCommentBottomSheet(pos: Int) {
+        val postId: Long = homeAdapter.getPostId(pos)
+        val action = HomeFragmentDirections.actionHomeFragmentToCommentSheet(postId)
+        findNavController().navigate(action)
+    }
 
     private fun whenMessagesBtnClicked() {
         Log.d(TAG, "Messages Btn Clicked")

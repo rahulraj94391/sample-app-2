@@ -25,7 +25,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.MyViewHolder>() {
     }
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val image: ImageView = view.findViewById(R.id.row_post_vp2)
+        val image: ImageView = view.findViewById(R.id.row_post_for_vp2)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
