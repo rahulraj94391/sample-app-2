@@ -83,7 +83,7 @@ class HomeFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            // Todo: this is just a work around, this will break in other phones.
+            // Todo: adding delay is just a work around, this will break in other phones.
             delay(100)
             val likeString = viewModel.getFormattedLikeCount(postId)
             val likePayload = HomeAdapter.LikePayload(likeString, postId, newState)

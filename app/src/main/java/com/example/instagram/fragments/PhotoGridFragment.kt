@@ -91,6 +91,7 @@ class PhotoGridFragment : Fragment() {
             3
         }
         binding.profilePosts.adapter = userPostedPhotoAdapter
+//        ViewCompat.setNestedScrollingEnabled(binding.profilePosts, false)
         binding.profilePosts.layoutManager = GridLayoutManager(requireContext(), spanCount)
     }
 }

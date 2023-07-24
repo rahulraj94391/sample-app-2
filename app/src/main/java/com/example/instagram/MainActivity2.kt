@@ -30,15 +30,15 @@ class MainActivity2 : AppCompatActivity() {
             val bitmap1 = imageUtil.getBitmap(URL1)
             val bitmap2 = imageUtil.getBitmap(URL2)
 
-            /*val cbm1 = imageUtil.resizePhoto(bitmap1)
-            val cbm2 = imageUtil.resizePhoto(bitmap2)*/
+            val cbm1 = imageUtil.resizePhoto(bitmap1)
+            val cbm2 = imageUtil.resizePhoto(bitmap2)
 
             withContext(Dispatchers.Main) {
-                imageView1.setImageBitmap(bitmap1)
-                imageView2.setImageBitmap(bitmap2)
+//                imageView1.setImageBitmap(bitmap1)
+//                imageView2.setImageBitmap(bitmap2)
 
-                /*imageView1.setImageBitmap(cbm1)
-                imageView2.setImageBitmap(cbm2)*/
+                imageView1.setImageBitmap(cbm1)
+                imageView2.setImageBitmap(cbm2)
             }
         }
     }

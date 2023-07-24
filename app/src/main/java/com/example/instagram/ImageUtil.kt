@@ -97,13 +97,32 @@ class ImageUtil(val context: Context) {
         }
     }
 
-    fun resizePhoto(bitmap: Bitmap, H: Int = 720): Bitmap {
+    fun resizePhoto(bitmap: Bitmap, H: Int = 377, W: Int = 720): Bitmap {
         val w = bitmap.width
         val h = bitmap.height
         val aspRat = (w / h).toLong()
-        val W = (aspRat * H).toInt()
+//        val W = (aspRat * H).toInt()
         Log.d(TAG, "resizePhoto: height = $H, width = $W\nBitmap width = $w, height = $h\nAspect ratio = $aspRat")
         val b = Bitmap.createScaledBitmap(bitmap, W, H, false)
         return b
+    }
+
+    fun getUriDownscaleImages(postImagesUri: MutableList<Uri>): MutableList<Uri> {
+        val finalList = mutableListOf<Uri>()
+        postImagesUri.forEach {
+            val bitmap = getBitmapFromUri(it)!!
+            val downscaledBitmap = resizePhoto(bitmap)
+            val tempFile: File = File(context.cacheDir, "${System.currentTimeMillis()}.jpeg")
+            try {
+                val fos = FileOutputStream(tempFile)
+                downscaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                fos.close()
+            } catch (e: IOException) {
+                // Handle error
+            }
+            finalList.add(Uri.fromFile(tempFile))
+        }
+//        Log.d(TAG, "URI_TEST - final uris list from ImageUtil = $finalList")
+        return finalList
     }
 }

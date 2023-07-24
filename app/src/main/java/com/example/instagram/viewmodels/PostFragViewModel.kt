@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.instagram.ImageUtil
 import com.example.instagram.MSharedPreferences
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Post
@@ -31,6 +32,7 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
     var finalTagUserIds = mutableListOf<Pair<Chip, Long>>()
     var tagsToUpload = mutableListOf<Long>()
     var finalTextToUpload = ""
+    private val imageUtil = ImageUtil(app)
 
     init {
         val sharedPreferences = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -49,7 +51,10 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
         val db = AppDatabase.getDatabase(app)
         val postId = db.postDao().insertPost(Post(profileId, timeStamp))
         val postText = viewModelScope.async { db.postTextDao().insertPostText(PostText(postId, finalTextToUpload)) }
-        uploadPostImages(postId, postImagesUri)
+
+        val downscaleImageUris = imageUtil.getUriDownscaleImages(postImagesUri)
+//        Log.d(TAG, "URI_TEST - downscaled imag uris = $downscaleImageUris")
+        uploadPostImages(postId, downscaleImageUris)
         if (tagsToUpload.size > 0) {
             db.tagPeopleDao().insertPostTags(prepareTagsOnPost(postId))
         }

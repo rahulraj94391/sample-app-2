@@ -24,7 +24,8 @@ class HomeFragViewModel(private val currentProfile: Long, private val db: AppDat
     fun addNewPostToList() {
         viewModelScope.launch {
             val tempList: MutableList<Post> = mutableListOf()
-            for (i in 1..3) {
+            for (i in 1..15) {
+                if (i == 2) continue
                 tempList.add(getPost(i.toLong()))
             }
             postsToShow.postValue(tempList)
