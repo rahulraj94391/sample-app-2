@@ -1,7 +1,6 @@
 package com.example.instagram.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -90,29 +89,23 @@ class HomeAdapter(
         if (payloads.isNotEmpty()) {
             val item = payloads[0]
             if (item is CommentPayload) {
-                Log.d(TAG, "Comment payload")
                 val postId = item.postId
                 val newComment = item.newCommentString
                 if (list[position].postId == postId) {
                     list[position].commentCount = newComment
+
                 }
             }
             else if (item is LikePayload) {
-                Log.d(TAG, "Like payload")
                 val postId = item.postId
                 val like = item.newLikeString
+                val newState = item.newState
                 if (list[position].postId == postId) {
                     list[position].likeCount = like
+                    list[position].isPostAlreadyLiked = newState == MaterialCheckBox.STATE_CHECKED
                 }
             }
         }
-
-
-        /**
-        * try updating the checked status in payload too(carry status in Data class and then set here)
-        * us checked change listener and see if it works or not.
-        */
-
         super.onBindViewHolder(holder, position, payloads)
     }
 
@@ -148,6 +141,11 @@ class HomeAdapter(
         //notifyDataSetChanged()
     }
 
+    fun updateLikeInList(position: Int, newLikeData: String) {
+        list[position].likeCount = newLikeData
+        notifyItemChanged(position)
+    }
+
     fun getPostId(position: Int): Long {
         return list[position].postId
     }
@@ -162,7 +160,7 @@ class HomeAdapter(
     }
 
     data class CommentPayload(val newCommentString: String, val postId: Long)
-    data class LikePayload(val newLikeString: String, val postId: Long)
+    data class LikePayload(val newLikeString: String, val postId: Long, val newState: Int)
 }
 
 

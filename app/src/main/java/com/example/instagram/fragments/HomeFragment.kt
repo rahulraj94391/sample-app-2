@@ -14,9 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.HomeAdapter
+import com.example.instagram.database.AppDatabase
 import com.example.instagram.databinding.FragmentHomeBinding
+import com.example.instagram.viewModelFactory.ViewModelFactory
 import com.example.instagram.viewmodels.HomeFragViewModel
 import com.google.android.material.checkbox.MaterialCheckBox
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val TAG = "CommTag_HomeFragment"
@@ -27,6 +30,16 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeFragViewModel
     private lateinit var mainViewModel: MainViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        val currentUser = mainViewModel.loggedInProfileId!!
+        val db = AppDatabase.getDatabase(requireContext())
+        viewModel = ViewModelProvider(requireActivity(), ViewModelFactory(currentUser, db))[HomeFragViewModel::class.java]
+        viewModel.addNewPostToList()
+    }
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         return binding.root
@@ -34,9 +47,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[HomeFragViewModel::class.java]
-        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        viewModel.addNewPostToList()
+
         homeAdapter = HomeAdapter(
             ::openCommentBottomSheet,
             ::openProfile,
@@ -50,7 +61,6 @@ class HomeFragment : Fragment() {
         binding.homeRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         viewModel.postsToShow.observe(viewLifecycleOwner) {
-            Log.d(TAG, "Observer called")
             homeAdapter.addNewPosts(it)
         }
     }
@@ -63,18 +73,20 @@ class HomeFragment : Fragment() {
 
     private fun onLikeClicked(pos: Int, checkedState: Int) {
         val postId = homeAdapter.getPostId(pos)
-        if (checkedState == MaterialCheckBox.STATE_CHECKED) {
-            Log.d(TAG, "If-block")
+        val newState = if (checkedState == MaterialCheckBox.STATE_CHECKED) {
             viewModel.likePost(postId, mainViewModel.loggedInProfileId!!)
+            MaterialCheckBox.STATE_CHECKED
         }
         else {
-            Log.d(TAG, "else-block")
             viewModel.removeLike(postId, mainViewModel.loggedInProfileId!!)
+            MaterialCheckBox.STATE_UNCHECKED
         }
 
         lifecycleScope.launch {
+            // Todo: this is just a work around, this will break in other phones.
+            delay(100)
             val likeString = viewModel.getFormattedLikeCount(postId)
-            val likePayload = HomeAdapter.LikePayload(likeString, postId)
+            val likePayload = HomeAdapter.LikePayload(likeString, postId, newState)
             homeAdapter.notifyItemChanged(pos, likePayload)
         }
     }

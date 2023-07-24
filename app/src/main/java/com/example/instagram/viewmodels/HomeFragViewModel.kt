@@ -1,8 +1,7 @@
 package com.example.instagram.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.instagram.DateTime
 import com.example.instagram.TimeFormatting
@@ -17,9 +16,8 @@ import kotlinx.coroutines.tasks.await
 
 private const val TAG = "CommTag_HomeFragViewModel"
 
-class HomeFragViewModel(app: Application) : AndroidViewModel(app) {
+class HomeFragViewModel(private val currentProfile: Long, private val db: AppDatabase) : ViewModel() {
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val db = AppDatabase.getDatabase(app)
     val postsToShow = MutableLiveData<MutableList<Post>>()
     private val postIdsAlreadyShown = mutableSetOf<Long>()
 
@@ -38,8 +36,8 @@ class HomeFragViewModel(app: Application) : AndroidViewModel(app) {
         val profImageUrl = viewModelScope.async { getProfilePicture(profileId.await()) }
         val profileUsername = viewModelScope.async { getProfileUserName(postId) }
         val listOfPostPhotos = viewModelScope.async { getPostImages(postId) }
-        val isPostAlreadyLiked = viewModelScope.async { getPostLikeStat(postId, profileId.await()) }
-        val isPostAlreadySaved = viewModelScope.async { getPostSaveStat(postId, profileId.await()) }
+        val isPostAlreadyLiked = viewModelScope.async { getPostLikeStat(postId, currentProfile) }
+        val isPostAlreadySaved = viewModelScope.async { getPostSaveStat(postId, currentProfile) }
         val likeCount = viewModelScope.async { getFormattedLikeCount(postId) }
         val postDesc = viewModelScope.async { getPostDesc(postId) }
         val commentCount = viewModelScope.async { getFormattedCommentCount(postId) }
