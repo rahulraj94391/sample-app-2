@@ -10,7 +10,10 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.R
 import com.example.instagram.database.model.OnePhotoPerPost
-import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.URL
 
 private const val TAG = "CommTag_PhotoGridAdapter"
@@ -35,17 +38,13 @@ class PhotoGridAdapter(val listener: (Long) -> Unit) : RecyclerView.Adapter<Phot
 
     override fun onBindViewHolder(holder: PhotoViewVH, position: Int) {
         if (listOfImages.size == 0) return
-
-
-        /*CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val bitmap = downloadBitmap(listOfImages[position].imageURl)
             if (bitmap != null)
                 withContext(Dispatchers.Main) { holder.image.setImageBitmap(bitmap) }
             else
-                withContext(Dispatchers.Main) { holder.image.setImageDrawable(holder.image.context.resources.getDrawable(R.drawable.ic_launcher_background)) }
-        }*/
-        // TODO: REMOVE PICASSO
-        Picasso.get().load(listOfImages[position].imageURl).resize(720, 720).centerCrop().into(holder.image)
+                withContext(Dispatchers.Main) { holder.image.setImageDrawable(holder.image.context.resources.getDrawable(R.drawable.loading_error)) }
+        }
     }
 
     fun setNewList(newList: MutableList<OnePhotoPerPost>) {

@@ -22,6 +22,8 @@ import kotlin.properties.Delegates
 const val LIST_REF_KEY: String = "list_ref"
 const val USER_PROF_KEY = "userProf"
 
+private const val TAG = "CommTag_PhotoGridFragment"
+
 class PhotoGridFragment : Fragment() {
     private lateinit var binding: FragmentPhotoGridBinding
     private lateinit var viewModel: PhotoGridFragViewModel
@@ -69,6 +71,7 @@ class PhotoGridFragment : Fragment() {
                 viewModel.getProfilePost(userProfId)
             }
             viewModel.usersPost.observe(viewLifecycleOwner) {
+                whenDataLoaded()
                 userPostedPhotoAdapter.setNewList(it)
             }
         }
@@ -77,17 +80,21 @@ class PhotoGridFragment : Fragment() {
                 viewModel.getAllPostInWhichProfileIsTagged(userProfId)
             }
             viewModel.usersTaggedPost.observe(viewLifecycleOwner) {
+                whenDataLoaded()
                 userPostedPhotoAdapter.setNewList(it)
             }
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
+
         val spanCount = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 5 else 3
         binding.profilePosts.adapter = userPostedPhotoAdapter
-//        ViewCompat.setNestedScrollingEnabled(binding.profilePosts, false)
         binding.profilePosts.layoutManager = GridLayoutManager(requireContext(), spanCount)
         binding.profilePosts.setHasFixedSize(true)
     }
+
+    private fun whenDataLoaded() {
+        binding.loadingProgressBar.visibility = View.GONE
+        binding.profilePosts.visibility = View.VISIBLE
+    }
+
 }

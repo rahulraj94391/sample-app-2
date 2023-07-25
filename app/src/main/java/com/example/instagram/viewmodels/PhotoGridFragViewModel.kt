@@ -10,7 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
 
-class PhotoGridFragViewModel(app: Application): AndroidViewModel(app) {
+class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     val usersPost = MutableLiveData<MutableList<OnePhotoPerPost>>()
     val usersTaggedPost = MutableLiveData<MutableList<OnePhotoPerPost>>()
@@ -21,7 +21,7 @@ class PhotoGridFragViewModel(app: Application): AndroidViewModel(app) {
             db.postDao().getAllPostOfProfile(profileId)
         }
         val urlsOfOnePhotoPerPost = getOneImagePerPost(postIds.await())
-        usersPost.postValue(urlsOfOnePhotoPerPost)
+        usersPost.postValue(urlsOfOnePhotoPerPost.asReversed())
     }
 
     private suspend fun getOneImagePerPost(postIds: MutableList<Long>): MutableList<OnePhotoPerPost> {
@@ -48,7 +48,7 @@ class PhotoGridFragViewModel(app: Application): AndroidViewModel(app) {
             db.tagPeopleDao().getAllTaggedPostOfProfile(profileId)
         }
         val urlsOfOnePhotoPerPost = getOneImagePerPost(defList.await())
-        usersTaggedPost.postValue(urlsOfOnePhotoPerPost)
+        usersTaggedPost.postValue(urlsOfOnePhotoPerPost.asReversed())
     }
 
 }

@@ -61,6 +61,8 @@ class HomeFragment : Fragment() {
         binding.homeRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         viewModel.postsToShow.observe(viewLifecycleOwner) {
+            binding.loadingProgressBar.visibility = View.GONE
+            binding.homeRV.visibility = View.VISIBLE
             homeAdapter.addNewPosts(it)
         }
     }

@@ -3,6 +3,7 @@ package com.example.instagram.viewmodels
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.model.ProfileSummary
@@ -13,21 +14,23 @@ import kotlinx.coroutines.tasks.await
 
 private const val TAG = "CommTag_ProfileViewModel"
 
-class ProfileFragViewModel(private val app: Application) : AndroidViewModel(app) {
+class ProfileFragViewModel(app: Application) : AndroidViewModel(app) {
     private var storageRef: FirebaseStorage = FirebaseStorage.getInstance()
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val db: AppDatabase = AppDatabase.getDatabase(app)
-//    val profilePicToUpload = MutableLiveData<String>()
+    var profileSummary = MutableLiveData<ProfileSummary>()
 
-    suspend fun getProfileSummary(profileId: Long): ProfileSummary {
-        val profilePic = viewModelScope.async { getProfilePicture(profileId) }
-        val fullNameBio = viewModelScope.async { db.profileDao().getFullNameBio(profileId) }
-        val postCount = viewModelScope.async { db.postDao().getPostCount(profileId) }
-        val followerCount = viewModelScope.async { db.followDao().getFollowerCount(profileId) }
-        val followingCount = viewModelScope.async { db.followDao().getFollowingCount(profileId) }
-        val username = viewModelScope.async { db.loginCredDao().getUsername(profileId) }
+    suspend fun getProfileSummary(ownProfileId: Long, userProfileId: Long) {
+        val profilePic = viewModelScope.async { getProfilePicture(userProfileId) }
+        val fullNameBio = viewModelScope.async { db.profileDao().getFullNameBio(userProfileId) }
+        val postCount = viewModelScope.async { db.postDao().getPostCount(userProfileId) }
+        val followerCount = viewModelScope.async { db.followDao().getFollowerCount(userProfileId) }
+        val followingCount = viewModelScope.async { db.followDao().getFollowingCount(userProfileId) }
+        val username = viewModelScope.async { db.loginCredDao().getUsername(userProfileId) }
+        val isFollowing = viewModelScope.async { db.followDao().isUserFollowingUser(ownProfileId, userProfileId) > 0 }
 
-        return ProfileSummary(
+        val profSummary = ProfileSummary(
+            username.await(),
             profilePic.await(),
             fullNameBio.await().first_name,
             fullNameBio.await().last_name,
@@ -35,9 +38,12 @@ class ProfileFragViewModel(private val app: Application) : AndroidViewModel(app)
             postCount.await(),
             followerCount.await(),
             followingCount.await(),
-            username.await()
+            isFollowing.await()
         )
+
+        profileSummary.postValue(profSummary)
     }
+
 
     private suspend fun getProfilePicture(profileId: Long): String? {
         var profileImageUrl: String? = null

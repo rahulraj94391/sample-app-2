@@ -18,7 +18,6 @@ import com.example.instagram.MSharedPreferences.IS_LOGGED_IN
 import com.example.instagram.MSharedPreferences.SHARED_PREF_NAME
 import com.example.instagram.R
 import com.example.instagram.databinding.FragmentSplashBinding
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val TAG = "CommTag_SplashFragment"
@@ -46,7 +45,7 @@ class SplashFragment : Fragment() {
         }
 
         scope.launch {
-            delay(400)
+//            delay(400)
             if (sharedPref.getBoolean(IS_LOGGED_IN, false)) {
                 // launch activity for home screen when user is logged in.
                 startActivity(Intent(requireContext(), HomeActivity::class.java))

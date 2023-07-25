@@ -1,31 +1,13 @@
 package com.example.instagram.database.model
 
 data class ProfileSummary(
-    val profilePic: String? = null,
+    val username: String,
+    val profilePic: String?,
     val first_name: String,
     val last_name: String,
     val bio: String,
     val postCount: Int,
     val followerCount: Int,
     val followingCount: Int,
-    val username: String,
-) {
-    constructor(
-        first_name: String,
-        last_name: String,
-        bio: String,
-        postCount: Int,
-        followerCount: Int,
-        followingCount: Int,
-        username: String
-    ) : this(
-        null,
-        first_name,
-        last_name,
-        bio,
-        postCount,
-        followerCount,
-        followingCount,
-        username
-    )
-}
+    val isFollowing: Boolean
+)
