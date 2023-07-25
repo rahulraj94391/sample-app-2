@@ -120,8 +120,7 @@ class ProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        (binding.profileRV.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false;
-
+        (binding.profileRV.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
     private fun showFollowingFragment() {

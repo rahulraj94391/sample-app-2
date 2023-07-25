@@ -105,6 +105,13 @@ class HomeAdapter(
                     list[position].isPostAlreadyLiked = newState == MaterialCheckBox.STATE_CHECKED
                 }
             }
+            else if (item is SavePayload) {
+                val postId = item.postId
+                val newState = item.newState
+                if (list[position].postId == postId) {
+                    list[position].isPostAlreadySaved = newState == MaterialCheckBox.STATE_CHECKED
+                }
+            }
         }
         super.onBindViewHolder(holder, position, payloads)
     }
@@ -161,6 +168,7 @@ class HomeAdapter(
 
     data class CommentPayload(val newCommentString: String, val postId: Long)
     data class LikePayload(val newLikeString: String, val postId: Long, val newState: Int)
+    data class SavePayload(val postId: Long, val newState: Int)
 }
 
 

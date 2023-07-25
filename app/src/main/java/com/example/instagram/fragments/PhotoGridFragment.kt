@@ -84,14 +84,10 @@ class PhotoGridFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val spanCount = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            5
-        }
-        else {
-            3
-        }
+        val spanCount = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 5 else 3
         binding.profilePosts.adapter = userPostedPhotoAdapter
 //        ViewCompat.setNestedScrollingEnabled(binding.profilePosts, false)
         binding.profilePosts.layoutManager = GridLayoutManager(requireContext(), spanCount)
+        binding.profilePosts.setHasFixedSize(true)
     }
 }

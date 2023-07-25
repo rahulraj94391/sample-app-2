@@ -83,7 +83,7 @@ class HomeFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            // Todo: adding delay is just a work around, this will break in other phones.
+            // Todo: adding delay is just a work around, this might break in other phones.
             delay(100)
             val likeString = viewModel.getFormattedLikeCount(postId)
             val likePayload = HomeAdapter.LikePayload(likeString, postId, newState)
@@ -93,12 +93,22 @@ class HomeFragment : Fragment() {
 
     private fun onSavePostClicked(pos: Int, checkedState: Int) {
         val postId = homeAdapter.getPostId(pos)
-        if (checkedState == MaterialCheckBox.STATE_CHECKED) {
+        val newState = if (checkedState == MaterialCheckBox.STATE_CHECKED) {
             viewModel.savePost(mainViewModel.loggedInProfileId!!, postId)
+            MaterialCheckBox.STATE_CHECKED
         }
         else {
             viewModel.removeSavedPost(mainViewModel.loggedInProfileId!!, postId)
+            MaterialCheckBox.STATE_UNCHECKED
         }
+
+        lifecycleScope.launch {
+            // Todo: adding delay is just a work around, this might break in other phones.
+            delay(100)
+            val savePayload = HomeAdapter.SavePayload(postId, newState)
+            homeAdapter.notifyItemChanged(pos, savePayload)
+        }
+
     }
 
     private fun openCommentBottomSheet(pos: Int) {
