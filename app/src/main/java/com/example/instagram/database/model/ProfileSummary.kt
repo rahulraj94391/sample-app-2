@@ -8,6 +8,7 @@ data class ProfileSummary(
     val postCount: Int,
     val followerCount: Int,
     val followingCount: Int,
+    val username: String,
 ) {
     constructor(
         first_name: String,
@@ -16,6 +17,7 @@ data class ProfileSummary(
         postCount: Int,
         followerCount: Int,
         followingCount: Int,
+        username: String
     ) : this(
         null,
         first_name,
@@ -23,6 +25,7 @@ data class ProfileSummary(
         bio,
         postCount,
         followerCount,
-        followingCount
+        followingCount,
+        username
     )
 }

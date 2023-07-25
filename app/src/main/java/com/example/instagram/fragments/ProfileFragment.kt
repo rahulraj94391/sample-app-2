@@ -99,7 +99,7 @@ class ProfileFragment : Fragment() {
         refreshProfileSummary(ownProfileId, userProfileId)
         withContext(Dispatchers.Main) {
             if (ownProfileId != userProfileId) binding.btnProfileBottomSheet.visibility = View.INVISIBLE
-            binding.toolbarProfileUsername.text = "${profileSummary.first_name} ${profileSummary.last_name}"
+            binding.toolbarProfileUsername.text = profileSummary.username
         }
         profileAdapter = ProfileAdapter(
             profileSummary = profileSummary,

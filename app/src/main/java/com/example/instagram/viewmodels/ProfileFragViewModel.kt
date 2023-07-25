@@ -25,6 +25,7 @@ class ProfileFragViewModel(private val app: Application) : AndroidViewModel(app)
         val postCount = viewModelScope.async { db.postDao().getPostCount(profileId) }
         val followerCount = viewModelScope.async { db.followDao().getFollowerCount(profileId) }
         val followingCount = viewModelScope.async { db.followDao().getFollowingCount(profileId) }
+        val username = viewModelScope.async { db.loginCredDao().getUsername(profileId) }
 
         return ProfileSummary(
             profilePic.await(),
@@ -33,7 +34,8 @@ class ProfileFragViewModel(private val app: Application) : AndroidViewModel(app)
             fullNameBio.await().bio,
             postCount.await(),
             followerCount.await(),
-            followingCount.await()
+            followingCount.await(),
+            username.await()
         )
     }
 
