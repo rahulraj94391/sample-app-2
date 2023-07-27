@@ -35,12 +35,19 @@ class HomeFragment : Fragment() {
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         val currentUser = mainViewModel.loggedInProfileId!!
         val db = AppDatabase.getDatabase(requireContext())
-        viewModel = ViewModelProvider(requireActivity(), ViewModelFactory(currentUser, db))[HomeFragViewModel::class.java]
-        viewModel.addNewPostToList()
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            ViewModelFactory(currentUser, db)
+        )[HomeFragViewModel::class.java]
+        viewModel.addNewPostToList(mainViewModel.loggedInProfileId!!)
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         return binding.root
     }
@@ -58,7 +65,8 @@ class HomeFragment : Fragment() {
         binding.btnNotifications.setOnClickListener { whenNotificationBtnClicked() }
 
         binding.homeRV.adapter = homeAdapter
-        binding.homeRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.homeRV.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         viewModel.postsToShow.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
@@ -73,13 +81,13 @@ class HomeFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun onLikeClicked(pos: Int, checkedState: Int) {
+    private fun onLikeClicked(pos: Int, view: View) {
+        val checkedState = (view as MaterialCheckBox).checkedState
         val postId = homeAdapter.getPostId(pos)
         val newState = if (checkedState == MaterialCheckBox.STATE_CHECKED) {
             viewModel.likePost(postId, mainViewModel.loggedInProfileId!!)
             MaterialCheckBox.STATE_CHECKED
-        }
-        else {
+        } else {
             viewModel.removeLike(postId, mainViewModel.loggedInProfileId!!)
             MaterialCheckBox.STATE_UNCHECKED
         }
@@ -93,14 +101,16 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun onSavePostClicked(pos: Int, checkedState: Int) {
+    private fun onSavePostClicked(pos: Int, view: View) {
+        view as MaterialCheckBox
+        val checkedState = view.checkedState
         val postId = homeAdapter.getPostId(pos)
         val newState = if (checkedState == MaterialCheckBox.STATE_CHECKED) {
             viewModel.savePost(mainViewModel.loggedInProfileId!!, postId)
             MaterialCheckBox.STATE_CHECKED
-        }
-        else {
+        } else {
             viewModel.removeSavedPost(mainViewModel.loggedInProfileId!!, postId)
+//            view.setButtonIconTintList()
             MaterialCheckBox.STATE_UNCHECKED
         }
 

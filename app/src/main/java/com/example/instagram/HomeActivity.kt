@@ -1,7 +1,12 @@
 package com.example.instagram
 
 import android.content.Context
+import android.content.res.Configuration
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsetsController
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -19,30 +24,67 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var mainViewModel: MainViewModel
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        /*IMPORTANT    ----    START */
+    override fun onCreate(savedInstanceState: Bundle?) {/*IMPORTANT    ----    START */
         // first put the current user id in the Main ViewModel as the Home fragment starts creating once the Activity
         // reaches the {DataBindingUtil.setContentView(this, R.layout.activity_home)} line as the home fragment is the
         // first screen that shows up to the user.
         // without this the app crashes as the view model factory uses logged in id from main view model to create the home fragment.
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        val sharedPreferences = getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
-        mainViewModel.loggedInProfileId = sharedPreferences.getLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
-        /*IMPORTANT    ----    END */
+        val sharedPreferences =
+            getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        mainViewModel.loggedInProfileId = sharedPreferences.getLong(
+            MSharedPreferences.LOGGED_IN_PROFILE_ID,
+            -1
+        )/*IMPORTANT    ----    END */
 
 
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
 
+
+        when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+
+
+            }
+
+            Configuration.UI_MODE_NIGHT_NO -> {
+                if (Build.VERSION.SDK_INT >= 30) {
+                    window.decorView.windowInsetsController?.apply {
+//                        window.navigationBarColor = resources.getColor(android.R.color.)
+
+                        setSystemBarsAppearance(
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                        )
+                        setSystemBarsAppearance(
+                            WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                            WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                        )
+                    }
+                } else if (Build.VERSION.SDK_INT == 29) {
+                    window.decorView.systemUiVisibility =
+                        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                }
+
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+
+
         // setup bottom navigation view with nav controller
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragContainerView) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragContainerView) as NavHostFragment
         navController = navHostFragment.findNavController()
         binding.bottomNavView.setupWithNavController(navController)
         binding.bottomNavView.setOnItemReselectedListener {
             when (it.itemId) {
                 R.id.homeFragment -> {}
                 R.id.postFragment -> {}
-                R.id.searchFragment -> {onSearchReselected()}
+                R.id.searchFragment -> {
+                    onSearchReselected()
+                }
+
                 R.id.profileFragment -> {}
             }
         }
@@ -63,6 +105,7 @@ class HomeActivity : AppCompatActivity() {
         }*/
 
     }
+
 
     private fun onSearchReselected() {
 //        Log.d(TAG, "onSearchReselected: ")

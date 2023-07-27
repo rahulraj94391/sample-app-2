@@ -29,8 +29,10 @@ class CommentDialogViewModel(val app: Application) : AndroidViewModel(app) {
     }
 
     suspend fun getComments(postId: Long, myProfileId: Long) {
-        val commentsListAsync = viewModelScope.async { db.commentDao().getAllComments(postId, myProfileId) }
-        val myCommentsAsync = viewModelScope.async { db.commentDao().getMyComment(postId, myProfileId) }
+        val commentsListAsync =
+            viewModelScope.async { db.commentDao().getAllComments(postId, myProfileId) }
+        val myCommentsAsync =
+            viewModelScope.async { db.commentDao().getMyComment(postId, myProfileId) }
 
         val commentsList = commentsListAsync.await()
         val myComments = myCommentsAsync.await()
@@ -53,14 +55,11 @@ class CommentDialogViewModel(val app: Application) : AndroidViewModel(app) {
             )
             list.add(comment)
         }
-
         comments.postValue(list)
-
-
         for (i in list) {
             val id = i.profileId
-            val imageUrl = getProfilePicture(id)
-            imageList.add(imageUrl!!)
+            val imageUrl = getProfilePicture(id) ?: continue
+            imageList.add(imageUrl)
         }
         commenterImages.postValue(imageList)
     }

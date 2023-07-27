@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="myTextColor">#EBEBEB</color>
+    <color name="text_color">#EDEDED</color>
+    <color name="icon_tint">#BAC4FF</color>
+    <color name="logo_tint">#EBEBEB</color>
+    <color name="line_border">#4B4B4B</color>
+
+
+
 </resources>

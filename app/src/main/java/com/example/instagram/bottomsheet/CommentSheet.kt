@@ -45,7 +45,11 @@ class CommentSheet : BottomSheetDialogFragment() {
         return super.onCreateDialog(savedInstanceState) as BottomSheetDialog
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         viewModel = ViewModelProvider(this)[CommentDialogViewModel::class.java]
         binding = DataBindingUtil.inflate(inflater, R.layout.bottomsheet_comments, container, false)
@@ -97,9 +101,11 @@ class CommentSheet : BottomSheetDialogFragment() {
             }
         })*/
 
-        commentAdapter = CommentAdapter(this::showDeleteCommentDialog, mainViewModel.loggedInProfileId!!)
+        commentAdapter =
+            CommentAdapter(this::showDeleteCommentDialog, mainViewModel.loggedInProfileId!!)
         binding.commentRV.adapter = commentAdapter
-        binding.commentRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.commentRV.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         viewModel.comments.observe(viewLifecycleOwner) {
             commentAdapter.updateList(it)
@@ -110,8 +116,8 @@ class CommentSheet : BottomSheetDialogFragment() {
         }
 
         lifecycleScope.launch {
-            val url = viewModel.getProfilePicture(mainViewModel.loggedInProfileId!!)
-            val bitmap = ImageUtil(requireContext()).getBitmap(url!!)
+            val url = viewModel.getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return@launch
+            val bitmap = ImageUtil(requireContext()).getBitmap(url)
             withContext(Dispatchers.Main) {
                 binding.profileImage.setImageBitmap(bitmap)
             }
@@ -120,8 +126,8 @@ class CommentSheet : BottomSheetDialogFragment() {
     }
 
     private suspend fun addProfilePicUrlWithOnNewComment() {
-        val url = viewModel.getProfilePicture(mainViewModel.loggedInProfileId!!)
-        commentAdapter.addImageUrlToList(url!!)
+        val url = viewModel.getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return
+        commentAdapter.addImageUrlToList(url)
     }
 
     private fun postComment() {
@@ -160,10 +166,10 @@ class CommentSheet : BottomSheetDialogFragment() {
 
     private fun isCommentQualified(commentText: String): Boolean {
         return if (commentText.isBlank()) {
-            Toast.makeText(requireContext(), "Cannot post blank comment.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Cannot post blank comment.", Toast.LENGTH_SHORT)
+                .show()
             true
-        }
-        else {
+        } else {
             false
         }
     }

@@ -3,5 +3,34 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF6647</color>
-    <color name="myTextColor">#212121</color>
+
+
+
+
+
+    <color name="col5">#9ba9ff</color>
+    <color name="col1">#ffb5a7</color>
+    <color name="col2">#fcd5ce</color>
+    <color name="col3">#f8edeb</color>
+    <color name="col4">#f9dcc4</color>
+
+
+    <color name="col6">#27374D</color>
+    <color name="col7">#526D82</color>
+    <color name="col8">#9DB2BF</color>
+    <color name="col9">#DDE6ED</color>
+
+    <color name="text_color">#212121</color>
+    <color name="icon_tint">#9ba9ff</color>
+    <color name="logo_tint">#303030</color>
+    <color name="bottomNavigationView_container">#DDE6ED</color>
+    <color name="bottomNavigationView_secondaryContainer">#DDE6ED</color>
+    <color name="bottomNavigationView_iconColor">#DDE6ED</color>
+    <color name="status_bar">#DDE6ED</color>
+    <color name="navigation_bar">#DDE6ED</color>
+    <color name="icon_filled">#DDE6ED</color>
+    <color name="icon_outlined">#DDE6ED</color>
+    <color name="line_border">#CFD6FF</color>
+
+
 </resources>

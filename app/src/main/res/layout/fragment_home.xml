@@ -27,7 +27,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="4dp"
-                    android:src="@drawable/instagram_text_icon" />
+                    android:src="@drawable/instagram_text_icon"
+                    app:tint="@color/logo_tint" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnMessages"
@@ -55,11 +56,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
+            android:clipChildren="false"
+            android:paddingBottom="4dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/loadingProgressBar"
             android:layout_width="wrap_content"
+            tools:indeterminate="true"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true"

@@ -1,6 +1,7 @@
 package com.example.instagram.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val TAG = "CommTag_CommentAdapter"
 
 class CommentAdapter(
     val listener: (pos: Int) -> Unit,
@@ -41,8 +43,7 @@ class CommentAdapter(
             view.setOnLongClickListener {
                 return@setOnLongClickListener if (commentList[adapterPosition].profileId != loggedInProfileId) {
                     false
-                }
-                else {
+                } else {
                     listener(adapterPosition)
                     true
                 }
@@ -70,7 +71,11 @@ class CommentAdapter(
     }
 
 
-    override fun onBindViewHolder(holder: CommentViewHolder, position: Int, payload: MutableList<Any>) {
+    override fun onBindViewHolder(
+        holder: CommentViewHolder,
+        position: Int,
+        payload: MutableList<Any>
+    ) {
         if (profileImages.isNotEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
                 val bitmap = imageUtil.getBitmap(profileImages[position])

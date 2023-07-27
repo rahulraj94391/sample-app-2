@@ -54,7 +54,11 @@ class OnePostFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         db = AppDatabase.getDatabase(requireContext())
         viewModel = ViewModelProvider(this)[OnePostFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
@@ -112,11 +116,11 @@ class OnePostFragment : Fragment() {
 
 
         viewModel.profileImageUrl.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
             CoroutineScope(Dispatchers.IO).launch {
                 val bitmap = imageUtil.getBitmap(it)
                 withContext(Dispatchers.Main) {
                     binding.profileImage.setImageBitmap(bitmap)
-
                 }
             }
         }
@@ -155,10 +159,15 @@ class OnePostFragment : Fragment() {
     private fun onSavePostClicked(it: MaterialCheckBox) {
         if (it.isChecked) {
             lifecycleScope.launch {
-                db.savedPostDao().savePost(SavedPost(mainViewModel.loggedInProfileId!!, postId, System.currentTimeMillis()))
+                db.savedPostDao().savePost(
+                    SavedPost(
+                        mainViewModel.loggedInProfileId!!,
+                        postId,
+                        System.currentTimeMillis()
+                    )
+                )
             }
-        }
-        else {
+        } else {
             lifecycleScope.launch {
                 db.savedPostDao().deleteSavedPost(postId, mainViewModel.loggedInProfileId!!)
             }
@@ -174,11 +183,16 @@ class OnePostFragment : Fragment() {
         if (it.isChecked) {
             setLikeColorAsPerState(it, true)
             lifecycleScope.launch {
-                db.likesDao().insertNewLike(Likes(postId, mainViewModel.loggedInProfileId!!, System.currentTimeMillis()))
+                db.likesDao().insertNewLike(
+                    Likes(
+                        postId,
+                        mainViewModel.loggedInProfileId!!,
+                        System.currentTimeMillis()
+                    )
+                )
                 viewModel.getLikeCount(postId)
             }
-        }
-        else {
+        } else {
             setLikeColorAsPerState(it, false)
             lifecycleScope.launch {
                 db.likesDao().deleteLike(mainViewModel.loggedInProfileId!!, postId)
@@ -190,8 +204,7 @@ class OnePostFragment : Fragment() {
     private fun setLikeColorAsPerState(it: MaterialCheckBox, state: Boolean) {
         if (state) {
             it.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.red))
-        }
-        else {
+        } else {
             it.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.black))
         }
     }

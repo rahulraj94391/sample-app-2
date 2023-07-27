@@ -65,7 +65,10 @@ class ProfileFragment : Fragment() {
             mainViewModel.loggedInProfileId!!
         }
 
-        requireActivity().supportFragmentManager.setFragmentResultListener(POST_ID_OPEN_REQ_KEY, requireActivity()) { _, bundle ->
+        requireActivity().supportFragmentManager.setFragmentResultListener(
+            POST_ID_OPEN_REQ_KEY,
+            requireActivity()
+        ) { _, bundle ->
             val result = bundle.getLong(POST_ID_REF_KEY)
             val action = ProfileFragmentDirections.actionProfileFragmentToOnePostFragment(result)
             findNavController().navigate(action)
@@ -75,7 +78,11 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         return binding.root
     }
@@ -84,7 +91,10 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnProfileBottomSheet.setOnClickListener { findNavController().navigate(R.id.action_profileFragment_to_profileMenu2) }
-
+        binding.profilePic.setOnLongClickListener {
+            profilePicUri.launch("image/*")
+            true
+        }
         if (::lastStatusProfSummary.isInitialized) {
             bindAllDetails(lastStatusProfSummary)
         }
@@ -95,8 +105,7 @@ class ProfileFragment : Fragment() {
 
             if (::lastStatusProfSummary.isInitialized) {
                 bindFollowDetails(it)
-            }
-            else {
+            } else {
                 bindAllDetails(it)
             }
             this.lastStatusProfSummary = it
@@ -149,16 +158,14 @@ class ProfileFragment : Fragment() {
             btnEnd.text = SHARE_PROFILE
             btnStart.setOnClickListener { editProfile() }
             btnEnd.setOnClickListener { shareProfile() }
-        }
-        else if (isFollowing) {
+        } else if (isFollowing) {
             btnStart.text = UNFOLLOW
             btnEnd.text = MESSAGE
             btnStart.setOnClickListener {
                 unFollowProfile()
             }
             btnEnd.setOnClickListener { messageProfile() }
-        }
-        else {
+        } else {
             btnStart.text = FOLLOW
             btnEnd.text = MESSAGE
             btnStart.setOnClickListener {
@@ -182,7 +189,6 @@ class ProfileFragment : Fragment() {
 
     private fun shareProfile() {
         Log.d(TAG, "shareProfile clicked.")
-        profilePicUri.launch("image/*")
     }
 
     private fun messageProfile() {

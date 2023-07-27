@@ -16,17 +16,19 @@ import kotlinx.coroutines.tasks.await
 
 private const val TAG = "CommTag_HomeFragViewModel"
 
-class HomeFragViewModel(private val currentProfile: Long, private val db: AppDatabase) : ViewModel() {
+class HomeFragViewModel(private val currentProfile: Long, private val db: AppDatabase) :
+    ViewModel() {
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     val postsToShow = MutableLiveData<MutableList<Post>>()
     private val postIdsAlreadyShown = mutableSetOf<Long>()
 
-    fun addNewPostToList() {
+    fun addNewPostToList(loggedInProfileId: Long) {
         viewModelScope.launch {
             val tempList: MutableList<Post> = mutableListOf()
-            for (i in 1..15) {
-                if (i == 2) continue
-                tempList.add(getPost(i.toLong()))
+            val postsToShowOnHome = db.postDao().getPostOfFollowers(loggedInProfileId)
+
+            for (i in postsToShowOnHome) {
+                tempList.add(getPost(i))
             }
             postsToShow.postValue(tempList)
         }
@@ -142,7 +144,17 @@ class HomeFragViewModel(private val currentProfile: Long, private val db: AppDat
         val snapShot =
             firebaseFireStore
                 .collection("postImages")
-                .whereIn("serial", mutableListOf("${postId}_0", "${postId}_1", "${postId}_2", "${postId}_3", "${postId}_4", "${postId}_5"))
+                .whereIn(
+                    "serial",
+                    mutableListOf(
+                        "${postId}_0",
+                        "${postId}_1",
+                        "${postId}_2",
+                        "${postId}_3",
+                        "${postId}_4",
+                        "${postId}_5"
+                    )
+                )
                 .get()
                 .await()
         for (i in snapShot) {

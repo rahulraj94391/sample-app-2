@@ -1,9 +1,25 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Instagram" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-<!--        <item name="colorPrimary">@color/black</item>-->
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/col5</item>
+<!--        <item name="colorPrimaryVariant">#6A80FF</item>-->
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/col1</item>
+<!--        <item name="colorSecondaryVariant">#FB9582</item>-->
+        <item name="colorSecondaryContainer">#E4E8FF</item>
+        
+
+        <item name="colorOnSecondary">@color/black</item>
+
+
+        <!-- System bar colors. -->
+        <item name="android:statusBarColor">?attr/colorSecondaryContainer</item>
+        <item name="android:navigationBarColor">?attr/colorSecondaryContainer</item>
+
+
+        <!-- Customize your theme here. -->
 
 
     </style>
@@ -19,7 +35,6 @@
         <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
-
 
 
 </resources>

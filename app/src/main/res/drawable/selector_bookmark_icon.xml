@@ -2,5 +2,4 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/outline_bookmark_border_24" android:state_checked="false" />
     <item android:drawable="@drawable/bookmark_filled" android:state_checked="true" />
-</selector>
-    <!--<item android:drawable="@drawable/checkbox" />-->
+</selector><!--<item android:drawable="@drawable/checkbox" />-->

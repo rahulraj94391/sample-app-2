@@ -23,8 +23,8 @@ private const val TAG = "CommTag_HomeAdapter"
 class HomeAdapter(
     val commentListener: (Int) -> Unit,
     val profileListener: (Int) -> Unit,
-    val likeListener: (Int, Int) -> Unit,
-    val saveListener: (Int, Int) -> Unit,
+    val likeListener: (Int, View) -> Unit,
+    val saveListener: (Int, View) -> Unit,
 ) : RecyclerView.Adapter<HomeAdapter.PostVH>() {
     private lateinit var mContext: Context
     private lateinit var imageUtil: ImageUtil
@@ -52,8 +52,8 @@ class HomeAdapter(
         init {
             profileImage.setOnClickListener { profileListener(adapterPosition) }
             username.setOnClickListener { profileListener(adapterPosition) }
-            likeBtn.setOnClickListener { likeListener(adapterPosition, (it as MaterialCheckBox).checkedState) }
-            savePostBtn.setOnClickListener { saveListener(adapterPosition, (it as MaterialCheckBox).checkedState) }
+            likeBtn.setOnClickListener { likeListener(adapterPosition, it) }
+            savePostBtn.setOnClickListener { saveListener(adapterPosition, it) }
             postDesc.setOnClickListener {
                 (it as TextView).apply {
                     ellipsize = null

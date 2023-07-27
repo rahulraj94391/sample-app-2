@@ -27,5 +27,7 @@ interface PostDao {
     @Query("Select profile_id from post where post_id = :postId")
     suspend fun getProfileId(postId: Long): Long
 
+    @Query("Select post_id FROM post WHERE profile_id IN (SELECT follower_id FROM follow WHERE owner_id = :loggedInId)")
+    suspend fun getPostOfFollowers(loggedInId: Long): MutableList<Long>
 
 }

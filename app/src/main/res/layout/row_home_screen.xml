@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        app:strokeColor="@color/line_border"
         android:layout_marginEnd="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,11 +31,13 @@
                 android:layout_height="40dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:padding="1dp"
                 android:src="@drawable/ic_launcher_foreground"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/circleImageView"
-                app:strokeColor="@color/black" />
+                app:strokeColor="@color/line_border"
+                app:strokeWidth="1dp" />
 
             <TextView
                 android:id="@+id/username"
@@ -42,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:textColor="@color/text_color"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/profileImage"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -79,6 +83,7 @@
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:button="@drawable/selector_like_icon"
+                app:buttonTint="@color/material_checkbox_tint"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2"
 
@@ -91,6 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 app:icon="@drawable/outline_comment_24"
+                app:iconTint="@color/icon_tint"
                 app:layout_constraintStart_toEndOf="@+id/likeBtn"
                 app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2" />
 
@@ -99,6 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:button="@drawable/selector_bookmark_icon"
+                app:buttonTint="@color/material_checkbox_tint"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2" />
 
