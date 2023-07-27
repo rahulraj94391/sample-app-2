@@ -33,14 +33,13 @@ class HomeActivity : AppCompatActivity() {
         val sharedPreferences =
             getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         mainViewModel.loggedInProfileId = sharedPreferences.getLong(
-            MSharedPreferences.LOGGED_IN_PROFILE_ID,
-            -1
+            MSharedPreferences.LOGGED_IN_PROFILE_ID, -1
         )/*IMPORTANT    ----    END */
 
 
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
-
+        //asd
 
         when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
@@ -68,6 +67,7 @@ class HomeActivity : AppCompatActivity() {
                 }
 
             }
+
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
 
