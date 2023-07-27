@@ -38,8 +38,14 @@ class HomeActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragContainerView) as NavHostFragment
         navController = navHostFragment.findNavController()
         binding.bottomNavView.setupWithNavController(navController)
-        binding.bottomNavView.setOnItemReselectedListener {/* do nothing on reselect */ }
-
+        binding.bottomNavView.setOnItemReselectedListener {
+            when (it.itemId) {
+                R.id.homeFragment -> {}
+                R.id.postFragment -> {}
+                R.id.searchFragment -> {onSearchReselected()}
+                R.id.profileFragment -> {}
+            }
+        }
 
 
         val drawable = getDrawable(R.drawable.loading_error)
@@ -47,20 +53,20 @@ class HomeActivity : AppCompatActivity() {
         /*navController.addOnDestinationChangedListener { controller, dest, args ->
             when (dest.id) {
                 R.id.profileFragment -> {
-                    *//*val profileId = NavArgument.Builder().setDefaultValue(mainViewModel.loggedInProfileId!!).build()
-                    dest.addArgument("profileId", profileId)*//*
-
+                    val profileId = NavArgument.Builder().setDefaultValue(mainViewModel.loggedInProfileId!!).build()
+                    dest.addArgument("profileId", profileId)
                     val updatedArguments = args ?: Bundle()
                     updatedArguments.putLong("profileId", mainViewModel.loggedInProfileId!!)
-
                     controller.currentDestination?.addInDefaultArgs(updatedArguments)
-
-
-
                 }
             }
         }*/
 
+    }
+
+    private fun onSearchReselected() {
+//        Log.d(TAG, "onSearchReselected: ")
+//        supportFragmentManager.popBackStack(R.id.searchFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE )
     }
 
 

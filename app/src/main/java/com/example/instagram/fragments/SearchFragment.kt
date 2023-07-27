@@ -24,32 +24,32 @@ private const val TAG = "CommTag_SearchFragment"
 
 class SearchFragment : Fragment(), SearchUsernameClickListener {
     private lateinit var binding: FragmentSearchBinding
-    private lateinit var searchFragViewModel: SearchFragViewModel
+    private lateinit var viewModel: SearchFragViewModel
     private lateinit var searchAdapter: SearchUserAdapter
     private var searchJob: Job? = null
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        searchFragViewModel = ViewModelProvider(this)[SearchFragViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[SearchFragViewModel::class.java]
         val searchRV = binding.searchRV
         searchAdapter = SearchUserAdapter(mutableListOf(), this, R.layout.row_user_search, mutableListOf())
         searchRV.adapter = searchAdapter
         searchRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        searchFragViewModel.searchLiveData.observe(viewLifecycleOwner) {
+        viewModel.searchLiveData.observe(viewLifecycleOwner) {
             searchAdapter.setNewList(it)
-            if (binding.searchViewBar.query.isNotEmpty() && searchFragViewModel.searchLiveData.value!!.size != 0) {
+            if (binding.searchViewBar.query.isNotEmpty() && viewModel.searchLiveData.value!!.size != 0) {
                 binding.startSearchInstruction.visibility = View.GONE
                 binding.searchRV.visibility = View.VISIBLE
             }
         }
 
-        searchFragViewModel.imagesLiveData.observe(viewLifecycleOwner) {
+        viewModel.imagesLiveData.observe(viewLifecycleOwner) {
             searchAdapter.setNewList2(it)
         }
 
@@ -65,7 +65,7 @@ class SearchFragment : Fragment(), SearchUsernameClickListener {
                     searchJob?.cancel()
                     searchJob = lifecycleScope.launch {
                         delay(500)
-                        searchFragViewModel.getSearchResults(newText)
+                        viewModel.getSearchResults(newText)
                     }
                     return true
                 }
@@ -74,8 +74,19 @@ class SearchFragment : Fragment(), SearchUsernameClickListener {
     }
 
     override fun onClick(pos: Int) {
-        val profileId = searchFragViewModel.searchLiveData.value?.get(pos)?.profile_id!!
-        val action = SearchFragmentDirections.actionSearchFragmentToProfileFragment(profileId)
-        findNavController().navigate(action)
+        val profileId = viewModel.searchLiveData.value?.get(pos)?.profile_id
+        searchAdapter.setNewList(mutableListOf())
+        searchAdapter.setNewList2(mutableListOf())
+        val action = profileId?.let { SearchFragmentDirections.actionSearchFragmentToProfileFragment(it) }
+        if (action != null) {
+            findNavController().navigate(action)
+        }
+        binding.searchViewBar.setQuery("", false)
+        viewModel.apply {
+            searchLiveData.value?.clear()
+            imagesLiveData.value?.clear()
+
+        }
+//        java.lang.IllegalArgumentException: Navigation action/destination com.example.instagram:id/action_searchFragment_to_profileFragment cannot be found from the current destination Destination(com.example.instagram:id/onePostFragment) label=OnePostFragment class=com.example.instagram.fragments.OnePostFragment
     }
 }
