@@ -97,7 +97,7 @@ class OnePostFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 binding.apply {
                     likeBtn.isChecked = details.isPostAlreadyLiked
-                    setLikeColorAsPerState(likeBtn, details.isPostAlreadyLiked)
+//                    setLikeColorAsPerState(likeBtn, details.isPostAlreadyLiked)
                     btnSavePost.isChecked = details.isPostAlreadySaved
                     postDesc.text = details.postText
                     timeOfPost.text = DateTime.timeFormatter(details.postTime, TimeFormatting.POST)
@@ -181,7 +181,7 @@ class OnePostFragment : Fragment() {
 
     private fun onLikeClicked(it: MaterialCheckBox) {
         if (it.isChecked) {
-            setLikeColorAsPerState(it, true)
+//            setLikeColorAsPerState(it, true)
             lifecycleScope.launch {
                 db.likesDao().insertNewLike(
                     Likes(
@@ -193,7 +193,7 @@ class OnePostFragment : Fragment() {
                 viewModel.getLikeCount(postId)
             }
         } else {
-            setLikeColorAsPerState(it, false)
+//            setLikeColorAsPerState(it, false)
             lifecycleScope.launch {
                 db.likesDao().deleteLike(mainViewModel.loggedInProfileId!!, postId)
                 viewModel.getLikeCount(postId)

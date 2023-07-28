@@ -39,15 +39,13 @@ android {
 }
 
 dependencies {
-
-    // picasso
-    implementation 'com.squareup.picasso:picasso:2.8'
-
+    
     // nav component
     implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"
     implementation "androidx.navigation:navigation-ui-ktx:2.6.0"
     implementation 'com.google.firebase:firebase-firestore-ktx:24.6.1'
     implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
+    implementation 'androidx.work:work-runtime-ktx:2.8.1'
 
     // room
     def room_version = "2.5.2"

@@ -52,7 +52,9 @@ class SearchFragment : Fragment(), SearchUsernameClickListener {
         viewModel.imagesLiveData.observe(viewLifecycleOwner) {
             searchAdapter.setNewList2(it)
         }
-
+    
+//        binding.searchViewBar.setBackgroundResource(R.drawable.search_view_bg)
+        
         binding.searchViewBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
             override fun onQueryTextChange(newText: String?): Boolean {

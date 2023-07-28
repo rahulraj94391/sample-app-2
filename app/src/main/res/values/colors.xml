@@ -25,12 +25,18 @@
     <color name="logo_tint">#303030</color>
     <color name="bottomNavigationView_container">#DDE6ED</color>
     <color name="bottomNavigationView_secondaryContainer">#DDE6ED</color>
-    <color name="bottomNavigationView_iconColor">#DDE6ED</color>
+    <color name="bottomNavigationView_iconColor">#3D3D3D</color>
     <color name="status_bar">#DDE6ED</color>
     <color name="navigation_bar">#DDE6ED</color>
     <color name="icon_filled">#DDE6ED</color>
     <color name="icon_outlined">#DDE6ED</color>
     <color name="line_border">#CFD6FF</color>
+    <color name="bottomsheet_bg">#DDE6ED</color>
+
+
+    <color name="search_border">#9ba9ff</color>
+
+
 
 
 </resources>

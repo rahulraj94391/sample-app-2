@@ -31,7 +31,7 @@ class PhotoGridFragment : Fragment() {
     private lateinit var userPostedPhotoAdapter: PhotoGridAdapter
     private var listRef: Int by Delegates.notNull()
     private var userProfId: Long by Delegates.notNull()
-
+    
     companion object {
         fun newInstance(pos: Int, userProfId: Long): PhotoGridFragment {
             val args = Bundle()
@@ -42,7 +42,7 @@ class PhotoGridFragment : Fragment() {
             return fragment
         }
     }
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireArguments().let {
@@ -50,22 +50,22 @@ class PhotoGridFragment : Fragment() {
             userProfId = it.getLong(USER_PROF_KEY)
         }
     }
-
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_photo_grid, container, false)
         return binding.root
     }
-
+    
     private fun onPostClicked(postId: Long) {
         requireActivity().supportFragmentManager.setFragmentResult(POST_ID_OPEN_REQ_KEY, bundleOf(POST_ID_REF_KEY to postId))
     }
-
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[PhotoGridFragViewModel::class.java]
         userPostedPhotoAdapter = PhotoGridAdapter(this::onPostClicked)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-
+        
         if (listRef == 0) {
             lifecycleScope.launch {
                 viewModel.getProfilePost(userProfId)
@@ -74,8 +74,7 @@ class PhotoGridFragment : Fragment() {
                 whenDataLoaded()
                 userPostedPhotoAdapter.setNewList(it)
             }
-        }
-        else {
+        } else {
             lifecycleScope.launch {
                 viewModel.getAllPostInWhichProfileIsTagged(userProfId)
             }
@@ -91,10 +90,10 @@ class PhotoGridFragment : Fragment() {
         binding.profilePosts.layoutManager = GridLayoutManager(requireContext(), spanCount)
         binding.profilePosts.setHasFixedSize(true)
     }
-
+    
     private fun whenDataLoaded() {
         binding.loadingProgressBar.visibility = View.GONE
         binding.profilePosts.visibility = View.VISIBLE
     }
-
+    
 }

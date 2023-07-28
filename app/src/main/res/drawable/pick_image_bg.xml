@@ -3,7 +3,7 @@
 
     <stroke
         android:width="2dp"
-        android:color="@color/black"
+        android:color="@color/search_border"
         android:dashWidth="20dp"
         android:dashGap="3dp" />
 

@@ -25,18 +25,21 @@ class ImageUtil(val context: Context) {
     private val errorBitmap: Bitmap = ContextCompat.getDrawable(context, R.drawable.loading_error)!!.toBitmap()
 
     suspend fun getBitmap(url: String): Bitmap {
+        Log.d(TAG, "getBitmap")
         val fileName = AppDatabase.getDatabase(context).cacheDao().getCachedImageFileNameIfPresent(url)
         return if (fileName == null) newURLFound(url)
         else getImageFromCache("$fileName") ?: onEntryPresentAndFileMissing(url, fileName)
     }
 
     private suspend fun onEntryPresentAndFileMissing(url: String, fileName: Long): Bitmap {
+        Log.d(TAG, "onEntryPresentAndFileMissing")
         val downloadedBitmap = downloadBitmap(url) ?: return errorBitmap
         putImageInCache("$fileName", downloadedBitmap)
         return downloadedBitmap
     }
 
     private suspend fun newURLFound(url: String): Bitmap {
+        Log.d(TAG, "newURLFound")
         val downloadedBitmap = downloadBitmap(url) ?: return errorBitmap
         val db = AppDatabase.getDatabase(context)
         val newRec = db.cacheDao().insertCacheUrl(ImageCache(url, System.currentTimeMillis()))
@@ -46,6 +49,7 @@ class ImageUtil(val context: Context) {
     }
 
     private fun getImageFromCache(fileName: String): Bitmap? {
+        Log.d(TAG, "getImageFromCache")
         val file = File(context.cacheDir, fileName)
         var bitmap: Bitmap? = null
         try {
@@ -58,6 +62,7 @@ class ImageUtil(val context: Context) {
     }
 
     private suspend fun putImageInCache(fileName: String, image: Bitmap) {
+        Log.d(TAG, "putImageInCache")
         val file = File(context.cacheDir, fileName)
         try {
             val outputStream = withContext(Dispatchers.IO) {
@@ -75,6 +80,7 @@ class ImageUtil(val context: Context) {
     }
 
     private fun downloadBitmap(imageUrl: String): Bitmap? {
+        Log.d(TAG, "downloadBitmap")
         return try {
             val conn = URL(imageUrl).openConnection()
             conn.connect()

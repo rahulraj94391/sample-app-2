@@ -21,7 +21,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDone"
-        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+        style="@style/TonalFilledBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -34,7 +34,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/selectedPicRV2"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="290dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:visibility="gone"
@@ -46,7 +46,7 @@
     <TextView
         android:id="@+id/tapToSelectLabel"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="290dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/pick_image_bg"

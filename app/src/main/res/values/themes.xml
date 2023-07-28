@@ -3,13 +3,13 @@
     <style name="Base.Theme.Instagram" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/col5</item>
-<!--        <item name="colorPrimaryVariant">#6A80FF</item>-->
+        <!--        <item name="colorPrimaryVariant">#6A80FF</item>-->
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/col1</item>
-<!--        <item name="colorSecondaryVariant">#FB9582</item>-->
+        <!--        <item name="colorSecondaryVariant">#FB9582</item>-->
         <item name="colorSecondaryContainer">#E4E8FF</item>
-        
+
 
         <item name="colorOnSecondary">@color/black</item>
 
@@ -34,6 +34,11 @@
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    </style>
+
+    <style name="TonalFilledBtn" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
+        <item name="backgroundTint">@color/col5</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
 

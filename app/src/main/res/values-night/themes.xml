@@ -1,23 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Instagram" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">#C1B7B7</item>
+        <item name="colorPrimary">#7E8DEB</item>
         <!--        <item name="colorPrimaryVariant">@color/purple_700</item>-->
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/col1</item>
         <!--        <item name="colorSecondaryVariant">@color/teal_700</item>-->
         <item name="colorOnSecondary">@color/black</item>
 
 
-
         <!-- Status bar color. -->
         <item name="android:statusBarColor">#1C1B20</item>
-        <item name="android:navigationBarColor">#29272C</item>
+        <item name="android:navigationBarColor">#197E8DEB</item>
 
 
         <!-- Customize your theme here. -->
-
+        <item name="colorSecondaryContainer">#197E8DEB</item>
 
 
     </style>
@@ -27,5 +26,9 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="TonalFilledBtn" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
+        <item name="backgroundTint">#95A3F8</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
 
 </resources>

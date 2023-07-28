@@ -182,6 +182,7 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
 
         if (!isInternetActive(requireContext())) {
             Toast.makeText(requireContext(), "Internet not active.", Toast.LENGTH_SHORT).show()
+            return
         }
 
         if (binding.postText.text.isBlank()) {
