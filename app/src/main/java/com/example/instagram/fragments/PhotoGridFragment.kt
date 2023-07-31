@@ -2,6 +2,7 @@ package com.example.instagram.fragments
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,29 +72,35 @@ class PhotoGridFragment : Fragment() {
                 viewModel.getProfilePost(userProfId)
             }
             viewModel.usersPost.observe(viewLifecycleOwner) {
-                whenDataLoaded()
+                binding.loadingProgressBar.visibility = View.GONE
+                if (it.size == 0) {
+                    Log.e(TAG, "onViewCreated<1>: ${it.size}")
+                    binding.ins1.visibility = View.VISIBLE
+                    return@observe
+                }
+                binding.gridOfPosts.visibility = View.VISIBLE
                 userPostedPhotoAdapter.setNewList(it)
             }
         } else {
             lifecycleScope.launch {
-                viewModel.getAllPostInWhichProfileIsTagged(userProfId)
+                viewModel.getAllPostWhereProfileIsTagged(userProfId)
             }
             viewModel.usersTaggedPost.observe(viewLifecycleOwner) {
-                whenDataLoaded()
+                binding.loadingProgressBar.visibility = View.GONE
+                if (it.size == 0) {
+                    Log.e(TAG, "onViewCreated<2>: ${it.size}")
+                    binding.ins2.visibility = View.VISIBLE
+                    return@observe
+                }
+                binding.gridOfPosts.visibility = View.VISIBLE
                 userPostedPhotoAdapter.setNewList(it)
             }
         }
-
-
+        
+        
         val spanCount = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 5 else 3
-        binding.profilePosts.adapter = userPostedPhotoAdapter
-        binding.profilePosts.layoutManager = GridLayoutManager(requireContext(), spanCount)
-        binding.profilePosts.setHasFixedSize(true)
+        binding.gridOfPosts.adapter = userPostedPhotoAdapter
+        binding.gridOfPosts.layoutManager = GridLayoutManager(requireContext(), spanCount)
+        binding.gridOfPosts.setHasFixedSize(true)
     }
-    
-    private fun whenDataLoaded() {
-        binding.loadingProgressBar.visibility = View.GONE
-        binding.profilePosts.visibility = View.VISIBLE
-    }
-    
 }

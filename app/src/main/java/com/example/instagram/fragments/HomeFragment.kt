@@ -36,7 +36,7 @@ class HomeFragment : Fragment() {
         val currentUser = mainViewModel.loggedInProfileId!!
         val db = AppDatabase.getDatabase(requireContext())
         viewModel = ViewModelProvider(this, ViewModelFactory(currentUser, db))[HomeFragViewModel::class.java]
-        viewModel.addNewPostToList(mainViewModel.loggedInProfileId!!)
+        
     }
     
     
@@ -47,6 +47,10 @@ class HomeFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState == null) {
+            viewModel.addNewPostToList(mainViewModel.loggedInProfileId!!)
+            
+        }
         
         homeAdapter = HomeAdapter(::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked)
         binding.btnMessages.setOnClickListener { whenMessagesBtnClicked() }
@@ -58,6 +62,7 @@ class HomeFragment : Fragment() {
         viewModel.postsToShow.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
             binding.homeRV.visibility = View.VISIBLE
+            if (it.size == 0) binding.followToSeeFeed.visibility = View.VISIBLE
             homeAdapter.addNewPosts(it)
         }
     }
@@ -105,6 +110,11 @@ class HomeFragment : Fragment() {
             homeAdapter.notifyItemChanged(pos, savePayload)
         }
         
+    }
+    
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("isFirstTime", false)
     }
     
     private fun openCommentBottomSheet(pos: Int) {

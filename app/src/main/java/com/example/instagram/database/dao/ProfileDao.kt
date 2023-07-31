@@ -13,13 +13,20 @@ import com.example.instagram.database.model.FullNameBio
 interface ProfileDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNewProfile(profile: Profile): Long
-
+    
     @Query("SELECT * FROM profile WHERE profile.first_name = :name")
     fun getUsersWithFirstname(name: String): LiveData<MutableList<Profile>>
-
+    
     @Query("SELECT first_name, last_name FROM profile WHERE profile_id = :profileId")
     suspend fun getFullName(profileId: Long): FullName
-
+    
     @Query("SELECT first_name, last_name, bio FROM profile WHERE profile_id = :profileId")
     suspend fun getFullNameBio(profileId: Long): FullNameBio
+    
+    @Query("UPDATE profile SET first_name = :firstName, last_name = :lastName, bio = :bio WHERE profile_id = :profileId")
+    suspend fun editProfile(firstName: String, lastName: String, bio: String, profileId: Long)
 }
+
+//UPDATE Customers
+//SET ContactName = 'Alfred Schmidt', City= 'Frankfurt'
+//WHERE CustomerID = 1;

@@ -3,7 +3,6 @@ package com.example.instagram.worker
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.instagram.ImageUtil
@@ -17,20 +16,20 @@ import com.google.firebase.storage.FirebaseStorage
 const val UPLOAD_IMAGE_PATH_KEY = "photo_uri"
 const val PROFILE_ID_KEY = "profile_id"
 const val POST_TEXT_KEY = "post_text"
-const val POST_TAGS_KEY = "post_tag"
+const val POST_TAGS_KEY = "post_tagss"
 private const val TAG = "CommTag_UploadPostPictures"
 
 class UploadPostPictures(val context: Context, private val workerParameter: WorkerParameters) : CoroutineWorker(context, workerParameter) {
     private var imageUtil: ImageUtil = ImageUtil(context)
     private var db: AppDatabase = AppDatabase.getDatabase(context)
-    
     private var storageRef: FirebaseStorage = FirebaseStorage.getInstance()
     private var firebaseFirestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     
-    
     override suspend fun doWork(): Result {
+        Log.d(TAG, "CHECK-POINT 1")
+        
         //photo(s) Uri
-        val originalUri = inputData.getStringArray(UPLOAD_IMAGE_PATH_KEY) ?: return Result.failure()
+        val originalUri = inputData.getStringArray(UPLOAD_IMAGE_PATH_KEY) ?: return Result.failure().also { }
         
         // post text should not be null
         val postText = inputData.getString(POST_TEXT_KEY) ?: return Result.failure()
@@ -41,26 +40,34 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         
         // tags could be null
         val tags = inputData.getLongArray(POST_TAGS_KEY)
-    
+        
+        Log.d(TAG, "CHECK-POINT 2")
+        
         val timeStamp = System.currentTimeMillis()
         val postId = db.postDao().insertPost(Post(profileId, timeStamp))
         db.postTextDao().insertPostText(PostText(postId, postText))
+        Log.d(TAG, "CHECK-POINT 2a")
         val downscaleImageUris = imageUtil.getUriDownscaleImages(stringToUri(originalUri))
+        Log.d(TAG, "CHECK-POINT 2b")
         uploadPostImages(postId, downscaleImageUris)
-    
-        if (tags?.size!! > 0) {
+        Log.d(TAG, "CHECK-POINT 3")
+        
+        
+        tags!!.let {
+            Log.d(TAG, "inside the tags NOT NULL BLOCK")
             db.tagPeopleDao().insertPostTags(prepareTagsOnPost(tags, postId))
         }
         
+        Log.d(TAG, "CHECK-POINT 4")
         return Result.success()
     }
-    
     
     private fun prepareTagsOnPost(tags: LongArray, postId: Long): MutableList<Tag> {
         val list = mutableListOf<Tag>()
         for (i in tags) {
             list.add(Tag(postId, i))
         }
+        Log.d(TAG, "prepareTagsOnPost: $list")
         return list
     }
     
@@ -100,8 +107,7 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
                                 
                             }
                         }
-                    } else {
-                        // when image upload to storage(drive like) fails
+                    } else { // when image upload to storage(drive like) fails
                         /*Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
                         binding.imageView.setImageResource(R.drawable.ic_launcher_background)
                         binding.progressBar.visibility = View.INVISIBLE*/
@@ -111,11 +117,11 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         }
         
         val message = if (failCounter > 0) {
-            "$passCounter/$failCounter uploaded successfully"
+            "$passCounter/${passCounter+failCounter} uploaded successfully"
         } else {
             "Photos uploaded successfully"
         }
         
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        Log.d(TAG, "uploadPostImages: $message")
     }
 }

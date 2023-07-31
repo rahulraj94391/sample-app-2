@@ -27,19 +27,17 @@ private const val TAG = "CommTag_LoginFragment"
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
-
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
         return binding.root
     }
-
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.createNewAccountBtn.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_createNewAccountScreenOneFragment)
         }
-
-
         binding.loginBtn.setOnClickListener {
             lifecycleScope.launch {
                 val username = binding.usernameField.text.toString()
@@ -48,7 +46,7 @@ class LoginFragment : Fragment() {
             }
         }
     }
-
+    
     private suspend fun checkCredentials(username: String, password: String) {
         val db = AppDatabase.getDatabase(requireContext())
         val id: Long? = db.loginCredDao().loginWithCred(username, password)
@@ -65,7 +63,7 @@ class LoginFragment : Fragment() {
             putBoolean(IS_LOGGED_IN, true)
             apply()
         }
-
+        
         withContext(Dispatchers.Main) {
             startActivity(Intent(requireContext(), HomeActivity::class.java))
             requireActivity().finish()

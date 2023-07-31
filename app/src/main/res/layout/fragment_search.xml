@@ -36,13 +36,18 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/person_outlined" />
+                android:src="@drawable/person_outlined"
+                app:tint="@color/logo_tint" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="4dp"
-                android:text="Search a user" />
+                android:text="Search a user"
+                android:textColor="@color/logo_tint"
+                android:textStyle="bold"
+
+                />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

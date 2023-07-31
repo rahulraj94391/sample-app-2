@@ -19,20 +19,49 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/profileImage"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
                 android:layout_marginTop="56dp"
+                android:adjustViewBounds="true"
                 android:background="@drawable/ic_launcher_background"
                 android:padding="8dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_launcher_foreground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/circleImageView"
-                app:strokeColor="@color/black"
-                app:strokeWidth="1dp"
+                app:strokeColor="@color/search_border"
+                app:strokeWidth="1dp" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/profileImage"
+                app:layout_constraintEnd_toEndOf="@id/profileImage"
+                app:layout_constraintStart_toStartOf="@id/profileImage"
+                app:layout_constraintTop_toTopOf="@id/profileImage"
 
                 />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/uploadNewPicture"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:text="Upload Profile Picture"
+                app:layout_constraintEnd_toEndOf="@id/profileImage"
+                app:layout_constraintStart_toStartOf="@+id/profileImage"
+                app:layout_constraintTop_toBottomOf="@+id/profileImage"
+
+                />
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_bio"
@@ -44,7 +73,7 @@
                 android:layout_marginEnd="24dp"
                 app:endIconMode="clear_text"
                 app:errorEnabled="true"
-                app:layout_constraintTop_toBottomOf="@+id/profileImage">
+                app:layout_constraintTop_toBottomOf="@+id/uploadNewPicture">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bio"
@@ -118,7 +147,7 @@
                 app:layout_constraintVertical_bias="0.0"
                 tools:text="password guide" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/signUpBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -130,8 +159,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -49,10 +48,6 @@ class ProfileFragment : Fragment() {
     private val args: ProfileFragmentArgs? by navArgs()
     private lateinit var lastStatusProfSummary: ProfileSummary
     
-    private val profilePicUri = registerForActivityResult(ActivityResultContracts.GetContent()) {
-        viewModel.uploadProfileImage(mainViewModel.loggedInProfileId!!, it)
-    }
-    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = AppDatabase.getDatabase(requireContext())
@@ -88,10 +83,6 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnProfileBottomSheet.setOnClickListener { findNavController().navigate(R.id.action_profileFragment_to_profileMenu2) }
-        binding.profilePic.setOnLongClickListener {
-            profilePicUri.launch("image/*")
-            true
-        }
         if (::lastStatusProfSummary.isInitialized) {
             bindAllDetails(lastStatusProfSummary)
         }
@@ -121,7 +112,7 @@ class ProfileFragment : Fragment() {
                 }
             }
         }.attach()
-        
+        binding.viewPagerPostAndTagPhoto.isSaveEnabled = false
         
     }
     
@@ -181,7 +172,7 @@ class ProfileFragment : Fragment() {
     }
     
     private fun editProfile() {
-        Log.d(TAG, "editProfile clicked.")
+        findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
     }
     
     private fun shareProfile() {

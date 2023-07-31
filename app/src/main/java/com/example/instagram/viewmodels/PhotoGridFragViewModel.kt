@@ -22,10 +22,7 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
         val postIds = viewModelScope.async {
             db.postDao().getAllPostOfProfile(profileId)
         }
-        
         val urlsOfOnePhotoPerPost = getOneImagePerPost(postIds.await())
-        
-        
         usersPost.postValue(urlsOfOnePhotoPerPost.asReversed())
     }
     
@@ -43,17 +40,15 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
                 val link = i.data["$postId"].toString()
                 imgURLList.add(OnePhotoPerPost(postId, link))
             }
-            
         }
         return imgURLList
     }
     
-    suspend fun getAllPostInWhichProfileIsTagged(profileId: Long) {
+    suspend fun getAllPostWhereProfileIsTagged(profileId: Long) {
         val defList = viewModelScope.async {
             db.tagPeopleDao().getAllTaggedPostOfProfile(profileId)
         }
         val urlsOfOnePhotoPerPost = getOneImagePerPost(defList.await())
         usersTaggedPost.postValue(urlsOfOnePhotoPerPost.asReversed())
     }
-    
 }
