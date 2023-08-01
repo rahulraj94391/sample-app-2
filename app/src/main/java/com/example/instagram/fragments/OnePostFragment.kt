@@ -25,6 +25,7 @@ import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.databinding.FragmentOnePostBinding
 import com.example.instagram.viewmodels.OnePostFragViewModel
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,7 +45,7 @@ class OnePostFragment : Fragment() {
     private val args: OnePostFragmentArgs? by navArgs()
     private var profileId = 0.toLong()
     private lateinit var imageUtil: ImageUtil
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = AppDatabase.getDatabase(requireContext())
@@ -53,20 +54,15 @@ class OnePostFragment : Fragment() {
             profileId = db.postDao().getProfileId(postId)
         }
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         db = AppDatabase.getDatabase(requireContext())
         viewModel = ViewModelProvider(this)[OnePostFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_one_post, container, false)
         return binding.root
     }
-
-
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
@@ -76,13 +72,11 @@ class OnePostFragment : Fragment() {
             btnSavePost.setOnClickListener { onSavePostClicked(it as MaterialCheckBox) }
             likeBtn.setOnClickListener { onLikeClicked(it as MaterialCheckBox) }
         }
-
         imageUtil = ImageUtil(requireContext())
-
         postPhotoAdapter = PostAdapter()
         binding.allImagesInAPostVP2.adapter = postPhotoAdapter
-
-
+        TabLayoutMediator(binding.indicatorVP, binding.allImagesInAPostVP2) { _, _ -> }.attach()
+        
         lifecycleScope.launch {
             with(viewModel) {
                 getProfilePictureByPostId(postId)
@@ -91,13 +85,13 @@ class OnePostFragment : Fragment() {
                 getLikeCount(postId)
             }
         }
-
+        
         lifecycleScope.launch {
             val details = viewModel.getPostDetails(postId, mainViewModel.loggedInProfileId!!)
             withContext(Dispatchers.Main) {
                 binding.apply {
                     likeBtn.isChecked = details.isPostAlreadyLiked
-//                    setLikeColorAsPerState(likeBtn, details.isPostAlreadyLiked)
+                    // setLikeColorAsPerState(likeBtn, details.isPostAlreadyLiked)
                     btnSavePost.isChecked = details.isPostAlreadySaved
                     postDesc.text = details.postText
                     timeOfPost.text = DateTime.timeFormatter(details.postTime, TimeFormatting.POST)
@@ -105,16 +99,16 @@ class OnePostFragment : Fragment() {
                 }
             }
         }
-
+        
         binding.profileImage.setOnClickListener {
             openProfile()
         }
-
+        
         binding.allImagesInAPostVP2.setOnClickListener {
             viewPagerDoubleClicked(it as ViewPager2)
         }
-
-
+        
+        
         viewModel.profileImageUrl.observe(viewLifecycleOwner) {
             if (it == null) return@observe
             CoroutineScope(Dispatchers.IO).launch {
@@ -124,16 +118,16 @@ class OnePostFragment : Fragment() {
                 }
             }
         }
-
+        
         viewModel.postImagesUrl.observe(viewLifecycleOwner) {
             // add VP2 adapter new list here
             postPhotoAdapter.setNewList(it)
         }
-
+        
         viewModel.likeCount.observe(viewLifecycleOwner) {
             binding.likeCount.text = "$it likes"
         }
-
+        
         viewModel.commentCount.observe(viewLifecycleOwner) {
             binding.commentCount.text = when (it) {
                 0 -> "0 comment"
@@ -142,20 +136,20 @@ class OnePostFragment : Fragment() {
             }
         }
     }
-
+    
     private fun openProfile() {
-        val a = OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId)
-        findNavController().navigate(a)
+        /*val a = OnePostFragmentDirections.actionOnePostFragmentToSearchDetailFragment(profileId)
+        findNavController().navigate(a)*/
     }
-
+    
     private fun openProfileFromFrag() {
-
+    
     }
-
+    
     private fun viewPagerDoubleClicked(viewPager2: ViewPager2) {
         // Todo: double tap on viewpage to like post
     }
-
+    
     private fun onSavePostClicked(it: MaterialCheckBox) {
         if (it.isChecked) {
             lifecycleScope.launch {
@@ -173,15 +167,15 @@ class OnePostFragment : Fragment() {
             }
         }
     }
-
+    
     private fun onDescClicked(view: TextView) {
         view.ellipsize = null
         view.maxLines = Int.MAX_VALUE
     }
-
+    
     private fun onLikeClicked(it: MaterialCheckBox) {
         if (it.isChecked) {
-//            setLikeColorAsPerState(it, true)
+            //            setLikeColorAsPerState(it, true)
             lifecycleScope.launch {
                 db.likesDao().insertNewLike(
                     Likes(
@@ -193,14 +187,14 @@ class OnePostFragment : Fragment() {
                 viewModel.getLikeCount(postId)
             }
         } else {
-//            setLikeColorAsPerState(it, false)
+            //            setLikeColorAsPerState(it, false)
             lifecycleScope.launch {
                 db.likesDao().deleteLike(mainViewModel.loggedInProfileId!!, postId)
                 viewModel.getLikeCount(postId)
             }
         }
     }
-
+    
     private fun setLikeColorAsPerState(it: MaterialCheckBox, state: Boolean) {
         if (state) {
             it.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.red))
@@ -208,7 +202,7 @@ class OnePostFragment : Fragment() {
             it.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.black))
         }
     }
-
+    
     private fun onCommentClicked() {
         val action = OnePostFragmentDirections.actionOnePostFragmentToCommentSheet(postId)
         findNavController().navigate(action)

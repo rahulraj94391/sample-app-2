@@ -62,8 +62,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:textStyle="bold"
                     android:layout_marginEnd="16dp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/profileImage"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/profileImage"
@@ -83,14 +83,18 @@
                     android:id="@+id/indicatorVP"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
                     android:background="@android:color/transparent"
                     android:clickable="false"
                     android:elevation="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2"
-
-                    />
+                    app:tabBackground="@drawable/tab_pager_selector"
+                    app:tabGravity="center"
+                    app:tabIndicatorHeight="0dp"
+                    app:tabMaxWidth="8dp"
+                    app:tabPadding="0dp" />
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/likeBtn"
@@ -100,9 +104,7 @@
                     android:button="@drawable/selector_like_icon"
                     app:buttonTint="@color/material_checkbox_tint"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2"
-
-                    />
+                    app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/comment"
@@ -168,7 +170,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    tools:text = "2 hour ago"
                     android:layout_marginBottom="100dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
@@ -176,7 +177,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/commentCount"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:text="2 hour ago" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </LinearLayout>

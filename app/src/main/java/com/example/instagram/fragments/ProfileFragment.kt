@@ -112,7 +112,9 @@ class ProfileFragment : Fragment() {
                 }
             }
         }.attach()
-        binding.viewPagerPostAndTagPhoto.isSaveEnabled = false
+        
+        // todo: IF App crashed due to viewpager in profile fragment
+        binding.viewPagerPostAndTagPhoto.isSaveEnabled = true
         
     }
     

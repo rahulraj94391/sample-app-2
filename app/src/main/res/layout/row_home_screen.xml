@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            tools:context=".fragments.OnePostFragment">
+            tools:context=".fragments.HomeFragment">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/profileImage"
@@ -70,14 +70,18 @@
                 android:id="@+id/indicatorVP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
                 android:background="@android:color/transparent"
                 android:clickable="false"
                 android:elevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2"
-
-                />
+                app:tabBackground="@drawable/tab_pager_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp"
+                app:tabMaxWidth="8dp"
+                app:tabPadding="0dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/likeBtn"

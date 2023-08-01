@@ -3,7 +3,6 @@ package com.example.instagram.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,9 +38,13 @@ class LoginFragment : Fragment() {
             findNavController().navigate(R.id.action_loginFragment_to_createNewAccountScreenOneFragment)
         }
         binding.loginBtn.setOnClickListener {
+            val username = binding.usernameField.text.toString()
+            val password = binding.passwordField.text.toString()
+            if (username.isBlank() || password.isBlank()) {
+                Toast.makeText(requireContext(), "Enter details correctly.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             lifecycleScope.launch {
-                val username = binding.usernameField.text.toString()
-                val password = binding.passwordField.text.toString()
                 checkCredentials(username, password)
             }
         }
@@ -50,7 +53,7 @@ class LoginFragment : Fragment() {
     private suspend fun checkCredentials(username: String, password: String) {
         val db = AppDatabase.getDatabase(requireContext())
         val id: Long? = db.loginCredDao().loginWithCred(username, password)
-        Log.d(TAG, "ID after login with cred: $id")
+        //        Log.d(TAG, "ID after login with cred: $id")
         if (id == null) {
             withContext(Dispatchers.Main) {
                 Toast.makeText(requireContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show()

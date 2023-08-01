@@ -1,6 +1,5 @@
 package com.example.instagram.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +14,10 @@ import kotlinx.coroutines.withContext
 
 class PostAdapter : RecyclerView.Adapter<PostAdapter.MyViewHolder>() {
     private var postImages: MutableList<String> = mutableListOf()
-    private lateinit var context: Context
     private lateinit var imageUtil: ImageUtil
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        context = recyclerView.context
-        imageUtil = ImageUtil(context)
+        imageUtil = ImageUtil(recyclerView.context)
         super.onAttachedToRecyclerView(recyclerView)
     }
 
