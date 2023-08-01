@@ -36,9 +36,7 @@ class HomeFragment : Fragment() {
         val currentUser = mainViewModel.loggedInProfileId!!
         val db = AppDatabase.getDatabase(requireContext())
         viewModel = ViewModelProvider(this, ViewModelFactory(currentUser, db))[HomeFragViewModel::class.java]
-        
     }
-    
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
@@ -49,9 +47,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
             viewModel.addNewPostToList(mainViewModel.loggedInProfileId!!)
-            
         }
-        
         homeAdapter = HomeAdapter(::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked)
         binding.btnMessages.setOnClickListener { whenMessagesBtnClicked() }
         binding.btnNotifications.setOnClickListener { whenNotificationBtnClicked() }

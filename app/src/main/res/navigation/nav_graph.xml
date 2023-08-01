@@ -50,6 +50,9 @@
         <action
             android:id="@+id/action_profileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_listFollowFragment"
+            app:destination="@id/listFollowFragment" />
     </fragment>
     <fragment
         android:id="@+id/onePostFragment"
@@ -107,6 +110,23 @@
         tools:layout="@layout/fragment_edit_profile">
         <action
             android:id="@+id/action_editProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/listFollowFragment"
+        android:name="com.example.instagram.fragments.ListFollowFragment"
+        android:label="fragment_list_follow"
+        tools:layout="@layout/fragment_list_follow" >
+        <argument
+            android:name="type"
+            app:argType="string" />
+        <argument
+            android:name="profileId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_listFollowFragment_to_profileFragment"
             app:destination="@id/profileFragment"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="true" />

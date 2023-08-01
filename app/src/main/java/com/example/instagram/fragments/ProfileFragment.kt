@@ -100,6 +100,19 @@ class ProfileFragment : Fragment() {
             
         }
         
+        binding.followersCount.setOnClickListener {
+            val action =
+                ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId)
+            findNavController().navigate(action)
+        }
+        
+        binding.followingCount.setOnClickListener {
+            val action =
+                ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId)
+            findNavController().navigate(action)
+            
+        }
+        
         binding.viewPagerPostAndTagPhoto.adapter = ScreenSlidePagerAdapter(requireActivity())
         TabLayoutMediator(binding.tabLayout, binding.viewPagerPostAndTagPhoto) { tab, position ->
             when (position) {
@@ -114,7 +127,7 @@ class ProfileFragment : Fragment() {
         }.attach()
         
         // todo: IF App crashed due to viewpager in profile fragment
-        binding.viewPagerPostAndTagPhoto.isSaveEnabled = true
+        binding.viewPagerPostAndTagPhoto.isSaveEnabled = false
         
     }
     

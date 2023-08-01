@@ -11,9 +11,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.ImageCache
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
@@ -24,6 +26,7 @@ import java.net.URL
 private const val TAG = "ImageUtil"
 
 class ImageUtil(val context: Context) {
+    private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val errorBitmap: Bitmap = ContextCompat.getDrawable(context, R.drawable.loading_error)!!.toBitmap()
     
     suspend fun getBitmap(url: String): Bitmap {
@@ -136,5 +139,22 @@ class ImageUtil(val context: Context) {
         ////        Log.d(TAG, "URI_TEST - final uris list from ImageUtil = $finalList")
         //        return finalList
         return postImagesUri
+    }
+    
+    /*---------------------------------------------—---------------------------------------------—---------------------------------------------—---------------------------------------------—*/
+    
+    
+    suspend fun getProfilePicture(profileId: Long): String? {
+        var profileImageUrl: String? = null
+        val snapShot = firebaseFireStore
+            .collection("profileImages")
+            .whereEqualTo("ppid", "$profileId")
+            .get()
+            .await()
+        for (i in snapShot) {
+            profileImageUrl = i.data["$profileId"].toString()
+            break
+        }
+        return profileImageUrl
     }
 }

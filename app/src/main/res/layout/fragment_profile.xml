@@ -12,6 +12,7 @@
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="?attr/colorSecondaryContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -28,9 +29,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="4dp"
-                    android:text="Loading ..."
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="Loading ..." />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnProfileBottomSheet"
@@ -122,10 +123,13 @@
 
                     <TextView
                         android:id="@+id/postCount"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
+                        android:gravity="center"
                         android:text="70"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toStartOf="@+id/gl1"
                         app:layout_constraintStart_toStartOf="parent"
@@ -144,11 +148,14 @@
 
                     <TextView
                         android:id="@+id/followersCount"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
+                        android:gravity="center"
                         android:text="364"
+                        android:textSize="18sp"
                         android:textStyle="bold"
+
                         app:layout_constraintEnd_toStartOf="@+id/gl2"
                         app:layout_constraintStart_toEndOf="@id/gl1"
                         app:layout_constraintTop_toBottomOf="@+id/profileBio" />
@@ -167,10 +174,12 @@
 
                     <TextView
                         android:id="@+id/followingCount"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
+                        android:gravity="center"
                         android:text="422"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/gl2"

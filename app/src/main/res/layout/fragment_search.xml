@@ -8,17 +8,24 @@
         android:layout_height="match_parent"
         tools:context=".fragments.SearchFragment">
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchViewBar"
+        <LinearLayout
+            android:id="@+id/ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="@drawable/search_view_bg"
-            app:iconifiedByDefault="false"
+            android:background="?attr/colorSecondaryContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:queryHint="Search name" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchViewBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/search_view_bg"
+                app:iconifiedByDefault="false"
+                app:queryHint="Search name" />
+        </LinearLayout>
 
 
         <LinearLayout
@@ -31,7 +38,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchViewBar">
+            app:layout_constraintTop_toBottomOf="@+id/ll">
 
             <ImageView
                 android:layout_width="40dp"
@@ -59,7 +66,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchViewBar"
+            app:layout_constraintTop_toBottomOf="@+id/ll"
             tools:listitem="@layout/row_user_search" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
