@@ -70,15 +70,10 @@ class ProfileFragment : Fragment() {
         }
     }
     
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         return binding.root
     }
-    
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -97,7 +92,6 @@ class ProfileFragment : Fragment() {
                 bindAllDetails(it)
             }
             this.lastStatusProfSummary = it
-            
         }
         
         binding.followersCount.setOnClickListener {
@@ -110,7 +104,6 @@ class ProfileFragment : Fragment() {
             val action =
                 ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId)
             findNavController().navigate(action)
-            
         }
         
         binding.viewPagerPostAndTagPhoto.adapter = ScreenSlidePagerAdapter(requireActivity())

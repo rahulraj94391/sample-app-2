@@ -32,7 +32,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
-private const val POST_ID = "postId"
 private const val TAG = "CommTag_OnePostFragment"
 
 class OnePostFragment : Fragment() {
@@ -138,8 +137,8 @@ class OnePostFragment : Fragment() {
     }
     
     private fun openProfile() {
-        /*val a = OnePostFragmentDirections.actionOnePostFragmentToSearchDetailFragment(profileId)
-        findNavController().navigate(a)*/
+        val a = OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId)
+        findNavController().navigate(a)
     }
     
     private fun openProfileFromFrag() {

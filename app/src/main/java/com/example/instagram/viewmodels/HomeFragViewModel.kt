@@ -21,19 +21,23 @@ class HomeFragViewModel(private val currentProfile: Long, private val db: AppDat
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     val postsToShow = MutableLiveData<MutableList<Post>>()
     private val postIdsAlreadyShown = mutableSetOf<Long>()
-
+    
     fun addNewPostToList(loggedInProfileId: Long) {
+        postIdsAlreadyShown.clear()
         viewModelScope.launch {
             val tempList: MutableList<Post> = mutableListOf()
             val postsToShowOnHome = db.postDao().getPostOfFollowers(loggedInProfileId)
-
+            
             for (i in postsToShowOnHome) {
-                tempList.add(getPost(i))
+                if (!postIdsAlreadyShown.contains(i)) {
+                    postIdsAlreadyShown.add(i)
+                    tempList.add(getPost(i))
+                }
             }
             postsToShow.postValue(tempList)
         }
     }
-
+    
     private suspend fun getPost(postId: Long): Post {
         val profileId = viewModelScope.async { getProfileId(postId) }
         val profImageUrl = viewModelScope.async { getProfilePicture(profileId.await()) }
@@ -45,7 +49,7 @@ class HomeFragViewModel(private val currentProfile: Long, private val db: AppDat
         val postDesc = viewModelScope.async { getPostDesc(postId) }
         val commentCount = viewModelScope.async { getFormattedCommentCount(postId) }
         val postTime = viewModelScope.async { getFormattedTimeOfPost(postId) }
-
+        
         val post = Post(
             postId = postId,
             profileId = profileId.await(),
@@ -59,40 +63,40 @@ class HomeFragViewModel(private val currentProfile: Long, private val db: AppDat
             commentCount = commentCount.await(),
             timeOfPost = postTime.await()
         )
-
-//        Log.d(TAG, "Post generated = $post")
+        
+        //        Log.d(TAG, "Post generated = $post")
         return post
     }
-
+    
     fun likePost(postId: Long, profileId: Long) {
         viewModelScope.launch {
             db.likesDao().insertNewLike(Likes(postId, profileId, System.currentTimeMillis()))
         }
     }
-
+    
     fun removeLike(postId: Long, profileId: Long) {
         viewModelScope.launch {
             db.likesDao().deleteLike(profileId, postId)
         }
     }
-
+    
     fun savePost(profileId: Long, postId: Long) {
         viewModelScope.launch {
             db.savedPostDao().savePost(SavedPost(profileId, postId, System.currentTimeMillis()))
         }
     }
-
+    
     fun removeSavedPost(profileId: Long, postId: Long) {
         viewModelScope.launch {
             db.savedPostDao().deleteSavedPost(postId, profileId)
         }
     }
-
+    
     private suspend fun getFormattedTimeOfPost(postId: Long): String {
         val time = db.postDao().getPostTime(postId)
         return DateTime.timeFormatter(time, TimeFormatting.POST)
     }
-
+    
     private suspend fun getFormattedCommentCount(postId: Long): String {
         return when (val cc = db.commentDao().commentCount(postId)) {
             0 -> "0 comment"
@@ -100,31 +104,31 @@ class HomeFragViewModel(private val currentProfile: Long, private val db: AppDat
             else -> "View all $cc comments"
         }
     }
-
+    
     suspend fun getFormattedLikeCount(postId: Long): String {
         return "${db.likesDao().likeCount(postId)} like"
     }
-
+    
     private suspend fun getPostDesc(postId: Long): String {
         return db.postTextDao().getPostText(postId)
     }
-
+    
     private suspend fun getProfileUserName(postId: Long): String {
         return db.postDao().getUsername(postId)
     }
-
+    
     private suspend fun getPostLikeStat(postId: Long, profileId: Long): Boolean {
         return db.likesDao().isPostLikedByProfile(postId, profileId) > 0
     }
-
+    
     private suspend fun getPostSaveStat(postId: Long, profileId: Long): Boolean {
         return db.savedPostDao().isPostSavedByProfile(profileId, postId) > 0
     }
-
+    
     private suspend fun getProfileId(postId: Long): Long {
         return db.postDao().getProfileId(postId)
     }
-
+    
     private suspend fun getProfilePicture(profileId: Long): String? {
         var profileImageUrl: String? = null
         val snapShot = firebaseFireStore
@@ -138,7 +142,7 @@ class HomeFragViewModel(private val currentProfile: Long, private val db: AppDat
         }
         return profileImageUrl
     }
-
+    
     private suspend fun getPostImages(postId: Long): MutableList<String> {
         val imgURLList = mutableListOf<String>()
         val snapShot =

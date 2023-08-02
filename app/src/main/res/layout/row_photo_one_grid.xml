@@ -9,6 +9,8 @@
         android:id="@+id/gridImage"
         android:layout_width="140dp"
         android:layout_height="140dp"
+        android:adjustViewBounds="true"
+        android:importantForAccessibility="no"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

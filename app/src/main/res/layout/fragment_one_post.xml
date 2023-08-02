@@ -73,9 +73,11 @@
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/allImagesInAPostVP2"
+                    android:padding="4dp"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp"
+                    android:layout_height="0dp"
                     android:layout_marginTop="16dp"
+                    app:layout_constraintDimensionRatio="4:5"
                     app:layout_constraintTop_toBottomOf="@+id/profileImage"
 
                     />
