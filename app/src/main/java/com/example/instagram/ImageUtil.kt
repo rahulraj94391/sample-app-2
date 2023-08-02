@@ -11,7 +11,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.ImageCache
+import com.example.instagram.database.model.OnePhotoPerPost
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -26,12 +28,14 @@ import java.net.URL
 private const val TAG = "ImageUtil"
 
 class ImageUtil(val context: Context) {
+    private val db = AppDatabase.getDatabase(context)
+    private var storageRef: FirebaseStorage = FirebaseStorage.getInstance()
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val errorBitmap: Bitmap = ContextCompat.getDrawable(context, R.drawable.loading_error)!!.toBitmap()
     
     suspend fun getBitmap(url: String): Bitmap {
         Log.d(TAG, "getBitmap")
-        val fileName = AppDatabase.getDatabase(context).cacheDao().getCachedImageFileNameIfPresent(url)
+        val fileName = db.cacheDao().getCachedImageFileNameIfPresent(url)
         return if (fileName == null) newURLFound(url)
         else getImageFromCache("$fileName") ?: onEntryPresentAndFileMissing(url, fileName)
     }
@@ -46,7 +50,6 @@ class ImageUtil(val context: Context) {
     private suspend fun newURLFound(url: String): Bitmap {
         Log.d(TAG, "newURLFound as - $url")
         val downloadedBitmap = downloadBitmap(url) ?: return errorBitmap
-        val db = AppDatabase.getDatabase(context)
         val newRec = db.cacheDao().insertCacheUrl(ImageCache(url, System.currentTimeMillis()))
         val newFileName: String = newRec.toString()
         putImageInCache(newFileName, downloadedBitmap)
@@ -144,7 +147,7 @@ class ImageUtil(val context: Context) {
     /*---------------------------------------------—---------------------------------------------—---------------------------------------------—---------------------------------------------—*/
     
     
-    suspend fun getProfilePicture(profileId: Long): String? {
+    suspend fun getProfilePicture(profileId: Long, docId: MutableList<String> = mutableListOf()): String? {
         var profileImageUrl: String? = null
         val snapShot = firebaseFireStore
             .collection("profileImages")
@@ -153,8 +156,132 @@ class ImageUtil(val context: Context) {
             .await()
         for (i in snapShot) {
             profileImageUrl = i.data["$profileId"].toString()
+            docId.add(i.reference.id)
             break
         }
         return profileImageUrl
     }
+    
+    suspend fun getPostImages(postId: Long): MutableList<String> {
+        val imgURLList = mutableListOf<String>()
+        val snapShot = firebaseFireStore
+            .collection("postImages")
+            .whereIn("serial", mutableListOf("${postId}_0", "${postId}_1", "${postId}_2", "${postId}_3", "${postId}_4", "${postId}_5"))
+            .get()
+            .await()
+        for (i in snapShot) {
+            imgURLList.add(i.data["$postId"].toString())
+        }
+        return imgURLList
+    }
+    
+    suspend fun getProfilePictureByPostId(postId: Long): String? {
+        val profileId = db.postDao().getProfileId(postId)
+        var profPic: String? = null
+        val snapShot = firebaseFireStore
+            .collection("profileImages")
+            .whereEqualTo("ppid", "$profileId")
+            .get()
+            .await()
+        for (i in snapShot) {
+            profPic = i.data["$profileId"].toString()
+            break
+        }
+        return profPic
+    }
+    
+    suspend fun getOneImagePerPost(postIds: MutableList<Long>): MutableList<OnePhotoPerPost> {
+        val imgURLList = mutableListOf<OnePhotoPerPost>()
+        for (postId in postIds) {
+            val snapShots = firebaseFireStore
+                .collection("postImages")
+                .whereEqualTo("serial", "${postId}_0")
+                .get()
+                .await()
+            
+            for (i in snapShots) {
+                val link = i.data["$postId"].toString()
+                imgURLList.add(OnePhotoPerPost(postId, link))
+            }
+        }
+        return imgURLList
+    }
+    
+    
+    /*fun uploadProfileImage(imageUriToUpload: Uri, docId: String = "", loggedInProfileId: Long) {
+        imageUriToUpload.let { uri ->
+            val storageRef = storageRef.reference.child("$loggedInProfileId")
+            storageRef.putFile(uri).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    storageRef.downloadUrl.addOnSuccessListener { uri2 ->
+                        val map = HashMap<String, Any>()
+                        map[loggedInProfileId.toString()] = uri2.toString()
+                        map["ppid"] = loggedInProfileId.toString()
+                        
+                        if (docId != "") {
+                            updateProfilePictureEntryOnFireStore(docId, map)
+                        } else {
+                            uploadNewProfilePicture(map)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private fun updateProfilePictureEntryOnFireStore(docId: String, map: HashMap<String, Any>): Boolean {
+        firebaseFireStore.collection("profileImages").document(docId).set(map).addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.d(TAG, "Profile pic updated successfully.")
+            } else {
+                Log.d(TAG, "Profile pic updating failed.")
+            }
+        }
+        return true
+    }
+    
+    private fun uploadNewProfilePicture(map: HashMap<String, Any>): Boolean {
+        firebaseFireStore.collection("profileImages").add(map).addOnCompleteListener { firestoreTask ->
+            if (firestoreTask.isSuccessful) {
+                Log.d(TAG, "uploadNewProfilePicture: Profile picture uploaded.")
+            } else {
+                Log.d(TAG, "uploadNewProfilePicture: Profile pic uploading failed.")
+            }
+        }
+        return true
+    }*/
+    
+    
+    /*fun uploadProfileImageEEE(profileId: Long, profilePicUri: Uri?) {
+        profilePicUri?.let { uri ->
+            val storageRef = storageRef.reference.child("$profileId")
+            storageRef.putFile(uri).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    storageRef.downloadUrl.addOnSuccessListener { uri2 ->
+                        val map = HashMap<String, Any>()
+                        map[profileId.toString()] = uri2.toString()
+                        map["ppid"] = profileId.toString()
+                        firebaseFireStore.collection("profileImages").add(map).addOnCompleteListener { firestoreTask ->
+                            //                            if (firestoreTask.isSuccessful) {
+                            //                                Toast.makeText(app, "Uploaded successfully", Toast.LENGTH_SHORT).show()
+                            //                            }
+                            //                            else {
+                            //                                Toast.makeText(app, firestoreTask.exception?.message, Toast.LENGTH_SHORT).show()
+                            //                            }
+                            
+                            // attach placeholder image when unsuccessful while adding path to firestore(DB)
+                            //                            binding.imageView.setImageResource(R.drawable.ic_launcher_background)
+                            //                            binding.progressBar.visibility = View.INVISIBLE
+                            
+                        }
+                    }
+                } else {
+                    // when image upload to storage(drive like) fails
+                    //                    Toast.makeText(app, task.exception?.message, Toast.LENGTH_SHORT).show()
+                    //                    binding.imageView.setImageResource(R.drawable.ic_launcher_background)
+                    //                    binding.progressBar.visibility = View.INVISIBLE
+                }
+            }
+        }
+    }*/
 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.example.instagram.ImageUtil
 import com.example.instagram.MSharedPreferences
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.model.SearchResult
@@ -23,6 +24,8 @@ import kotlinx.coroutines.async
 private const val TAG = "CommTag_PostFragmentViewModel"
 
 class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
+    val imageUtil = ImageUtil(app)
+    val imagesLiveData = MutableLiveData<MutableList<String>>()
     var postImagesUri: MutableList<Uri> = mutableListOf()
     var profileId: Long = -1
     var tempListTagUser = MutableLiveData<MutableList<SearchResult>>()
@@ -50,7 +53,6 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
             val uri = postImagesUri[i]
             images.add(uri.toString())
         }
-        
         return images.toTypedArray()
     }
     
@@ -66,24 +68,9 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
         val oneTimeWorkRequest = OneTimeWorkRequest
             .Builder(UploadPostPictures::class.java)
             .setInputData(data)
-            /*.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)*/
-            /*.setConstraints(constraint)*/
             .build()
         
         WorkManager.getInstance(app).enqueue(oneTimeWorkRequest)
-        
-        
-        /*WorkManager
-            .getInstance(this)
-            .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-            .observe(this) { workInfo ->
-                if (workInfo != null && workInfo.state.isFinished) {
-                    val outputData = workInfo.outputData
-                    val result = outputData.getInt("answer_num", -40)
-                    Log.d(com.example.instagram.TAG, "result from work manager = $result")
-
-                }
-            }*/
     }
     
     suspend fun getSearchResult(name: String) {
@@ -94,8 +81,15 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
         val usersRes = viewModelScope.async {
             db.searchDao().getSearchResult(name, ownID)
         }
-        tempListTagUser.postValue(usersRes.await())
+        val searchResWOPhoto = usersRes.await()
         
+        val listOfImages = mutableListOf<String>()
+        for (i in searchResWOPhoto.indices) {
+            listOfImages.add(imageUtil.getProfilePicture(searchResWOPhoto[i].profile_id) ?: "")
+        }
+        
+        tempListTagUser.postValue(searchResWOPhoto)
+        imagesLiveData.postValue(listOfImages)
     }
     
     suspend fun getNameOfUser(profileId: Long): String {
@@ -103,6 +97,4 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
         val fullName = db.profileDao().getFullName(profileId)
         return "${fullName.first_name} ${fullName.last_name}"
     }
-    
-    
 }

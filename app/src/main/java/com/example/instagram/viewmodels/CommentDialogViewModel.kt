@@ -6,17 +6,17 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.instagram.DateTime
+import com.example.instagram.ImageUtil
 import com.example.instagram.TimeFormatting
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.model.Comment
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
-import kotlinx.coroutines.tasks.await
 import com.example.instagram.database.entity.Comment as EComment
 
 private const val TAG = "CommTag_CommentDialogViewModel"
 
 class CommentDialogViewModel(val app: Application) : AndroidViewModel(app) {
+    private val imageUtil = ImageUtil(app)
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     val comments = MutableLiveData<MutableList<Comment>>()
     val commenterImages = MutableLiveData<MutableList<String>>()
@@ -58,7 +58,7 @@ class CommentDialogViewModel(val app: Application) : AndroidViewModel(app) {
         comments.postValue(list)
         for (i in list) {
             val id = i.profileId
-            val imageUrl = getProfilePicture(id) ?: continue
+            val imageUrl = imageUtil.getProfilePicture(id) ?: continue
             imageList.add(imageUrl)
         }
         commenterImages.postValue(imageList)
@@ -68,25 +68,5 @@ class CommentDialogViewModel(val app: Application) : AndroidViewModel(app) {
         val row = db.commentDao().deleteCommentById(commentId)
         Log.d(TAG, "deleteComment: row deleted - $row")
         return row
-    }
-
-    suspend fun getProfilePicture(profileId: Long): String? {
-        var profileImageUrl: String? = null
-        val snapShot = FirebaseFirestore
-            .getInstance()
-            .collection("profileImages")
-            .whereEqualTo("ppid", "$profileId")
-            .get()
-            .await()
-        for (i in snapShot) {
-            profileImageUrl = i.data["$profileId"].toString()
-            break
-        }
-        return profileImageUrl
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.d(TAG, "onCleared: called")
     }
 }

@@ -38,24 +38,22 @@ class CommentSheet : BottomSheetDialogFragment() {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var viewModel: CommentDialogViewModel
     private lateinit var commentAdapter: CommentAdapter
-
-
+    private lateinit var imageUtil: ImageUtil
+    
+    
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         postId = args.postId
         return super.onCreateDialog(savedInstanceState) as BottomSheetDialog
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        imageUtil = ImageUtil(requireContext())
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         viewModel = ViewModelProvider(this)[CommentDialogViewModel::class.java]
         binding = DataBindingUtil.inflate(inflater, R.layout.bottomsheet_comments, container, false)
         return binding.root
     }
-
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch {
@@ -65,10 +63,10 @@ class CommentSheet : BottomSheetDialogFragment() {
         with(bottomSheetBehavior) {
             isFitToContents = true
             isDraggable = true
-//            halfExpandedRatio = 0.6f
+            //            halfExpandedRatio = 0.6f
             state = BottomSheetBehavior.STATE_EXPANDED
         }
-
+        
         /*bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             // TODO: Improve bottom sheet behaviour
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -100,23 +98,23 @@ class CommentSheet : BottomSheetDialogFragment() {
                 }
             }
         })*/
-
+        
         commentAdapter =
             CommentAdapter(this::showDeleteCommentDialog, mainViewModel.loggedInProfileId!!)
         binding.commentRV.adapter = commentAdapter
         binding.commentRV.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
+        
         viewModel.comments.observe(viewLifecycleOwner) {
             commentAdapter.updateList(it)
         }
-
+        
         viewModel.commenterImages.observe(viewLifecycleOwner) {
             commentAdapter.updateImages(it)
         }
-
+        
         lifecycleScope.launch {
-            val url = viewModel.getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return@launch
+            val url = imageUtil.getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return@launch
             val bitmap = ImageUtil(requireContext()).getBitmap(url)
             withContext(Dispatchers.Main) {
                 binding.profileImage.setImageBitmap(bitmap)
@@ -124,18 +122,18 @@ class CommentSheet : BottomSheetDialogFragment() {
         }
         binding.commentButton.setOnClickListener { postComment() }
     }
-
+    
     private suspend fun addProfilePicUrlWithOnNewComment() {
-        val url = viewModel.getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return
+        val url = imageUtil.getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return
         commentAdapter.addImageUrlToList(url)
     }
-
+    
     private fun postComment() {
         val commentText = binding.commentBox.text.toString()
         if (isCommentQualified(commentText)) {
             return
         }
-
+        
         lifecycleScope.launch {
             viewModel.insertComment(commentText, mainViewModel.loggedInProfileId!!, postId)
             addProfilePicUrlWithOnNewComment()
@@ -143,7 +141,7 @@ class CommentSheet : BottomSheetDialogFragment() {
         }
         binding.commentBox.setText("")
     }
-
+    
     private fun showDeleteCommentDialog(pos: Int) {
         if (viewModel.comments.value!![pos].profileId != mainViewModel.loggedInProfileId!!)
             return
@@ -162,8 +160,8 @@ class CommentSheet : BottomSheetDialogFragment() {
             }
             .show()
     }
-
-
+    
+    
     private fun isCommentQualified(commentText: String): Boolean {
         return if (commentText.isBlank()) {
             Toast.makeText(requireContext(), "Cannot post blank comment.", Toast.LENGTH_SHORT)

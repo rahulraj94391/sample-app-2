@@ -23,7 +23,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 
@@ -69,6 +68,7 @@ class EditProfileFragment : Fragment() {
             profilePicUri.launch("image/*")
         }
         binding.saveChanges.setOnClickListener {
+            it.isEnabled = false
             lifecycleScope.launch {
                 saveData()
             }
@@ -112,25 +112,17 @@ class EditProfileFragment : Fragment() {
     
     
     private suspend fun getProfilePicture(profileId: Long): String? {
-        var profileImageUrl: String? = null
-        val snapShot = firebaseFireStore
-            .collection("profileImages")
-            .whereEqualTo("ppid", "$profileId")
-            .get()
-            .await()
-        for (i in snapShot) {
-            profileImageUrl = i.data["$profileId"].toString()
-            docId = i.reference.id
-            break
-        }
-        return profileImageUrl
+        val docId = mutableListOf<String>()
+        val image = imageUtil.getProfilePicture(profileId, docId)
+        this.docId = docId[0]
+        return image
     }
     
     private fun uploadProfileImage(profileId: Long) {
+        binding.profileImage.alpha = 0.3F
+        binding.indicator.visibility = View.VISIBLE
+        binding.uploadNewPicture.isEnabled = false
         imageUriToUpload.let { uri ->
-            binding.profileImage.alpha = 0.3F
-            binding.indicator.visibility = View.VISIBLE
-            binding.uploadNewPicture.isEnabled = false
             val storageRef = storageRef.reference.child("$profileId")
             storageRef.putFile(uri).addOnCompleteListener { task ->
                 if (task.isSuccessful) {

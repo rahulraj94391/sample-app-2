@@ -1,9 +1,11 @@
 package com.example.instagram.viewmodels
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.instagram.DateTime
+import com.example.instagram.ImageUtil
 import com.example.instagram.TimeFormatting
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Likes
@@ -12,12 +14,12 @@ import com.example.instagram.database.model.Post
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 private const val TAG = "CommTag_HomeFragViewModel"
 
-class HomeFragViewModel(private val currentProfile: Long, private val db: AppDatabase) :
-    ViewModel() {
+class HomeFragViewModel(private val currentProfile: Long, private val app: Application) : AndroidViewModel(app) {
+    private val db: AppDatabase = AppDatabase.getDatabase(app)
+    private val imageUtil = ImageUtil(app)
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     val postsToShow = MutableLiveData<MutableList<Post>>()
     private val postIdsAlreadyShown = mutableSetOf<Long>()
@@ -27,7 +29,6 @@ class HomeFragViewModel(private val currentProfile: Long, private val db: AppDat
         viewModelScope.launch {
             val tempList: MutableList<Post> = mutableListOf()
             val postsToShowOnHome = db.postDao().getPostOfFollowers(loggedInProfileId)
-            
             for (i in postsToShowOnHome) {
                 if (!postIdsAlreadyShown.contains(i)) {
                     postIdsAlreadyShown.add(i)
@@ -40,9 +41,9 @@ class HomeFragViewModel(private val currentProfile: Long, private val db: AppDat
     
     private suspend fun getPost(postId: Long): Post {
         val profileId = viewModelScope.async { getProfileId(postId) }
-        val profImageUrl = viewModelScope.async { getProfilePicture(profileId.await()) }
+        val profImageUrl = viewModelScope.async { imageUtil.getProfilePicture(profileId.await()) }
         val profileUsername = viewModelScope.async { getProfileUserName(postId) }
-        val listOfPostPhotos = viewModelScope.async { getPostImages(postId) }
+        val listOfPostPhotos = viewModelScope.async { imageUtil.getPostImages(postId) }
         val isPostAlreadyLiked = viewModelScope.async { getPostLikeStat(postId, currentProfile) }
         val isPostAlreadySaved = viewModelScope.async { getPostSaveStat(postId, currentProfile) }
         val likeCount = viewModelScope.async { getFormattedLikeCount(postId) }
@@ -127,43 +128,5 @@ class HomeFragViewModel(private val currentProfile: Long, private val db: AppDat
     
     private suspend fun getProfileId(postId: Long): Long {
         return db.postDao().getProfileId(postId)
-    }
-    
-    private suspend fun getProfilePicture(profileId: Long): String? {
-        var profileImageUrl: String? = null
-        val snapShot = firebaseFireStore
-            .collection("profileImages")
-            .whereEqualTo("ppid", "$profileId")
-            .get()
-            .await()
-        for (i in snapShot) {
-            profileImageUrl = i.data["$profileId"].toString()
-            break
-        }
-        return profileImageUrl
-    }
-    
-    private suspend fun getPostImages(postId: Long): MutableList<String> {
-        val imgURLList = mutableListOf<String>()
-        val snapShot =
-            firebaseFireStore
-                .collection("postImages")
-                .whereIn(
-                    "serial",
-                    mutableListOf(
-                        "${postId}_0",
-                        "${postId}_1",
-                        "${postId}_2",
-                        "${postId}_3",
-                        "${postId}_4",
-                        "${postId}_5"
-                    )
-                )
-                .get()
-                .await()
-        for (i in snapShot) {
-            imgURLList.add(i.data["$postId"].toString())
-        }
-        return imgURLList
     }
 }

@@ -120,6 +120,13 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
 //            Log.d(TAG, "initializeTagBottomSheet: ${viewModel.tempListTagUser.value}")
             searchTagAdapter.setNewList(it)
         }
+        
+        viewModel.imagesLiveData.observe(viewLifecycleOwner){
+            searchTagAdapter.setNewList2(it)
+        }
+        
+        
+        
     }
     
     private fun addTagChipToChipGroup(profileId: Long): Chip {

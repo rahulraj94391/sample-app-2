@@ -35,7 +35,7 @@ class HomeFragment : Fragment() {
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         val currentUser = mainViewModel.loggedInProfileId!!
         val db = AppDatabase.getDatabase(requireContext())
-        viewModel = ViewModelProvider(this, ViewModelFactory(currentUser, db))[HomeFragViewModel::class.java]
+        viewModel = ViewModelProvider(this, ViewModelFactory(currentUser, requireActivity().application))[HomeFragViewModel::class.java]
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
