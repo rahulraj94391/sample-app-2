@@ -25,7 +25,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 
-private const val TAG = "ImageUtil"
+private const val TAG = "ImageUtil_CommTag"
 
 class ImageUtil(val context: Context) {
     private val db = AppDatabase.getDatabase(context)
@@ -198,7 +198,7 @@ class ImageUtil(val context: Context) {
                 .whereEqualTo("serial", "${postId}_0")
                 .get()
                 .await()
-            
+            Log.d(TAG, "getOneImagePerPost: ${snapShots.size()}")
             for (i in snapShots) {
                 val link = i.data["$postId"].toString()
                 imgURLList.add(OnePhotoPerPost(postId, link))

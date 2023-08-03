@@ -38,6 +38,8 @@ class LoginFragment : Fragment() {
             findNavController().navigate(R.id.action_loginFragment_to_createNewAccountScreenOneFragment)
         }
         binding.loginBtn.setOnClickListener {
+            binding.loginBtn.isEnabled = false
+            binding.loginProgressIndicator.visibility = View.VISIBLE
             val username = binding.usernameField.text.toString()
             val password = binding.passwordField.text.toString()
             if (username.isBlank() || password.isBlank()) {
@@ -58,6 +60,8 @@ class LoginFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 Toast.makeText(requireContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show()
             }
+            binding.loginProgressIndicator.visibility = View.INVISIBLE
+            binding.loginBtn.isEnabled = true
             return
         }
         val sharedPref = requireActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)

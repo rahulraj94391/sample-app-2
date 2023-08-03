@@ -93,18 +93,18 @@ class HomeActivity : AppCompatActivity() {
             }
         }*/
         
-        Log.d(TAG, "onCreate: before backstackChangeListener")
+//        Log.d(TAG, "onCreate: before backstackChangeListener")
         navHostFragment.childFragmentManager.addOnBackStackChangedListener {
             val backStackCount = navHostFragment.childFragmentManager.backStackEntryCount
             
-            Log.d(TAG, "backstack count = $backStackCount")
+//            Log.d(TAG, "backstack count = $backStackCount")
         }
     
 //        binding.bottomNavView.setOnNavigationItemSelectedListener {  }
     
     
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            Log.e(TAG, "destination = ${destination.label}");
+//            Log.e(TAG, "destination = ${destination.label}");
         }
     }
     

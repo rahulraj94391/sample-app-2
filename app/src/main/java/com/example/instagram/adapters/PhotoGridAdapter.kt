@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-private const val TAG = "CommTag_PhotoGridAdapter"
+private const val TAG = "PhotoGridAdapter_CommTag"
 
 class PhotoGridAdapter(val listener: (Long) -> Unit) : RecyclerView.Adapter<PhotoGridAdapter.PhotoViewVH>() {
     private var listOfImages: MutableList<OnePhotoPerPost> = mutableListOf()
