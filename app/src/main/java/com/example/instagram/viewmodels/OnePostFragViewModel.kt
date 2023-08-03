@@ -38,6 +38,7 @@ class OnePostFragViewModel(app: Application) : AndroidViewModel(app) {
         )
     }
     
+    suspend fun deletePost(postId: Long) = db.postDao().deletePost(postId)
     suspend fun getPostImages(postId: Long) = postImagesUrl.postValue(imageUtil.getPostImages(postId))
     suspend fun getLikeCount(postId: Long) = likeCount.postValue(db.likesDao().likeCount(postId))
     suspend fun getCommentCount(postId: Long) = commentCount.postValue(db.commentDao().commentCount(postId))

@@ -85,7 +85,7 @@ class ProfileFragment : Fragment() {
         viewModel.profileSummary.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
             binding.nestedScroll.visibility = View.VISIBLE
-            
+    
             if (::lastStatusProfSummary.isInitialized) {
                 bindFollowDetails(it)
             } else {

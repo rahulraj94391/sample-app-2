@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -24,6 +25,7 @@ import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.databinding.FragmentOnePostBinding
 import com.example.instagram.viewmodels.OnePostFragViewModel
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +43,7 @@ class OnePostFragment : Fragment() {
     private lateinit var postPhotoAdapter: PostAdapter
     private lateinit var db: AppDatabase
     private val args: OnePostFragmentArgs? by navArgs()
-    private var profileId = 0.toLong()
+    private var profileId = MutableLiveData<Long>()
     private lateinit var imageUtil: ImageUtil
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +51,8 @@ class OnePostFragment : Fragment() {
         db = AppDatabase.getDatabase(requireContext())
         postId = args!!.postId
         lifecycleScope.launch {
-            profileId = db.postDao().getProfileId(postId)
+            val profileId = db.postDao().getProfileId(postId)
+            this@OnePostFragment.profileId.postValue(profileId)
         }
     }
     
@@ -69,7 +72,19 @@ class OnePostFragment : Fragment() {
             commentCount.setOnClickListener { onCommentClicked() }
             btnSavePost.setOnClickListener { onSavePostClicked(it as MaterialCheckBox) }
             likeBtn.setOnClickListener { onLikeClicked(it as MaterialCheckBox) }
+            
         }
+        
+        profileId.observe(viewLifecycleOwner) {
+            if (it == mainViewModel.loggedInProfileId!!) {
+                binding.btnDeletePost.visibility = View.VISIBLE
+                binding.btnDeletePost.setOnClickListener { deleteBtn ->
+                    deleteBtn.isEnabled = false
+                    deletePostDialog()
+                }
+            }
+        }
+        
         imageUtil = ImageUtil(requireContext())
         postPhotoAdapter = PostAdapter()
         binding.allImagesInAPostVP2.adapter = postPhotoAdapter
@@ -136,12 +151,9 @@ class OnePostFragment : Fragment() {
     }
     
     private fun openProfile() {
-        val a = OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId)
+        val a =
+            OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId.value!!)
         findNavController().navigate(a)
-    }
-    
-    private fun openProfileFromFrag() {
-    
     }
     
     private fun viewPagerDoubleClicked(viewPager2: ViewPager2) {
@@ -178,6 +190,26 @@ class OnePostFragment : Fragment() {
                 db.likesDao().deleteLike(mainViewModel.loggedInProfileId!!, postId)
                 viewModel.getLikeCount(postId)
             }
+        }
+    }
+    
+    private fun deletePostDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setMessage("Delete this post ?")
+            .setCancelable(true)
+            .setPositiveButton("Yes") { _, _ ->
+                lifecycleScope.launch {
+                    viewModel.deletePost(postId)
+                    findNavController().navigateUp()
+                }
+            }
+            .setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+                binding.btnDeletePost.isEnabled = true
+            }
+            .show()
+        dialog.setOnCancelListener {
+            binding.btnDeletePost.isEnabled = true
         }
     }
     

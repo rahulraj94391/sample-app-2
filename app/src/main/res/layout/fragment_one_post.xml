@@ -6,9 +6,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-
-        >
+        android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
@@ -35,11 +33,12 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:scrollIndicators="none">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 tools:context=".fragments.OnePostFragment">
 
                 <com.google.android.material.imageview.ShapeableImageView
@@ -63,20 +62,37 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/profileImage"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnDeletePost"
                     app:layout_constraintStart_toEndOf="@+id/profileImage"
                     app:layout_constraintTop_toTopOf="@+id/profileImage"
+                    app:layout_goneMarginEnd="8dp"
                     tools:text="Username" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDeletePost"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:visibility="invisible"
+                    app:icon="@drawable/baseline_delete_outline_24"
+                    app:iconTint="@color/delete"
+                    app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/username"
+                    app:layout_constraintTop_toTopOf="@+id/profileImage"
+                    app:rippleColor="@color/deleteRipple"
+                    tools:visibility="visible" />
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/allImagesInAPostVP2"
-                    android:padding="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="16dp"
+                    android:padding="4dp"
                     app:layout_constraintDimensionRatio="4:5"
                     app:layout_constraintTop_toBottomOf="@+id/profileImage"
 

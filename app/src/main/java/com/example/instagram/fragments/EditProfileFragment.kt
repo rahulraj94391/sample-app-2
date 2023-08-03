@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -69,8 +70,17 @@ class EditProfileFragment : Fragment() {
         }
         binding.saveChanges.setOnClickListener {
             it.isEnabled = false
-            lifecycleScope.launch {
-                saveData()
+            
+            val fNameIsBlank = binding.firstNameField.text.toString().isBlank()
+            val lNameIsBlank = binding.lastNameField.text.toString().isBlank()
+            
+            if (!fNameIsBlank && !lNameIsBlank) {
+                lifecycleScope.launch { saveData() }
+            } else {
+                it.isEnabled = true
+                val msg = if (fNameIsBlank) {"First name cannot be blank"}
+                else {"Last name cannot be blank"}
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
             }
         }
         
@@ -104,12 +114,10 @@ class EditProfileFragment : Fragment() {
         )
         viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, mainViewModel.loggedInProfileId!!)
         //        findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
-        
         if (::imageUriToUpload.isInitialized) uploadProfileImage(mainViewModel.loggedInProfileId!!)
         else isUploadComplete.postValue(true)
         
     }
-    
     
     private suspend fun getProfilePicture(profileId: Long): String? {
         val docId = mutableListOf<String>()
