@@ -6,6 +6,7 @@
     <string name="must_contain_10_digit">Must contains 10 digits.</string>
     <string name="invalid_email">Invalid email id.</string>
     <string name="date_of_birth_format">%1$d-%2$d-%3$d</string>
+    <string name="new_post">New Post</string>
 
     <string-array name="gender">
         <item>Male</item>

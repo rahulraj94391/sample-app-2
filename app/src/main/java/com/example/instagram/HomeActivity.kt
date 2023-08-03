@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
 import androidx.appcompat.app.AppCompatActivity
@@ -38,14 +39,12 @@ class HomeActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         
         when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-            
-            
-            }
+            Configuration.UI_MODE_NIGHT_YES -> {}
             
             Configuration.UI_MODE_NIGHT_NO -> {
                 if (Build.VERSION.SDK_INT >= 30) {
-                    window.decorView.windowInsetsController?.apply { //                        window.navigationBarColor = resources.getColor(android.R.color.)
+                    window.decorView.windowInsetsController?.apply {
+                        // window.navigationBarColor = resources.getColor(android.R.color.)
                         
                         setSystemBarsAppearance(
                             WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
@@ -75,7 +74,6 @@ class HomeActivity : AppCompatActivity() {
                 R.id.searchFragment -> {
                     onSearchReselected()
                 }
-                
                 R.id.profileFragment -> {}
             }
         }
@@ -95,15 +93,37 @@ class HomeActivity : AppCompatActivity() {
             }
         }*/
         
+        Log.d(TAG, "onCreate: before backstackChangeListener")
+        navHostFragment.childFragmentManager.addOnBackStackChangedListener {
+            val backStackCount = navHostFragment.childFragmentManager.backStackEntryCount
+            
+            Log.d(TAG, "backstack count = $backStackCount")
+        }
+    
+//        binding.bottomNavView.setOnNavigationItemSelectedListener {  }
+    
+    
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            Log.e(TAG, "destination = ${destination.label}");
+        }
     }
     
-    private fun onSearchReselected() { //        Log.d(TAG, "onSearchReselected: ")
-        //        supportFragmentManager.popBackStack(R.id.searchFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE )
+    
+    private fun onSearchReselected() {
+        // Log.d(TAG, "onSearchReselected: ")
+        // supportFragmentManager.popBackStack(R.id.searchFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE )
     }
     
     
-    override fun onNavigateUp(): Boolean { //        Log.d(TAG, "onNavigateUp: ")
+    override fun onNavigateUp(): Boolean {
+        Log.d(TAG, "onNavigateUp: ")
         return super.onNavigateUp()
+    }
+    
+    
+    override fun onSupportNavigateUp(): Boolean {
+        //        return super.onSupportNavigateUp()
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
     
     override fun onBackPressed() { //        Log.d(TAG, "onBackPressed: ")

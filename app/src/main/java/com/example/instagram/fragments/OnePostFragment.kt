@@ -1,6 +1,5 @@
 package com.example.instagram.fragments
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -119,7 +118,7 @@ class OnePostFragment : Fragment() {
         }
         
         viewModel.postImagesUrl.observe(viewLifecycleOwner) {
-            // add VP2 adapter new list here
+            if (it.size < 2) binding.indicatorVP.visibility = View.INVISIBLE
             postPhotoAdapter.setNewList(it)
         }
         
@@ -152,13 +151,7 @@ class OnePostFragment : Fragment() {
     private fun onSavePostClicked(it: MaterialCheckBox) {
         if (it.isChecked) {
             lifecycleScope.launch {
-                db.savedPostDao().savePost(
-                    SavedPost(
-                        mainViewModel.loggedInProfileId!!,
-                        postId,
-                        System.currentTimeMillis()
-                    )
-                )
+                db.savedPostDao().savePost(SavedPost(mainViewModel.loggedInProfileId!!, postId, System.currentTimeMillis()))
             }
         } else {
             lifecycleScope.launch {
@@ -174,31 +167,17 @@ class OnePostFragment : Fragment() {
     
     private fun onLikeClicked(it: MaterialCheckBox) {
         if (it.isChecked) {
-            //            setLikeColorAsPerState(it, true)
+            // setLikeColorAsPerState(it, true)
             lifecycleScope.launch {
-                db.likesDao().insertNewLike(
-                    Likes(
-                        postId,
-                        mainViewModel.loggedInProfileId!!,
-                        System.currentTimeMillis()
-                    )
-                )
+                db.likesDao().insertNewLike(Likes(postId, mainViewModel.loggedInProfileId!!, System.currentTimeMillis()))
                 viewModel.getLikeCount(postId)
             }
         } else {
-            //            setLikeColorAsPerState(it, false)
+            // setLikeColorAsPerState(it, false)
             lifecycleScope.launch {
                 db.likesDao().deleteLike(mainViewModel.loggedInProfileId!!, postId)
                 viewModel.getLikeCount(postId)
             }
-        }
-    }
-    
-    private fun setLikeColorAsPerState(it: MaterialCheckBox, state: Boolean) {
-        if (state) {
-            it.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.red))
-        } else {
-            it.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.black))
         }
     }
     

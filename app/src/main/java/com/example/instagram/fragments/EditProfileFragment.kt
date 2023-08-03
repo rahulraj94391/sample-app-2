@@ -114,7 +114,9 @@ class EditProfileFragment : Fragment() {
     private suspend fun getProfilePicture(profileId: Long): String? {
         val docId = mutableListOf<String>()
         val image = imageUtil.getProfilePicture(profileId, docId)
-        this.docId = docId[0]
+        if (docId.size > 0) {
+            this.docId = docId[0]
+        }
         return image
     }
     

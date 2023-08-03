@@ -85,7 +85,15 @@ class HomeAdapter(
             postDesc.text = list[position].postDesc
             commentCount.text = list[position].commentCount
             timeOfPost.text = list[position].timeOfPost
-            adapter.setNewList(list[position].listOfPostPhotos)
+            
+            list[position].listOfPostPhotos.let {
+                adapter.setNewList(it)
+                if (it.size < 2) {
+                    indicator.visibility = View.INVISIBLE
+                } else {
+                    indicator.visibility = View.VISIBLE
+                }
+            }
         }
     }
     
@@ -95,27 +103,32 @@ class HomeAdapter(
             if (item is CommentPayload) {
                 val postId = item.postId
                 val newComment = item.newCommentString
-                if (list[position].postId == postId) {
-                    list[position].commentCount = newComment
-                    
+                if (list[position].postId != postId) return
+                list[position].commentCount = newComment
+                holder.apply {
+                    commentCount.text = list[position].commentCount
                 }
+                
             } else if (item is LikePayload) {
                 val postId = item.postId
                 val like = item.newLikeString
                 val newState = item.newState
-                if (list[position].postId == postId) {
-                    list[position].likeCount = like
-                    list[position].isPostAlreadyLiked = newState == MaterialCheckBox.STATE_CHECKED
+                if (list[position].postId != postId) return
+                list[position].likeCount = like
+                list[position].isPostAlreadyLiked = newState == MaterialCheckBox.STATE_CHECKED
+                holder.apply {
+                    likeCount.text = list[position].likeCount
+                    likeBtn.checkedState = setLikedStat(position)
                 }
             } else if (item is SavePayload) {
                 val postId = item.postId
                 val newState = item.newState
-                if (list[position].postId == postId) {
-                    list[position].isPostAlreadySaved = newState == MaterialCheckBox.STATE_CHECKED
-                }
+                if (list[position].postId != postId) return
+                list[position].isPostAlreadySaved = newState == MaterialCheckBox.STATE_CHECKED
+                holder.savePostBtn.checkedState = setSavedStat(position)
             }
-        }
-        super.onBindViewHolder(holder, position, payloads)
+        } else
+            super.onBindViewHolder(holder, position, payloads)
     }
     
     override fun getItemCount() = list.size

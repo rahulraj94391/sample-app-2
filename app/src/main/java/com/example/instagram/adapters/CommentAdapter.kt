@@ -26,19 +26,19 @@ class CommentAdapter(
     private var commentList: MutableList<Comment> = mutableListOf()
     private lateinit var imageUtil: ImageUtil
     private var profileImages: MutableList<String> = mutableListOf()
-
+    
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         mContext = recyclerView.context
         imageUtil = ImageUtil(mContext)
         super.onAttachedToRecyclerView(recyclerView)
     }
-
+    
     inner class CommentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val profileImage: ImageView = view.findViewById(R.id.profileImage)
         val username: TextView = view.findViewById(R.id.username)
         val commentTime: TextView = view.findViewById(R.id.commentTime)
         val commentText: TextView = view.findViewById(R.id.commentText)
-
+        
         init {
             view.setOnLongClickListener {
                 return@setOnLongClickListener if (commentList[adapterPosition].profileId != loggedInProfileId) {
@@ -49,14 +49,14 @@ class CommentAdapter(
                 }
             }
         }
-
+        
     }
-
+    
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.row_comment, parent, false)
         return CommentViewHolder(view)
     }
-
+    
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         holder.apply {
             username.text = commentList[position].username
@@ -64,13 +64,13 @@ class CommentAdapter(
             commentText.text = commentList[position].comment
         }
     }
-
-
+    
+    
     fun addImageUrlToList(url: String) {
         profileImages.add(0, url)
     }
-
-
+    
+    
     override fun onBindViewHolder(
         holder: CommentViewHolder,
         position: Int,
@@ -78,24 +78,28 @@ class CommentAdapter(
     ) {
         if (profileImages.isNotEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
-                val bitmap = imageUtil.getBitmap(profileImages[position])
-                withContext(Dispatchers.Main) {
-                    holder.profileImage.setImageBitmap(bitmap)
+                try {
+                    val bitmap = imageUtil.getBitmap(profileImages[position])
+                    withContext(Dispatchers.Main) {
+                        holder.profileImage.setImageBitmap(bitmap)
+                    }
+                } catch (e: Exception) {
+                    Log.d(TAG, "onBindViewHolder: ${e.message}")
                 }
             }
         }
         super.onBindViewHolder(holder, position, payload)
     }
-
+    
     override fun getItemCount(): Int {
         return commentList.size
     }
-
+    
     fun updateImages(newList: MutableList<String>) {
         profileImages = newList
         notifyItemRangeChanged(0, commentList.size, profileImages)
     }
-
+    
     fun updateList(newList: MutableList<Comment>) {
         this.commentList = newList
         notifyDataSetChanged()

@@ -22,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                app:queryBackground="@android:color/transparent"
                 android:background="@drawable/search_view_bg"
                 app:iconifiedByDefault="false"
                 app:queryHint="Search name" />

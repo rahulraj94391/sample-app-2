@@ -20,7 +20,7 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbarCreatePost"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"
                 app:layout_scrollFlags="scroll|enterAlways">
 
@@ -29,11 +29,10 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
                     android:paddingTop="4dp"
-                    android:text="New Post"
-                    android:textSize="24sp"
+                    android:text="@string/new_post"
+                    android:textSize="24dp"
                     android:textStyle="bold"
-
-                    />
+                    tools:ignore="SpUsage" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnPost"
@@ -41,7 +40,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginEnd="8dp"
-                    android:text="Post" />
+                    android:text="Post"
+                    android:textSize="14dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnTagPerson"
@@ -51,7 +51,8 @@
                     android:layout_gravity="end"
                     android:layout_marginEnd="8dp"
                     android:tooltipText="Tag profiles"
-                    app:icon="@drawable/person_outlined" />
+                    app:icon="@drawable/person_outlined"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSelectPics"
@@ -61,7 +62,8 @@
                     android:layout_gravity="end"
                     android:layout_marginEnd="8dp"
                     android:tooltipText="Select photos"
-                    app:icon="@drawable/outline_image" />
+                    app:icon="@drawable/outline_image"
+                    tools:ignore="SpeakableTextPresentCheck" />
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
