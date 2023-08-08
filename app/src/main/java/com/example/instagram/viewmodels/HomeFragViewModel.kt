@@ -11,7 +11,6 @@ import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Likes
 import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.database.model.Post
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -20,7 +19,6 @@ private const val TAG = "CommTag_HomeFragViewModel"
 class HomeFragViewModel(private val currentProfile: Long, private val app: Application) : AndroidViewModel(app) {
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     private val imageUtil = ImageUtil(app)
-    private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     val postsToShow = MutableLiveData<MutableList<Post>>()
     private val postIdsAlreadyShown = mutableSetOf<Long>()
     

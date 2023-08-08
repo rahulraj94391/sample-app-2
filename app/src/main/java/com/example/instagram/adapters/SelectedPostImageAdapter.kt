@@ -6,17 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.R
 
-class SelectedPostImageAdapter(Uris: MutableList<Uri>, listener: KeepAtLeastOneImage) : RecyclerView.Adapter<SelectedPostImageAdapter.MyViewHolder>() {
+class SelectedPostImageAdapter(Uris: MutableList<Uri>) : RecyclerView.Adapter<SelectedPostImageAdapter.MyViewHolder>() {
     private lateinit var context: Context
-    private var listener: KeepAtLeastOneImage
-
-    init {
-        this.listener = listener
-    }
-
+    
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         context = recyclerView.context
         super.onAttachedToRecyclerView(recyclerView)
@@ -34,7 +30,7 @@ class SelectedPostImageAdapter(Uris: MutableList<Uri>, listener: KeepAtLeastOneI
         init {
             image.setOnLongClickListener {
                 if (listOfImageUris.size < 2) {
-                    listener.postAtLeastOnePhoto()
+                    Toast.makeText(context, "Post at least one photo.", Toast.LENGTH_SHORT).show()
                 }
                 else {
                     listOfImageUris.removeAt(adapterPosition)
@@ -62,9 +58,4 @@ class SelectedPostImageAdapter(Uris: MutableList<Uri>, listener: KeepAtLeastOneI
         listOfImageUris = newUris
         notifyDataSetChanged()
     }
-
-}
-
-interface KeepAtLeastOneImage {
-    fun postAtLeastOnePhoto()
 }

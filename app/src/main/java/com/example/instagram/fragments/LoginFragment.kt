@@ -38,8 +38,7 @@ class LoginFragment : Fragment() {
             findNavController().navigate(R.id.action_loginFragment_to_createNewAccountScreenOneFragment)
         }
         binding.loginBtn.setOnClickListener {
-            binding.loginBtn.isEnabled = false
-            binding.loginProgressIndicator.visibility = View.VISIBLE
+            
             val username = binding.usernameField.text.toString()
             val password = binding.passwordField.text.toString()
             if (username.isBlank() || password.isBlank()) {
@@ -47,6 +46,8 @@ class LoginFragment : Fragment() {
                 return@setOnClickListener
             }
             lifecycleScope.launch {
+                binding.loginBtn.isEnabled = false
+                binding.loginProgressIndicator.visibility = View.VISIBLE
                 checkCredentials(username, password)
             }
         }

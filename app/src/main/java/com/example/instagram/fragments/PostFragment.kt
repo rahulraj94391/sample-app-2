@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.R
-import com.example.instagram.adapters.KeepAtLeastOneImage
 import com.example.instagram.adapters.SearchUserAdapter
 import com.example.instagram.adapters.SearchUsernameClickListener
 import com.example.instagram.adapters.SelectedPostImageAdapter
@@ -38,7 +37,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "CommTag_PostFragment"
 
-class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListener {
+class PostFragment : Fragment(), SearchUsernameClickListener {
     private lateinit var binding: FragmentPostBinding
     private lateinit var viewModel: PostFragViewModel
     
@@ -124,9 +123,6 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
         viewModel.imagesLiveData.observe(viewLifecycleOwner){
             searchTagAdapter.setNewList2(it)
         }
-        
-        
-        
     }
     
     private fun addTagChipToChipGroup(profileId: Long): Chip {
@@ -169,7 +165,7 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
         doneBtn = selectedPicsDialog.findViewById(R.id.btnDone)
         insLabel = selectedPicsDialog.findViewById(R.id.tapToSelectLabel)
         recyclerView2 = selectedPicsDialog.findViewById(R.id.selectedPicRV2)
-        selectedPicsAdapter = SelectedPostImageAdapter(viewModel.postImagesUri, this)
+        selectedPicsAdapter = SelectedPostImageAdapter(viewModel.postImagesUri)
         recyclerView2.adapter = selectedPicsAdapter
         recyclerView2.layoutManager = GridLayoutManager(requireContext(), 3)
         
@@ -254,26 +250,6 @@ class PostFragment : Fragment(), KeepAtLeastOneImage, SearchUsernameClickListene
             setGravity(Gravity.BOTTOM)
         }
         return dialog
-    }
-    
-    /*inner class CustomTextWatcher : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-        }
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-        }
-
-        override fun afterTextChanged(s: Editable?) {
-            viewModel.postText = s.toString()
-
-            Log.d(TAG, "afterTextChanged: ${viewModel.postText}")
-        }
-    }
-*/
-    override fun postAtLeastOnePhoto() {
-        Toast.makeText(requireContext(), "Post at least one photo.", Toast.LENGTH_SHORT).show()
     }
     
     override fun onClick(pos: Int) {
