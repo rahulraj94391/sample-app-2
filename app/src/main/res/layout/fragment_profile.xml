@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profileParent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragments.ProfileFragment">
@@ -78,17 +79,20 @@
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/profilePic"
-                        android:layout_width="180dp"
-                        android:layout_height="180dp"
-                        android:layout_marginTop="40dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="1dp"
                         android:adjustViewBounds="true"
                         android:background="@drawable/ic_launcher_background"
                         android:padding="8dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_launcher_foreground"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/profileBio"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:layout_goneMarginBottom="8dp"
                         app:shapeAppearanceOverlay="@style/circleImageView"
                         app:strokeColor="@color/search_border"
                         app:strokeWidth="1dp" />
@@ -97,12 +101,13 @@
                         android:id="@+id/profileFullName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="32dp"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/profilePic"
+                        app:layout_constraintStart_toEndOf="@+id/profilePic"
+
+                        app:layout_constraintTop_toTopOf="parent"
                         tools:text="Full name" />
 
 
@@ -110,39 +115,49 @@
                         android:id="@+id/profileBio"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginBottom="24dp"
                         android:ellipsize="end"
-                        android:gravity="center"
-                        android:maxLines="2"
+                        android:fontFamily="@font/fs_me_bold"
+                        android:gravity="start"
+                        android:lineHeight="22dp"
+                        android:maxLines="7"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/profileFullName"
+                        app:layout_constraintTop_toBottomOf="@+id/followerLabel"
+                        app:layout_constraintVertical_bias="1.0"
                         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id." />
 
                     <TextView
                         android:id="@+id/postCount"
                         android:layout_width="0dp"
-
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="16dp"
                         android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
                         android:text="70"
                         android:textSize="18sp"
+
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@+id/gl1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/profileBio" />
+                        app:layout_constraintEnd_toStartOf="@+id/followersCount"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toEndOf="@+id/profilePic"
+                        app:layout_constraintTop_toBottomOf="@+id/profileFullName" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
                         android:gravity="center_horizontal|top"
                         android:text="Posts"
 
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@id/postCount"
                         app:layout_constraintStart_toStartOf="@+id/postCount"
                         app:layout_constraintTop_toBottomOf="@id/postCount" />
@@ -152,24 +167,26 @@
                         android:id="@+id/followersCount"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="16dp"
                         android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
                         android:text="364"
+
                         android:textSize="18sp"
                         android:textStyle="bold"
 
-                        app:layout_constraintEnd_toStartOf="@+id/gl2"
-                        app:layout_constraintStart_toEndOf="@id/gl1"
-                        app:layout_constraintTop_toBottomOf="@+id/profileBio" />
-
+                        app:layout_constraintEnd_toStartOf="@+id/followingCount"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/postCount"
+                        app:layout_constraintTop_toBottomOf="@+id/profileFullName" />
 
                     <TextView
+                        android:id="@+id/followerLabel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
                         android:gravity="center_horizontal|top"
                         android:text="Followers"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@id/followersCount"
                         app:layout_constraintStart_toStartOf="@+id/followersCount"
                         app:layout_constraintTop_toBottomOf="@id/followersCount" />
@@ -179,41 +196,29 @@
                         android:id="@+id/followingCount"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
                         android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+
                         android:text="422"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/gl2"
-                        app:layout_constraintTop_toBottomOf="@id/profileBio" />
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/followersCount"
+                        app:layout_constraintTop_toBottomOf="@+id/profileFullName" />
 
                     <TextView
+                        android:id="@+id/followingLabel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
                         android:gravity="center_horizontal|top"
                         android:text="Following"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@id/followingCount"
                         app:layout_constraintStart_toStartOf="@+id/followingCount"
                         app:layout_constraintTop_toBottomOf="@id/followingCount" />
-
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/gl1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent=".3333" />
-
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/gl2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent=".6667" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

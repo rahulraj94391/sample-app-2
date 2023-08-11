@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -67,7 +66,6 @@ class OnePostFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-            postDesc.setOnClickListener { onDescClicked(it as TextView) }
             comment.setOnClickListener { onCommentClicked() }
             commentCount.setOnClickListener { onCommentClicked() }
             btnSavePost.setOnClickListener { onSavePostClicked(it as MaterialCheckBox) }
@@ -170,11 +168,6 @@ class OnePostFragment : Fragment() {
                 db.savedPostDao().deleteSavedPost(postId, mainViewModel.loggedInProfileId!!)
             }
         }
-    }
-    
-    private fun onDescClicked(view: TextView) {
-        view.ellipsize = null
-        view.maxLines = Int.MAX_VALUE
     }
     
     private fun onLikeClicked(it: MaterialCheckBox) {

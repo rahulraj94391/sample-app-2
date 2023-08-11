@@ -1,5 +1,8 @@
 package com.example.instagram.fragments
 
+import android.graphics.RenderEffect
+import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,6 +33,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
@@ -77,7 +81,29 @@ class ProfileFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnProfileBottomSheet.setOnClickListener { findNavController().navigate(R.id.action_profileFragment_to_profileMenu2) }
+        if (profileId != mainViewModel.loggedInProfileId!!) {
+            binding.btnProfileBottomSheet.apply {
+                visibility = View.INVISIBLE
+            }
+        }
+        binding.btnProfileBottomSheet.setOnClickListener {
+            
+            // test for blur when opening menu
+            CoroutineScope(Dispatchers.Main).launch {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    val rootView = requireActivity().window.decorView.rootView!!
+                    rootView.setRenderEffect(RenderEffect.createBlurEffect(2f, 2f, Shader.TileMode.CLAMP))
+                    delay(50)
+                    rootView.setRenderEffect(RenderEffect.createBlurEffect(4f, 4f, Shader.TileMode.CLAMP))
+                    delay(60)
+                    rootView.setRenderEffect(RenderEffect.createBlurEffect(5f, 5f, Shader.TileMode.CLAMP))
+                    delay(80)
+                    rootView.setRenderEffect(RenderEffect.createBlurEffect(9f, 9f, Shader.TileMode.CLAMP))
+                }
+            }
+            
+            findNavController().navigate(R.id.action_profileFragment_to_profileMenu2)
+        }
         if (::lastStatusProfSummary.isInitialized) {
             bindAllDetails(lastStatusProfSummary)
         }
@@ -85,7 +111,7 @@ class ProfileFragment : Fragment() {
         viewModel.profileSummary.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
             binding.nestedScroll.visibility = View.VISIBLE
-    
+            
             if (::lastStatusProfSummary.isInitialized) {
                 bindFollowDetails(it)
             } else {
@@ -95,16 +121,22 @@ class ProfileFragment : Fragment() {
         }
         
         binding.followersCount.setOnClickListener {
-            val action =
-                ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId)
-            findNavController().navigate(action)
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId))
         }
         
-        binding.followingCount.setOnClickListener {
-            val action =
-                ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId)
-            findNavController().navigate(action)
+        binding.followerLabel.setOnClickListener {
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId))
         }
+        
+        
+        
+        binding.followingCount.setOnClickListener {
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId))
+        }
+        binding.followingLabel.setOnClickListener {
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId))
+        }
+        
         
         binding.viewPagerPostAndTagPhoto.adapter = ScreenSlidePagerAdapter(requireActivity())
         TabLayoutMediator(binding.tabLayout, binding.viewPagerPostAndTagPhoto) { tab, position ->
@@ -215,5 +247,4 @@ class ProfileFragment : Fragment() {
             return PhotoGridFragment.newInstance(position, profileId)
         }
     }
-    
 }

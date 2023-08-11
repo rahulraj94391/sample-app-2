@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.HomeAdapter
-import com.example.instagram.database.AppDatabase
 import com.example.instagram.databinding.FragmentHomeBinding
 import com.example.instagram.viewModelFactory.ViewModelFactory
 import com.example.instagram.viewmodels.HomeFragViewModel
@@ -34,7 +33,6 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         val currentUser = mainViewModel.loggedInProfileId!!
-        val db = AppDatabase.getDatabase(requireContext())
         viewModel = ViewModelProvider(this, ViewModelFactory(currentUser, requireActivity().application))[HomeFragViewModel::class.java]
     }
     
@@ -80,7 +78,7 @@ class HomeFragment : Fragment() {
             MaterialCheckBox.STATE_UNCHECKED
         }
         
-        lifecycleScope.launch { // Todo: adding delay is just a work around, this might break in other phones.
+        lifecycleScope.launch {
             delay(100)
             val likeString = viewModel.getFormattedLikeCount(postId)
             val likePayload = HomeAdapter.LikePayload(likeString, postId, newState)
@@ -100,7 +98,7 @@ class HomeFragment : Fragment() {
             MaterialCheckBox.STATE_UNCHECKED
         }
         
-        lifecycleScope.launch { // Todo: adding delay is just a work around, this might break in other phones.
+        lifecycleScope.launch {
             delay(100)
             val savePayload = HomeAdapter.SavePayload(postId, newState)
             homeAdapter.notifyItemChanged(pos, savePayload)
