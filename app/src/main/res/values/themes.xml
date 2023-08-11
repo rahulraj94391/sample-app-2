@@ -9,19 +9,22 @@
         <item name="colorSecondary">@color/col1</item>
         <!--        <item name="colorSecondaryVariant">#FB9582</item>-->
         <item name="colorSecondaryContainer">#E4E8FF</item>
-
-
         <item name="colorOnSecondary">@color/black</item>
-
+        <item name="fontFamily">@font/fs_me_regular</item>
 
         <!-- System bar colors. -->
         <item name="android:statusBarColor">?attr/colorSecondaryContainer</item>
         <item name="android:navigationBarColor">?attr/colorSecondaryContainer</item>
 
+    </style>
 
-        <!-- Customize your theme here. -->
+    <style name="bnv" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">?attr/colorSecondaryContainer</item>
+        <item name="itemActiveIndicatorStyle">@style/activeIndicator</item>
+    </style>
 
-
+    <style name="activeIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/activeIndicator</item>
     </style>
 
     <style name="Theme.Instagram" parent="Base.Theme.Instagram" />
@@ -46,18 +49,24 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="MaterialCalendarTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+    <style name="materialBtn" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/col5</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
 
+    <style name="MaterialCalendarTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
         <!-- Header panel -->
         <item name="materialCalendarHeaderLayout">@style/MaterialCalendar.HeaderLayout1</item>
         <!-- Buttons -->
         <item name="buttonBarPositiveButtonStyle">@style/TextButton.Dialog1</item>
         <item name="buttonBarNegativeButtonStyle">@style/TextButton.Dialog1</item>
     </style>
+
     <style name="MaterialCalendar.HeaderLayout1" parent="Widget.MaterialComponents.MaterialCalendar.HeaderLayout">
         <!--<item name="android:background">?attr/colorPrimary</item>-->
         <item name="android:background">@color/text_color</item>
     </style>
+
     <style name="TextButton.Dialog1" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/white</item>
         <item name="backgroundTint">@color/text_color</item>

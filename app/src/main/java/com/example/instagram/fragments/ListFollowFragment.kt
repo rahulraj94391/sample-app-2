@@ -19,6 +19,8 @@ import kotlin.properties.Delegates
 
 const val TYPE_FOLLOWER = "Follower"
 const val TYPE_FOLLOWING = "Following"
+const val NO_FOLLOWINGS = "No Following"
+const val NO_FOLLOWERS = "No Follower"
 
 private const val TAG = "CommTag_ListFollowFragment"
 
@@ -48,19 +50,21 @@ class ListFollowFragment : Fragment() {
         adapter = FollowAdapter()
         viewModel.users.observe(viewLifecycleOwner) {
             if (it.size < 1) {
-                // show the instruction here
-                
+                val ins = if (args.type == TYPE_FOLLOWER) NO_FOLLOWERS
+                else NO_FOLLOWINGS
+                binding.ins.text = ins
+                binding.ins.visibility = View.VISIBLE
+                return@observe
             }
-            
+            binding.usersRV.visibility = View.VISIBLE
             adapter.updateList(it)
         }
         val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         divider.dividerInsetStart = dpToPx(84)
         
-        binding.users.addItemDecoration(divider)
-        binding.users.adapter = adapter
-        binding.users.layoutManager = LinearLayoutManager(requireContext())
-        
+        binding.usersRV.addItemDecoration(divider)
+        binding.usersRV.adapter = adapter
+        binding.usersRV.layoutManager = LinearLayoutManager(requireContext())
     }
     
     private fun dpToPx(dpValue: Int): Int {

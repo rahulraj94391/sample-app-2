@@ -5,7 +5,7 @@
     <color name="red">#FF6647</color>
 
 
-    <color name="col5">#9ba9ff</color>
+    <color name="col5">#7C8EFF</color>
     <color name="col1">#ffb5a7</color>
     <color name="col2">#fcd5ce</color>
     <color name="col3">#f8edeb</color>
@@ -18,7 +18,7 @@
     <color name="col9">#DDE6ED</color>
 
     <color name="text_color">#212121</color>
-    <color name="icon_tint">#9ba9ff</color>
+    <color name="icon_tint">@color/col5</color>
     <color name="logo_tint">#303030</color>
     <color name="bottomNavigationView_container">#DDE6ED</color>
     <color name="bottomNavigationView_secondaryContainer">#DDE6ED</color>
@@ -31,8 +31,7 @@
     <color name="bottomsheet_bg">#DDE6ED</color>
     <color name="delete">#E65C40</color>
     <color name="deleteRipple">#80FF8D76</color>
-
-
+    <color name="activeIndicator">#CFD6FF</color>
     <color name="search_border">#9ba9ff</color>
 
 

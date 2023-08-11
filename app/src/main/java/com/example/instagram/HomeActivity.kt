@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.forEach
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -16,7 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.instagram.databinding.ActivityHomeBinding
 
-private const val TAG = "CommTag_HomeActivity"
+private const val TAG = "HomeActivity_CommTag"
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -96,18 +97,23 @@ class HomeActivity : AppCompatActivity() {
 //        Log.d(TAG, "onCreate: before backstackChangeListener")
         navHostFragment.childFragmentManager.addOnBackStackChangedListener {
             val backStackCount = navHostFragment.childFragmentManager.backStackEntryCount
-            
 //            Log.d(TAG, "backstack count = $backStackCount")
         }
     
-//        binding.bottomNavView.setOnNavigationItemSelectedListener {  }
-    
-    
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-//            Log.e(TAG, "destination = ${destination.label}");
+//            Log.e(TAG, "destination = ${destination.label}")
         }
     }
     
+    override fun onResume() {
+        super.onResume()
+        binding.bottomNavView.menu.forEach {
+            val view = binding.bottomNavView.findViewById<View>(it.itemId)
+            view.setOnLongClickListener {
+                true
+            }
+        }
+    }
     
     private fun onSearchReselected() {
         // Log.d(TAG, "onSearchReselected: ")

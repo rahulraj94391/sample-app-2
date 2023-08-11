@@ -2,7 +2,7 @@
 <resources>
     <color name="text_color">#EDEDED</color>
     <color name="icon_tint">#BAC4FF</color>
-    <color name="logo_tint">#EBEBEB</color>
+    <color name="logo_tint">#FAFAFA</color>
     <color name="line_border">#4B4B4B</color>
     <color name="bottomNavigationView_iconColor">#E1E1E1</color>
     <color name="bottomsheet_bg">#303030</color>

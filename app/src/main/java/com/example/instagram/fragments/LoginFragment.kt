@@ -39,7 +39,7 @@ class LoginFragment : Fragment() {
         }
         binding.loginBtn.setOnClickListener {
             
-            val username = binding.usernameField.text.toString()
+            val username = binding.usernameField.text.toString().trim()
             val password = binding.passwordField.text.toString()
             if (username.isBlank() || password.isBlank()) {
                 Toast.makeText(requireContext(), "Enter details correctly.", Toast.LENGTH_SHORT).show()
