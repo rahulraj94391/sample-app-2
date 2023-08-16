@@ -105,7 +105,11 @@ class CreateNewAccountScreenTwoFragment : Fragment() {
         
         } else { // run this block when username is unique and password qualifies the condition.
             sharedViewModel.newProfileSignup!!.apply {
-                bio = binding.bio.text.toString()
+                val bioText = binding.bio.text.toString()
+                bio = bioText.trim().ifBlank {
+                    "\uD83C\uDF0E Hello World.\n" +
+                            "\uD83D\uDC68\u200D\uD83D\uDCBC Working at Zoho."
+                }
             }
             profileId = db.profileDao().insertNewProfile(sharedViewModel.newProfileSignup!!)
             val rowId: Long = db.loginCredDao().insertNewLoginCred(LoginCred(profileId, username, password))

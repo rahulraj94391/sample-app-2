@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="4dp"
-                android:text="Edit Profile"
+                android:text="@string/edit_profile"
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>
@@ -81,7 +81,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
-                    android:text="Update picture"
+                    android:text="@string/update_picture"
                     app:layout_constraintEnd_toEndOf="@id/profileImage"
                     app:layout_constraintStart_toStartOf="@+id/profileImage"
                     app:layout_constraintTop_toBottomOf="@+id/profileImage" />
@@ -104,7 +104,7 @@
                         android:id="@+id/firstNameField"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="First name"
+                        android:hint="@string/first_name"
                         android:inputType="text"
                         android:maxLength="50" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -127,7 +127,7 @@
                         android:id="@+id/lastNameField"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Last name"
+                        android:hint="@string/last_name"
                         android:inputType="text"
                         android:maxLength="50" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -150,9 +150,8 @@
                         android:id="@+id/bio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Bio"
-                        android:maxLength="50"
-                        />
+                        android:hint="@string/bio"
+                        android:maxLength="100" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -162,7 +161,7 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="16dp"
-                    android:text="Save Changes"
+                    android:text="@string/save_changes"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

@@ -142,22 +142,20 @@
                         android:gravity="center"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
-                        android:text="70"
                         android:textSize="18sp"
-
                         android:textStyle="bold"
                         app:layout_constraintEnd_toStartOf="@+id/followersCount"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toEndOf="@+id/profilePic"
-                        app:layout_constraintTop_toBottomOf="@+id/profileFullName" />
+                        app:layout_constraintTop_toBottomOf="@+id/profileFullName"
+                        tools:text="70" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal|top"
-                        android:text="Posts"
-
+                        android:text="@string/posts"
                         app:layout_constraintEnd_toEndOf="@id/postCount"
                         app:layout_constraintStart_toStartOf="@+id/postCount"
                         app:layout_constraintTop_toBottomOf="@id/postCount" />
@@ -171,22 +169,20 @@
                         android:gravity="center"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
-                        android:text="364"
-
                         android:textSize="18sp"
                         android:textStyle="bold"
-
                         app:layout_constraintEnd_toStartOf="@+id/followingCount"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toEndOf="@+id/postCount"
-                        app:layout_constraintTop_toBottomOf="@+id/profileFullName" />
+                        app:layout_constraintTop_toBottomOf="@+id/profileFullName"
+                        tools:text="364" />
 
                     <TextView
                         android:id="@+id/followerLabel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal|top"
-                        android:text="Followers"
+                        android:text="@string/followers"
                         app:layout_constraintEnd_toEndOf="@id/followersCount"
                         app:layout_constraintStart_toStartOf="@+id/followersCount"
                         app:layout_constraintTop_toBottomOf="@id/followersCount" />
@@ -201,21 +197,20 @@
                         android:gravity="center"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
-
-                        android:text="422"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toEndOf="@+id/followersCount"
-                        app:layout_constraintTop_toBottomOf="@+id/profileFullName" />
+                        app:layout_constraintTop_toBottomOf="@+id/profileFullName"
+                        tools:text="422" />
 
                     <TextView
                         android:id="@+id/followingLabel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal|top"
-                        android:text="Following"
+                        android:text="@string/following"
                         app:layout_constraintEnd_toEndOf="@id/followingCount"
                         app:layout_constraintStart_toStartOf="@+id/followingCount"
                         app:layout_constraintTop_toBottomOf="@id/followingCount" />
@@ -236,7 +231,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:text="btnStart" />
+                        tools:text="btnStart" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnEnd"
@@ -245,10 +240,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:text="btnEnd" />
-
+                        tools:text="btnEnd" />
                 </LinearLayout>
-
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabLayout"
@@ -262,7 +255,7 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPagerPostAndTagPhoto"
                     android:layout_width="match_parent"
-                    android:layout_height="500dp"
+                    android:layout_height="620dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

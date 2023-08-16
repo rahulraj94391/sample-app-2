@@ -7,6 +7,25 @@
     <string name="invalid_email">Invalid email id.</string>
     <string name="date_of_birth_format">%1$d-%2$d-%3$d</string>
     <string name="new_post">New Post</string>
+    <string name="upload_profile_picture">Upload Profile Picture</string>
+    <string name="bio">Bio</string>
+    <string name="username_imp">Username*</string>
+    <string name="username">Username</string>
+    <string name="password_imp">Password*</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="full_name">%1$s %2$s</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="update_picture">Update picture</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="login">Login</string>
+    <string name="forgotten_password">Forgotten Password ?</string>
+    <string name="create_new_account">Create new account</string>
+    <string name="posts">Posts</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
 
     <string-array name="gender">
         <item>Male</item>

@@ -14,7 +14,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             tools:context=".fragments.CreateNewAccountScreenTwoFragment">
 
             <com.google.android.material.imageview.ShapeableImageView
@@ -55,7 +55,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
-                android:text="Upload Profile Picture"
+                android:text="@string/upload_profile_picture"
                 app:layout_constraintEnd_toEndOf="@id/profileImage"
                 app:layout_constraintStart_toStartOf="@+id/profileImage"
                 app:layout_constraintTop_toBottomOf="@+id/profileImage"
@@ -79,9 +79,9 @@
                     android:id="@+id/bio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Bio"
+                    android:hint="@string/bio"
                     android:inputType="text"
-                    android:maxLength="50"
+                    android:maxLength="100"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,7 +102,7 @@
                     android:id="@+id/usernameField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Username*"
+                    android:hint="@string/username_imp"
                     android:inputType="text"
                     android:maxLength="20" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -126,7 +126,7 @@
                     android:id="@+id/passwordField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password*"
+                    android:hint="@string/password_imp"
                     android:inputType="textPassword"
                     android:maxLength="50" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -155,7 +155,7 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="16dp"
-                android:text="Sign Up"
+                android:text="@string/sign_up"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

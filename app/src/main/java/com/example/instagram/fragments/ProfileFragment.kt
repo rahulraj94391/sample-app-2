@@ -1,5 +1,6 @@
 package com.example.instagram.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.os.Build
@@ -8,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -33,10 +35,10 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
+
 
 private const val TAG = "CommTag_ProfileFragment"
 
@@ -79,6 +81,7 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
     
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (profileId != mainViewModel.loggedInProfileId!!) {
@@ -87,21 +90,13 @@ class ProfileFragment : Fragment() {
             }
         }
         binding.btnProfileBottomSheet.setOnClickListener {
+            // check below condition to avoid crash when 'btnProfileBottomSheet' is tapped quickly.
+            if (findNavController().currentDestination?.id == R.id.profileMenu2) return@setOnClickListener
             
-            // test for blur when opening menu
-            CoroutineScope(Dispatchers.Main).launch {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    val rootView = requireActivity().window.decorView.rootView!!
-                    rootView.setRenderEffect(RenderEffect.createBlurEffect(2f, 2f, Shader.TileMode.CLAMP))
-                    delay(50)
-                    rootView.setRenderEffect(RenderEffect.createBlurEffect(4f, 4f, Shader.TileMode.CLAMP))
-                    delay(60)
-                    rootView.setRenderEffect(RenderEffect.createBlurEffect(5f, 5f, Shader.TileMode.CLAMP))
-                    delay(80)
-                    rootView.setRenderEffect(RenderEffect.createBlurEffect(9f, 9f, Shader.TileMode.CLAMP))
-                }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val rootView = requireActivity().window.decorView.rootView!!
+                rootView.setRenderEffect(RenderEffect.createBlurEffect(5f, 5f, Shader.TileMode.CLAMP))
             }
-            
             findNavController().navigate(R.id.action_profileFragment_to_profileMenu2)
         }
         if (::lastStatusProfSummary.isInitialized) {
@@ -111,32 +106,16 @@ class ProfileFragment : Fragment() {
         viewModel.profileSummary.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
             binding.nestedScroll.visibility = View.VISIBLE
-            
-            if (::lastStatusProfSummary.isInitialized) {
-                bindFollowDetails(it)
-            } else {
-                bindAllDetails(it)
-            }
+            if (::lastStatusProfSummary.isInitialized) bindFollowDetails(it)
+            else bindAllDetails(it)
             this.lastStatusProfSummary = it
         }
         
-        binding.followersCount.setOnClickListener {
-            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId))
-        }
+        binding.followersCount.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId)) }
+        binding.followerLabel.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId)) }
         
-        binding.followerLabel.setOnClickListener {
-            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId))
-        }
-        
-        
-        
-        binding.followingCount.setOnClickListener {
-            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId))
-        }
-        binding.followingLabel.setOnClickListener {
-            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId))
-        }
-        
+        binding.followingCount.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId)) }
+        binding.followingLabel.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId)) }
         
         binding.viewPagerPostAndTagPhoto.adapter = ScreenSlidePagerAdapter(requireActivity())
         TabLayoutMediator(binding.tabLayout, binding.viewPagerPostAndTagPhoto) { tab, position ->
@@ -154,6 +133,32 @@ class ProfileFragment : Fragment() {
         // todo: IF App crashed due to viewpager in profile fragment
         binding.viewPagerPostAndTagPhoto.isSaveEnabled = false
         
+        
+        var heightToMinus = 0
+        
+        val viewToMeasure0 = binding.toolbar
+        val vto0 = viewToMeasure0.viewTreeObserver
+        vto0.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                viewToMeasure0.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                heightToMinus += viewToMeasure0.height
+            }
+        })
+        
+        val tabLayoutHeight = (48 * requireContext().resources.displayMetrics.density).toInt()
+        
+        val viewToMeasure = binding.profileParent
+        val vto = viewToMeasure.viewTreeObserver
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                viewToMeasure.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val height: Int = viewToMeasure.height - heightToMinus - tabLayoutHeight
+                
+                val layoutParams = binding.viewPagerPostAndTagPhoto.layoutParams
+                layoutParams.height = height
+                binding.viewPagerPostAndTagPhoto.layoutParams = layoutParams
+            }
+        })
     }
     
     private fun bindFollowDetails(it: ProfileSummary) {
@@ -164,7 +169,7 @@ class ProfileFragment : Fragment() {
     
     private fun bindAllDetails(it: ProfileSummary) {
         binding.toolbarProfileUsername.text = it.username
-        binding.profileFullName.text = "${it.first_name} ${it.last_name}"
+        binding.profileFullName.text = requireContext().getString(R.string.full_name, it.first_name, it.last_name)
         binding.profileBio.text = it.bio
         binding.postCount.text = it.postCount.toString()
         binding.followersCount.text = it.followerCount.toString()
@@ -201,14 +206,6 @@ class ProfileFragment : Fragment() {
             }
             btnEnd.setOnClickListener { messageProfile() }
         }
-    }
-    
-    private fun showFollowingFragment() {
-        Log.d(TAG, "Showing Following List")
-    }
-    
-    private fun showFollowerFragment() {
-        Log.d(TAG, "Showing Follower List")
     }
     
     private fun editProfile() {

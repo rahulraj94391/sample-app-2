@@ -3,9 +3,11 @@ package com.example.instagram.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -38,18 +40,29 @@ class LoginFragment : Fragment() {
             findNavController().navigate(R.id.action_loginFragment_to_createNewAccountScreenOneFragment)
         }
         binding.loginBtn.setOnClickListener {
-            
-            val username = binding.usernameField.text.toString().trim()
-            val password = binding.passwordField.text.toString()
-            if (username.isBlank() || password.isBlank()) {
-                Toast.makeText(requireContext(), "Enter details correctly.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            performLogin()
+        }
+        
+        binding.passwordField.setOnEditorActionListener { textView, actionId, keyEvent ->
+            if (actionId == EditorInfo.IME_ACTION_GO) {
+                performLogin()
             }
-            lifecycleScope.launch {
-                binding.loginBtn.isEnabled = false
-                binding.loginProgressIndicator.visibility = View.VISIBLE
-                checkCredentials(username, password)
-            }
+            true
+        }
+    }
+    
+    private fun performLogin() {
+        val username = binding.usernameField.text.toString().trim()
+        val password = binding.passwordField.text.toString()
+        if (username.isBlank() || password.isBlank()) {
+            Toast.makeText(requireContext(), "Enter details correctly.", Toast.LENGTH_SHORT).show()
+            Log.d(TAG, "Details not entered correctly.")
+            return
+        }
+        lifecycleScope.launch {
+            binding.loginBtn.isEnabled = false
+            binding.loginProgressIndicator.visibility = View.VISIBLE
+            checkCredentials(username, password)
         }
     }
     

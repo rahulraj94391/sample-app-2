@@ -109,7 +109,7 @@ class EditProfileFragment : Fragment() {
         db.profileDao().editProfile(
             binding.firstNameField.text.toString(),
             binding.lastNameField.text.toString(),
-            binding.bio.text.toString(),
+            binding.bio.text.toString().trim(),
             mainViewModel.loggedInProfileId!!
         )
         viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, mainViewModel.loggedInProfileId!!)
