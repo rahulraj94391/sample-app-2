@@ -12,7 +12,7 @@ interface PostDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertPost(post: Post): Long
     
-    @Query("SELECT post_id FROM post WHERE profile_id = :profileId")
+    @Query("SELECT post_id FROM post WHERE profile_id = :profileId ORDER BY post_time DESC")
     suspend fun getAllPostOfProfile(profileId: Long): MutableList<Long>
     
     @Query("SELECT COUNT(profile_id) FROM post WHERE profile_id = :profileId")

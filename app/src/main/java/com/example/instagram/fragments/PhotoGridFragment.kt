@@ -2,7 +2,6 @@ package com.example.instagram.fragments
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,9 +62,9 @@ class PhotoGridFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         viewModel = ViewModelProvider(this)[PhotoGridFragViewModel::class.java]
         userPostedPhotoAdapter = PhotoGridAdapter(this::onPostClicked)
-        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         
         if (listRef == 0) {
             lifecycleScope.launch {
@@ -74,7 +73,6 @@ class PhotoGridFragment : Fragment() {
             viewModel.usersPost.observe(viewLifecycleOwner) {
                 binding.loadingProgressBar.visibility = View.GONE
                 if (it.size == 0) {
-                    Log.e(TAG, "onViewCreated<1>: ${it.size}")
                     binding.ins1.visibility = View.VISIBLE
                     return@observe
                 }
@@ -88,7 +86,6 @@ class PhotoGridFragment : Fragment() {
             viewModel.usersTaggedPost.observe(viewLifecycleOwner) {
                 binding.loadingProgressBar.visibility = View.GONE
                 if (it.size == 0) {
-                    Log.e(TAG, "onViewCreated<2>: ${it.size}")
                     binding.ins2.visibility = View.VISIBLE
                     return@observe
                 }

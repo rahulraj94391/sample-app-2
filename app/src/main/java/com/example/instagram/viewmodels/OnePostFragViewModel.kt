@@ -15,7 +15,6 @@ class OnePostFragViewModel(app: Application) : AndroidViewModel(app) {
     var profileImageUrl = MutableLiveData<String>()
     val postImagesUrl = MutableLiveData<MutableList<String>>()
     val likeCount = MutableLiveData<Int>(0)
-    val commentCount = MutableLiveData<Int>(0)
     
     suspend fun getPostDetails(postId: Long, currentProfileId: Long): OnePost {
         val liked = db.likesDao().isPostLikedByProfile(postId, currentProfileId)
@@ -41,6 +40,5 @@ class OnePostFragViewModel(app: Application) : AndroidViewModel(app) {
     suspend fun deletePost(postId: Long) = db.postDao().deletePost(postId)
     suspend fun getPostImages(postId: Long) = postImagesUrl.postValue(imageUtil.getPostImages(postId))
     suspend fun getLikeCount(postId: Long) = likeCount.postValue(db.likesDao().likeCount(postId))
-    suspend fun getCommentCount(postId: Long) = commentCount.postValue(db.commentDao().commentCount(postId))
     suspend fun getProfilePictureByPostId(postId: Long) = profileImageUrl.postValue(imageUtil.getProfilePictureByPostId(postId))
 }

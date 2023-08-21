@@ -50,6 +50,7 @@ dependencies {
 
     //work manager
     implementation 'androidx.work:work-runtime-ktx:2.8.1'
+    implementation 'androidx.preference:preference:1.2.0'
 
     // room
     def room_version = "2.5.2"

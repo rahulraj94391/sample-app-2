@@ -85,7 +85,7 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
         
         val listOfImages = mutableListOf<String>()
         for (i in searchResWOPhoto.indices) {
-            listOfImages.add(imageUtil.getProfilePicture(searchResWOPhoto[i].profile_id) ?: "")
+            listOfImages.add(imageUtil.getProfilePictureUrl(searchResWOPhoto[i].profile_id) ?: "")
         }
         
         tempListTagUser.postValue(searchResWOPhoto)

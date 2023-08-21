@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +17,7 @@ import com.example.instagram.databinding.BottomsheetMyProfileMenuBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
 private const val TAG = "CommTag_ProfileMenu"
@@ -34,12 +34,11 @@ class ProfileMenu : BottomSheetDialogFragment() {
         return binding.root
     }
     
-    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.savedPost.setOnClickListener { onSavedPostClicked() }
         binding.settings.setOnClickListener { onSettingsClicked() }
-        binding.logout.setOnClickListener { onLogoutClicked() }
+        binding.logout.setOnClickListener { showLogoutDialog() }
         
         val bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
         //        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -48,15 +47,15 @@ class ProfileMenu : BottomSheetDialogFragment() {
         //        bottomSheetBehavior.halfExpandedRatio = 0.6f
         //        bottomSheetBehavior.maxHeight = Resources.getSystem().displayMetrics.heightPixels /*not working as intended*/
         
-        
         //        val layout = dialog!!.findViewById<CoordinatorLayout>(R.id.bottomSheetLayout)
         //        layout.minimumHeight = Resources.getSystem().displayMetrics.heightPixels
         
     }
     
     private fun onSettingsClicked() {
+        val action = ProfileMenuDirections.actionProfileMenu2ToSettingsFragment()
+        findNavController().navigate(action)
         this.dismiss()
-        
     }
     
     private fun onSavedPostClicked() {
@@ -64,7 +63,7 @@ class ProfileMenu : BottomSheetDialogFragment() {
         this.dismiss()
     }
     
-    private fun onLogoutClicked() {
+    private fun logoutUser() {
         val sharedPref: SharedPreferences = requireActivity().getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         sharedPref.edit().apply {
             putLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
@@ -72,15 +71,23 @@ class ProfileMenu : BottomSheetDialogFragment() {
             apply()
         }
         startActivity(Intent(requireContext(), MainActivity::class.java))
-        this.dismiss()
         requireActivity().finish()
     }
     
-    override fun onDestroyView() {
-        super.onDestroyView()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val view = requireActivity().window.decorView.rootView!!
-            view.setRenderEffect(null)
-        }
+    private fun showLogoutDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Logout")
+            .setMessage("Logout from Instagram ?")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { _, _ ->
+                logoutUser()
+                dismiss()
+            }
+            .setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+                dismiss()
+            }
+            .show()
     }
+    
 }

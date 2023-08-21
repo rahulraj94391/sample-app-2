@@ -147,7 +147,7 @@ class ImageUtil(val context: Context) {
     /*---------------------------------------------—---------------------------------------------—---------------------------------------------—---------------------------------------------—*/
     
     
-    suspend fun getProfilePicture(profileId: Long, docId: MutableList<String> = mutableListOf()): String? {
+    suspend fun getProfilePictureUrl(profileId: Long, docId: MutableList<String> = mutableListOf()): String? {
         var profileImageUrl: String? = null
         val snapShot = firebaseFireStore
             .collection("profileImages")

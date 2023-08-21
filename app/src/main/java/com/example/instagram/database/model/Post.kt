@@ -10,6 +10,5 @@ data class Post(
     var isPostAlreadySaved: Boolean,
     var likeCount: String,
     var postDesc: String,
-    var commentCount: String,
     var timeOfPost: String,
 )

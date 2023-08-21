@@ -15,16 +15,16 @@ class ProfileFragViewModel(app: Application) : AndroidViewModel(app) {
     private val imageUtil = ImageUtil(app)
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     var profileSummary = MutableLiveData<ProfileSummary>()
-
+    
     suspend fun getProfileSummary(ownProfileId: Long, userProfileId: Long) {
-        val profilePic = viewModelScope.async { imageUtil.getProfilePicture(userProfileId) }
+        val profilePic = viewModelScope.async { imageUtil.getProfilePictureUrl(userProfileId) }
         val fullNameBio = viewModelScope.async { db.profileDao().getFullNameBio(userProfileId) }
         val postCount = viewModelScope.async { db.postDao().getPostCount(userProfileId) }
         val followerCount = viewModelScope.async { db.followDao().getFollowerCount(userProfileId) }
         val followingCount = viewModelScope.async { db.followDao().getFollowingCount(userProfileId) }
         val username = viewModelScope.async { db.loginCredDao().getUsername(userProfileId) }
         val isFollowing = viewModelScope.async { db.followDao().isUserFollowingUser(ownProfileId, userProfileId) > 0 }
-
+        
         val profSummary = ProfileSummary(
             username.await(),
             profilePic.await(),
@@ -36,7 +36,7 @@ class ProfileFragViewModel(app: Application) : AndroidViewModel(app) {
             followingCount.await(),
             isFollowing.await()
         )
-
+        
         profileSummary.postValue(profSummary)
     }
 }

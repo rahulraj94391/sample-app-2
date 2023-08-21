@@ -31,7 +31,7 @@ class SearchFragViewModel(private val app: Application) : AndroidViewModel(app) 
         val imageUrlAsync = viewModelScope.async {
             val tempList: MutableList<String> = mutableListOf()
             for (i in finalResult) {
-                val img = imageUtil.getProfilePicture(i.profile_id)
+                val img = imageUtil.getProfilePictureUrl(i.profile_id)
                 tempList.add(img.toString())
             }
             tempList

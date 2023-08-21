@@ -113,7 +113,7 @@ class EditProfileFragment : Fragment() {
             mainViewModel.loggedInProfileId!!
         )
         viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, mainViewModel.loggedInProfileId!!)
-        //        findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
+        //findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
         if (::imageUriToUpload.isInitialized) uploadProfileImage(mainViewModel.loggedInProfileId!!)
         else isUploadComplete.postValue(true)
         
@@ -121,7 +121,7 @@ class EditProfileFragment : Fragment() {
     
     private suspend fun getProfilePicture(profileId: Long): String? {
         val docId = mutableListOf<String>()
-        val image = imageUtil.getProfilePicture(profileId, docId)
+        val image = imageUtil.getProfilePictureUrl(profileId, docId)
         if (docId.size > 0) {
             this.docId = docId[0]
         }
@@ -129,6 +129,7 @@ class EditProfileFragment : Fragment() {
     }
     
     private fun uploadProfileImage(profileId: Long) {
+        mainViewModel.profileImageBitmap = null
         binding.profileImage.alpha = 0.3F
         binding.indicator.visibility = View.VISIBLE
         binding.uploadNewPicture.isEnabled = false
@@ -181,4 +182,3 @@ class EditProfileFragment : Fragment() {
         }
     }
 }
-

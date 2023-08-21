@@ -25,8 +25,7 @@ interface ProfileDao {
     
     @Query("UPDATE profile SET first_name = :firstName, last_name = :lastName, bio = :bio WHERE profile_id = :profileId")
     suspend fun editProfile(firstName: String, lastName: String, bio: String, profileId: Long)
+    
+    @Query("SELECT COUNT(post_id) FROM post WHERE profile_id = :profileId")
+    fun getPostCount(profileId: Long): LiveData<Int>
 }
-
-//UPDATE Customers
-//SET ContactName = 'Alfred Schmidt', City= 'Frankfurt'
-//WHERE CustomerID = 1;

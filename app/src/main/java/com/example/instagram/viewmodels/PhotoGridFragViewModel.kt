@@ -1,7 +1,6 @@
 package com.example.instagram.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -22,9 +21,7 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
         val postIds = viewModelScope.async {
             db.postDao().getAllPostOfProfile(profileId)
         }
-        Log.d(TAG, "post id = ${postIds.await()}")
-        val urlsOfOnePhotoPerPost = imageUtil.getOneImagePerPost(postIds.await())
-        usersPost.postValue(urlsOfOnePhotoPerPost.asReversed())
+        usersPost.postValue(imageUtil.getOneImagePerPost(postIds.await()))
     }
     
     suspend fun getAllPostWhereProfileIsTagged(profileId: Long) {

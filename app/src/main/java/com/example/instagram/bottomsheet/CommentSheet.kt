@@ -114,7 +114,7 @@ class CommentSheet : BottomSheetDialogFragment() {
         }
         
         lifecycleScope.launch {
-            val url = imageUtil.getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return@launch
+            val url = imageUtil.getProfilePictureUrl(mainViewModel.loggedInProfileId!!) ?: return@launch
             val bitmap = ImageUtil(requireContext()).getBitmap(url)
             withContext(Dispatchers.Main) {
                 binding.profileImage.setImageBitmap(bitmap)
@@ -124,7 +124,7 @@ class CommentSheet : BottomSheetDialogFragment() {
     }
     
     private suspend fun addProfilePicUrlWithOnNewComment() {
-        val url = imageUtil.getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return
+        val url = imageUtil.getProfilePictureUrl(mainViewModel.loggedInProfileId!!) ?: return
         commentAdapter.addImageUrlToList(url)
     }
     

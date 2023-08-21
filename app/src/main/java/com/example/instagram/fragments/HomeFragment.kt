@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.HomeAdapter
+import com.example.instagram.database.AppDatabase
 import com.example.instagram.databinding.FragmentHomeBinding
 import com.example.instagram.viewModelFactory.ViewModelFactory
 import com.example.instagram.viewmodels.HomeFragViewModel
@@ -28,9 +30,11 @@ class HomeFragment : Fragment() {
     private lateinit var homeAdapter: HomeAdapter
     private lateinit var viewModel: HomeFragViewModel
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var db: AppDatabase
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        db = AppDatabase.getDatabase(requireContext())
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         val currentUser = mainViewModel.loggedInProfileId!!
         viewModel = ViewModelProvider(this, ViewModelFactory(currentUser, requireActivity().application))[HomeFragViewModel::class.java]
@@ -46,7 +50,7 @@ class HomeFragment : Fragment() {
         if (savedInstanceState == null) {
             viewModel.addNewPostToList(mainViewModel.loggedInProfileId!!)
         }
-        homeAdapter = HomeAdapter(::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked)
+        homeAdapter = HomeAdapter(::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate)
         binding.btnMessages.setOnClickListener { whenMessagesBtnClicked() }
         binding.btnNotifications.setOnClickListener { whenNotificationBtnClicked() }
         
@@ -58,6 +62,12 @@ class HomeFragment : Fragment() {
             binding.homeRV.visibility = View.VISIBLE
             if (it.size == 0) binding.followToSeeFeed.visibility = View.VISIBLE
             homeAdapter.addNewPosts(it)
+        }
+    }
+    
+    private fun commentCountDelegate(tv: TextView, postId: Long) {
+        db.commentDao().commentCount(postId).observe(viewLifecycleOwner) {
+            tv.text = "$it comments"
         }
     }
     
@@ -103,7 +113,6 @@ class HomeFragment : Fragment() {
             val savePayload = HomeAdapter.SavePayload(postId, newState)
             homeAdapter.notifyItemChanged(pos, savePayload)
         }
-        
     }
     
     override fun onSaveInstanceState(outState: Bundle) {

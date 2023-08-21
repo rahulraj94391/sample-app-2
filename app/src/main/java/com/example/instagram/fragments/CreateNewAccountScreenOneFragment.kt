@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +23,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.util.Calendar
 
-private const val TAG = "CommTag_CreateNewAccountFragment"
+private const val TAG = "CreateNewAccountFragment_CommTag"
 
 class CreateNewAccountScreenOneFragment : Fragment() {
     private lateinit var binding: FragmentCreateNewAccountScreenOneBinding
@@ -42,7 +43,8 @@ class CreateNewAccountScreenOneFragment : Fragment() {
     private lateinit var autoTVGender: AutoCompleteTextView
     private lateinit var etDob: TextInputEditText
     
-    private lateinit var dobDate: Calendar
+    private var dobDate: Calendar = Calendar.getInstance()
+    
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_new_account_screen_one, container, false)
@@ -125,7 +127,7 @@ class CreateNewAccountScreenOneFragment : Fragment() {
             etDob.setText(resources.getString(R.string.date_of_birth_format, dayOfMonth, (month + 1), year))
             etDob.clearFocus()
             this.dob.error = null
-            dobDate = Calendar.getInstance()
+            // dobDate = Calendar.getInstance()
             dobDate.set(year, month, dayOfMonth)
         }, currYear, currMonth, currDay)
         datePicker.datePicker.maxDate = Calendar.getInstance().timeInMillis
@@ -143,12 +145,33 @@ class CreateNewAccountScreenOneFragment : Fragment() {
         }
         
         override fun afterTextChanged(s: Editable?) {
+            
+            Log.d(TAG, "insidewhen")
             when (inputField.id) {
-                R.id.firstNameField -> validateFirstName()
-                R.id.lastNameField -> validateLastName()
-                R.id.genderField -> validateGender()
-                R.id.phoneNumberField -> validatePhoneNumber()
-                R.id.emailField -> validateEmailId()
+                R.id.firstNameField -> {
+                    if (requireActivity().findViewById<TextInputEditText>(R.id.firstNameField).hasFocus())
+                        validateFirstName()
+                }
+                
+                R.id.lastNameField -> {
+                    if (requireActivity().findViewById<TextInputEditText>(R.id.lastNameField).hasFocus())
+                        validateLastName()
+                }
+                
+                R.id.genderField -> {
+                    validateGender()
+                }
+                
+                R.id.phoneNumberField -> {
+                    if (requireActivity().findViewById<TextInputEditText>(R.id.phoneNumberField).hasFocus())
+                        validatePhoneNumber()
+                }
+                
+                R.id.emailField -> {
+                    if (requireActivity().findViewById<TextInputEditText>(R.id.emailField).hasFocus())
+                        validateEmailId()
+                }
+                
                 R.id.dobField -> validateDOB()
             }
         }

@@ -89,6 +89,7 @@
                         android:padding="8dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_launcher_foreground"
+                        android:transitionName="image_small"
                         app:layout_constraintBottom_toTopOf="@+id/profileBio"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

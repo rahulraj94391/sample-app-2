@@ -14,7 +14,7 @@ import com.example.instagram.database.model.Post
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-private const val TAG = "CommTag_HomeFragViewModel"
+private const val TAG = "HomeFragViewModel_CommTag"
 
 class HomeFragViewModel(private val currentProfile: Long, private val app: Application) : AndroidViewModel(app) {
     private val db: AppDatabase = AppDatabase.getDatabase(app)
@@ -39,14 +39,13 @@ class HomeFragViewModel(private val currentProfile: Long, private val app: Appli
     
     private suspend fun getPost(postId: Long): Post {
         val profileId = viewModelScope.async { getProfileId(postId) }
-        val profImageUrl = viewModelScope.async { imageUtil.getProfilePicture(profileId.await()) }
+        val profImageUrl = viewModelScope.async { imageUtil.getProfilePictureUrl(profileId.await()) }
         val profileUsername = viewModelScope.async { getProfileUserName(postId) }
         val listOfPostPhotos = viewModelScope.async { imageUtil.getPostImages(postId) }
         val isPostAlreadyLiked = viewModelScope.async { getPostLikeStat(postId, currentProfile) }
         val isPostAlreadySaved = viewModelScope.async { getPostSaveStat(postId, currentProfile) }
         val likeCount = viewModelScope.async { getFormattedLikeCount(postId) }
         val postDesc = viewModelScope.async { getPostDesc(postId) }
-        val commentCount = viewModelScope.async { getFormattedCommentCount(postId) }
         val postTime = viewModelScope.async { getFormattedTimeOfPost(postId) }
         
         val post = Post(
@@ -59,7 +58,6 @@ class HomeFragViewModel(private val currentProfile: Long, private val app: Appli
             isPostAlreadySaved = isPostAlreadySaved.await(),
             likeCount = likeCount.await(),
             postDesc = postDesc.await(),
-            commentCount = commentCount.await(),
             timeOfPost = postTime.await()
         )
         
@@ -94,14 +92,6 @@ class HomeFragViewModel(private val currentProfile: Long, private val app: Appli
     private suspend fun getFormattedTimeOfPost(postId: Long): String {
         val time = db.postDao().getPostTime(postId)
         return DateTime.timeFormatter(time, TimeFormatting.POST)
-    }
-    
-    private suspend fun getFormattedCommentCount(postId: Long): String {
-        return when (val cc = db.commentDao().commentCount(postId)) {
-            0 -> "0 comment"
-            1 -> "View 1 comment"
-            else -> "View all $cc comments"
-        }
     }
     
     suspend fun getFormattedLikeCount(postId: Long): String {

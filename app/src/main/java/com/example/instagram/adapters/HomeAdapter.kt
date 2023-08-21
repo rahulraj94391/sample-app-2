@@ -27,6 +27,7 @@ class HomeAdapter(
     val profileListener: (Int) -> Unit,
     val likeListener: (Int, View) -> Unit,
     val saveListener: (Int, View) -> Unit,
+    val commentCountDelegate: (TextView, Long) -> Unit,
 ) : RecyclerView.Adapter<HomeAdapter.PostVH>() {
     private lateinit var mContext: Context
     private lateinit var imageUtil: ImageUtil
@@ -83,7 +84,8 @@ class HomeAdapter(
             savePostBtn.checkedState = setSavedStat(position)
             likeCount.text = list[position].likeCount
             postDesc.text = list[position].postDesc
-            commentCount.text = list[position].commentCount
+            commentCountDelegate(commentCount, list[position].postId)
+//            commentCount.text = list[position].commentCount
             timeOfPost.text = list[position].timeOfPost
             
             list[position].listOfPostPhotos.let {
@@ -100,7 +102,7 @@ class HomeAdapter(
     override fun onBindViewHolder(holder: PostVH, position: Int, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
             val item = payloads[0]
-            if (item is CommentPayload) {
+            /*if (item is CommentPayload) {
                 val postId = item.postId
                 val newComment = item.newCommentString
                 if (list[position].postId != postId) return
@@ -109,7 +111,7 @@ class HomeAdapter(
                     commentCount.text = list[position].commentCount
                 }
                 
-            } else if (item is LikePayload) {
+            } else*/ if (item is LikePayload) {
                 val postId = item.postId
                 val like = item.newLikeString
                 val newState = item.newState
@@ -184,6 +186,3 @@ class HomeAdapter(
     data class LikePayload(val newLikeString: String, val postId: Long, val newState: Int)
     data class SavePayload(val postId: Long, val newState: Int)
 }
-
-
-

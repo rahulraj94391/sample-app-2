@@ -1,20 +1,23 @@
 package com.example.instagram.fragments
 
 import android.annotation.SuppressLint
-import android.graphics.RenderEffect
-import android.graphics.Shader
-import android.os.Build
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -37,6 +40,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.util.Objects
 import kotlin.properties.Delegates
 
 
@@ -46,13 +52,13 @@ const val POST_ID_OPEN_REQ_KEY = "postId"
 const val POST_ID_REF_KEY = "postIdToOpenInNextFrag"
 
 class ProfileFragment : Fragment() {
+    private lateinit var lastStatusProfSummary: ProfileSummary
     private lateinit var binding: FragmentProfileBinding
     private lateinit var mainViewModel: MainViewModel
     private lateinit var viewModel: ProfileFragViewModel
-    private var profileId: Long by Delegates.notNull()
     private lateinit var db: AppDatabase
+    private var profileId: Long by Delegates.notNull()
     private val args: ProfileFragmentArgs? by navArgs()
-    private lateinit var lastStatusProfSummary: ProfileSummary
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,37 +91,8 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (profileId != mainViewModel.loggedInProfileId!!) {
-            binding.btnProfileBottomSheet.apply {
-                visibility = View.INVISIBLE
-            }
+            binding.btnProfileBottomSheet.visibility = View.INVISIBLE
         }
-        binding.btnProfileBottomSheet.setOnClickListener {
-            // check below condition to avoid crash when 'btnProfileBottomSheet' is tapped quickly.
-            if (findNavController().currentDestination?.id == R.id.profileMenu2) return@setOnClickListener
-            
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val rootView = requireActivity().window.decorView.rootView!!
-                rootView.setRenderEffect(RenderEffect.createBlurEffect(5f, 5f, Shader.TileMode.CLAMP))
-            }
-            findNavController().navigate(R.id.action_profileFragment_to_profileMenu2)
-        }
-        if (::lastStatusProfSummary.isInitialized) {
-            bindAllDetails(lastStatusProfSummary)
-        }
-        
-        viewModel.profileSummary.observe(viewLifecycleOwner) {
-            binding.loadingProgressBar.visibility = View.GONE
-            binding.nestedScroll.visibility = View.VISIBLE
-            if (::lastStatusProfSummary.isInitialized) bindFollowDetails(it)
-            else bindAllDetails(it)
-            this.lastStatusProfSummary = it
-        }
-        
-        binding.followersCount.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId)) }
-        binding.followerLabel.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId)) }
-        
-        binding.followingCount.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId)) }
-        binding.followingLabel.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId)) }
         
         binding.viewPagerPostAndTagPhoto.adapter = ScreenSlidePagerAdapter(requireActivity())
         TabLayoutMediator(binding.tabLayout, binding.viewPagerPostAndTagPhoto) { tab, position ->
@@ -131,11 +108,52 @@ class ProfileFragment : Fragment() {
         }.attach()
         
         // todo: IF App crashed due to viewpager in profile fragment
-        binding.viewPagerPostAndTagPhoto.isSaveEnabled = false
+        binding.viewPagerPostAndTagPhoto.isSaveEnabled = true
         
+        setOnClickListener()
+        setViewPagerHeight()
+        setObservers()
+    }
+    
+    private fun setProfilePicTransition() {
+        binding.profilePic.setOnLongClickListener {
+            val extras = FragmentNavigatorExtras(binding.profilePic to "image_big")
+            findNavController().navigate(R.id.action_profileFragment_to_profilePictureFragment, null, null, extras)
+            true
+        }
+    }
+    
+    private fun setOnClickListener() {
+        binding.btnProfileBottomSheet.setOnClickListener {
+            // check below condition to avoid crash when 'btnProfileBottomSheet' is tapped quickly.
+            if (findNavController().currentDestination?.id == R.id.profileMenu2) return@setOnClickListener
+            findNavController().navigate(R.id.action_profileFragment_to_profileMenu2)
+        }
+        if (::lastStatusProfSummary.isInitialized) {
+            bindAllDetails(lastStatusProfSummary)
+        }
+        binding.followersCount.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId)) }
+        binding.followerLabel.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId)) }
+        binding.followingCount.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId)) }
+        binding.followingLabel.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId)) }
+    }
+    
+    private fun setObservers() {
+        viewModel.profileSummary.observe(viewLifecycleOwner) {
+            binding.loadingProgressBar.visibility = View.GONE
+            binding.nestedScroll.visibility = View.VISIBLE
+            if (::lastStatusProfSummary.isInitialized) bindFollowDetails(it)
+            else bindAllDetails(it)
+            this.lastStatusProfSummary = it
+        }
         
+        db.profileDao().getPostCount(profileId).observe(viewLifecycleOwner) {
+            binding.postCount.text = it.toString()
+        }
+    }
+    
+    private fun setViewPagerHeight() {
         var heightToMinus = 0
-        
         val viewToMeasure0 = binding.toolbar
         val vto0 = viewToMeasure0.viewTreeObserver
         vto0.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -171,16 +189,18 @@ class ProfileFragment : Fragment() {
         binding.toolbarProfileUsername.text = it.username
         binding.profileFullName.text = requireContext().getString(R.string.full_name, it.first_name, it.last_name)
         binding.profileBio.text = it.bio
-        binding.postCount.text = it.postCount.toString()
         binding.followersCount.text = it.followerCount.toString()
         binding.followingCount.text = it.followingCount.toString()
         btn(binding.btnStart, binding.btnEnd, it.isFollowing)
         
         CoroutineScope(Dispatchers.IO).launch {
-            if (it.profilePic == null) return@launch
-            val bitmap = ImageUtil(requireContext()).getBitmap(it.profilePic)
+            if (it.profilePicUrl == null) return@launch
+            setProfilePicTransition()
+            if(mainViewModel.profileImageBitmap == null) {
+                mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
+            }
             withContext(Dispatchers.Main) {
-                binding.profilePic.setImageBitmap(bitmap)
+                binding.profilePic.setImageBitmap(mainViewModel.profileImageBitmap)
             }
         }
     }
@@ -190,7 +210,7 @@ class ProfileFragment : Fragment() {
             btnStart.text = EDIT_PROFILE
             btnEnd.text = SHARE_PROFILE
             btnStart.setOnClickListener { editProfile() }
-            btnEnd.setOnClickListener { shareProfile() }
+            btnEnd.setOnClickListener { shareAction() }
         } else if (isFollowing) {
             btnStart.text = UNFOLLOW
             btnEnd.text = MESSAGE
@@ -212,10 +232,6 @@ class ProfileFragment : Fragment() {
         findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
     }
     
-    private fun shareProfile() {
-        Log.d(TAG, "shareProfile clicked.")
-    }
-    
     private fun messageProfile() {
         Log.d(TAG, "messageProfile")
     }
@@ -234,6 +250,46 @@ class ProfileFragment : Fragment() {
         }
     }
     
+    private fun shareAction() {
+        var bitmap: Bitmap? = null
+        try {
+            val bitmapDrawable = binding.profilePic.drawable as BitmapDrawable
+            bitmap = bitmapDrawable.bitmap
+        } catch (e: Exception) {
+            Log.d(TAG, "shareAction: ${e.message}")
+        }
+        val share = Intent(Intent.ACTION_SEND)
+        val textToShare = "Look at my profile on Instagram\n\nhttps://instagram.com/uid=${mainViewModel.loggedInProfileId!!}"
+        share.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        val bmpUri: Uri? = saveImage(bitmap)
+        share.type = if (bmpUri == null) {
+            "text/plain"
+        } else {
+            share.putExtra(Intent.EXTRA_STREAM, bmpUri)
+            "image/jpeg"
+        }
+        share.putExtra(Intent.EXTRA_SUBJECT, "New App")
+        share.putExtra(Intent.EXTRA_TEXT, textToShare)
+        startActivity(Intent.createChooser(share, "Share: "))
+    }
+    
+    private fun saveImage(image: Bitmap?): Uri? {
+        if (image == null) return null
+        val imagesFolder: File = File(requireActivity().cacheDir, "images")
+        var uri: Uri? = null
+        try {
+            imagesFolder.mkdirs()
+            val file: File = File(imagesFolder, "shared_images.jpg")
+            val stream: FileOutputStream = FileOutputStream(file)
+            image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            stream.flush()
+            stream.close()
+            uri = FileProvider.getUriForFile(Objects.requireNonNull(requireActivity().applicationContext), "com.example.instagram" + ".provider", file)
+        } catch (e: Exception) {
+            Log.d(TAG, "Exception: + ${e.message}")
+        }
+        return uri
+    }
     
     private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int {

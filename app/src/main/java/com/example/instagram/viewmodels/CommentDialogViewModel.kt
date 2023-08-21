@@ -58,7 +58,7 @@ class CommentDialogViewModel(val app: Application) : AndroidViewModel(app) {
         comments.postValue(list)
         for (i in list) {
             val id = i.profileId
-            val imageUrl = imageUtil.getProfilePicture(id) ?: continue
+            val imageUrl = imageUtil.getProfilePictureUrl(id) ?: continue
             imageList.add(imageUrl)
         }
         commenterImages.postValue(imageList)

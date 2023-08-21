@@ -92,7 +92,6 @@ class OnePostFragment : Fragment() {
             with(viewModel) {
                 getProfilePictureByPostId(postId)
                 getPostImages(postId)
-                getCommentCount(postId)
                 getLikeCount(postId)
             }
         }
@@ -101,8 +100,7 @@ class OnePostFragment : Fragment() {
             val details = viewModel.getPostDetails(postId, mainViewModel.loggedInProfileId!!)
             withContext(Dispatchers.Main) {
                 binding.apply {
-                    likeBtn.isChecked = details.isPostAlreadyLiked
-                    // setLikeColorAsPerState(likeBtn, details.isPostAlreadyLiked)
+                    likeBtn.isChecked = details.isPostAlreadyLiked // setLikeColorAsPerState(likeBtn, details.isPostAlreadyLiked)
                     btnSavePost.isChecked = details.isPostAlreadySaved
                     postDesc.text = details.postText
                     timeOfPost.text = DateTime.timeFormatter(details.postTime, TimeFormatting.POST)
@@ -139,7 +137,7 @@ class OnePostFragment : Fragment() {
             binding.likeCount.text = "$it likes"
         }
         
-        viewModel.commentCount.observe(viewLifecycleOwner) {
+        db.commentDao().commentCount(postId).observe(viewLifecycleOwner) {
             binding.commentCount.text = when (it) {
                 0 -> "0 comment"
                 1 -> "View 1 comment"
@@ -149,13 +147,11 @@ class OnePostFragment : Fragment() {
     }
     
     private fun openProfile() {
-        val a =
-            OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId.value!!)
+        val a = OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId.value!!)
         findNavController().navigate(a)
     }
     
-    private fun viewPagerDoubleClicked(viewPager2: ViewPager2) {
-        // Todo: double tap on viewpage to like post
+    private fun viewPagerDoubleClicked(viewPager2: ViewPager2) { // Todo: double tap on viewpage to like post
     }
     
     private fun onSavePostClicked(it: MaterialCheckBox) {
@@ -171,14 +167,12 @@ class OnePostFragment : Fragment() {
     }
     
     private fun onLikeClicked(it: MaterialCheckBox) {
-        if (it.isChecked) {
-            // setLikeColorAsPerState(it, true)
+        if (it.isChecked) { // setLikeColorAsPerState(it, true)
             lifecycleScope.launch {
                 db.likesDao().insertNewLike(Likes(postId, mainViewModel.loggedInProfileId!!, System.currentTimeMillis()))
                 viewModel.getLikeCount(postId)
             }
-        } else {
-            // setLikeColorAsPerState(it, false)
+        } else { // setLikeColorAsPerState(it, false)
             lifecycleScope.launch {
                 db.likesDao().deleteLike(mainViewModel.loggedInProfileId!!, postId)
                 viewModel.getLikeCount(postId)
@@ -187,20 +181,15 @@ class OnePostFragment : Fragment() {
     }
     
     private fun deletePostDialog() {
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setMessage("Delete this post ?")
-            .setCancelable(true)
-            .setPositiveButton("Yes") { _, _ ->
-                lifecycleScope.launch {
-                    viewModel.deletePost(postId)
-                    findNavController().navigateUp()
-                }
+        val dialog = MaterialAlertDialogBuilder(requireContext()).setMessage("Delete this post ?").setCancelable(true).setPositiveButton("Yes") { _, _ ->
+            lifecycleScope.launch {
+                viewModel.deletePost(postId)
+                findNavController().navigateUp()
             }
-            .setNegativeButton("No") { dialogInterface, _ ->
-                dialogInterface.cancel()
-                binding.btnDeletePost.isEnabled = true
-            }
-            .show()
+        }.setNegativeButton("No") { dialogInterface, _ ->
+            dialogInterface.cancel()
+            binding.btnDeletePost.isEnabled = true
+        }.show()
         dialog.setOnCancelListener {
             binding.btnDeletePost.isEnabled = true
         }

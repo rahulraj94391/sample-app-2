@@ -153,8 +153,8 @@ class ProfileAdapter(
                 (holder as ProfileSummaryView).apply {
 
                     CoroutineScope(Dispatchers.IO).launch {
-                        val bitmap: Bitmap = if (profileSummary.profilePic != null)
-                            imageUtil.getBitmap(profileSummary.profilePic!!)
+                        val bitmap: Bitmap = if (profileSummary.profilePicUrl != null)
+                            imageUtil.getBitmap(profileSummary.profilePicUrl!!)
                         else
                             ContextCompat.getDrawable(mContext, R.drawable.person_outlined)!!.toBitmap()
 

@@ -39,14 +39,9 @@ class LoginFragment : Fragment() {
         binding.createNewAccountBtn.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_createNewAccountScreenOneFragment)
         }
-        binding.loginBtn.setOnClickListener {
-            performLogin()
-        }
-        
-        binding.passwordField.setOnEditorActionListener { textView, actionId, keyEvent ->
-            if (actionId == EditorInfo.IME_ACTION_GO) {
-                performLogin()
-            }
+        binding.loginBtn.setOnClickListener { performLogin() }
+        binding.passwordField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_GO) performLogin()
             true
         }
     }
