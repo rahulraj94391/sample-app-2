@@ -45,11 +45,11 @@ import java.io.FileOutputStream
 import java.util.Objects
 import kotlin.properties.Delegates
 
-
 private const val TAG = "CommTag_ProfileFragment"
 
-const val POST_ID_OPEN_REQ_KEY = "postId"
-const val POST_ID_REF_KEY = "postIdToOpenInNextFrag"
+const val POST_OPEN_REQ_KEY = "postId"
+const val POST_ID = "postIdToOpen"
+const val POST_POS = "postIdPosition"
 
 class ProfileFragment : Fragment() {
     private lateinit var lastStatusProfSummary: ProfileSummary
@@ -72,9 +72,10 @@ class ProfileFragment : Fragment() {
             mainViewModel.loggedInProfileId!!
         }
         
-        requireActivity().supportFragmentManager.setFragmentResultListener(POST_ID_OPEN_REQ_KEY, requireActivity()) { _, bundle ->
-            val result = bundle.getLong(POST_ID_REF_KEY)
-            val action = ProfileFragmentDirections.actionProfileFragmentToOnePostFragment(result)
+        requireActivity().supportFragmentManager.setFragmentResultListener(POST_OPEN_REQ_KEY, requireActivity()) { _, bundle ->
+            val postId = bundle.getLong(POST_ID)
+            val pos = bundle.getInt(POST_POS)
+            val action = ProfileFragmentDirections.actionProfileFragmentToOnePostFragment(postId, pos)
             findNavController().navigate(action)
         }
         lifecycleScope.launch {

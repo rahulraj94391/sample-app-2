@@ -21,6 +21,7 @@ import kotlin.properties.Delegates
 
 const val LIST_REF_KEY: String = "list_ref"
 const val USER_PROF_KEY = "userProf"
+const val DEL_POST_REQ_KEY = "deletePostReqKey"
 
 private const val TAG = "CommTag_PhotoGridFragment"
 
@@ -56,8 +57,9 @@ class PhotoGridFragment : Fragment() {
         return binding.root
     }
     
-    private fun onPostClicked(postId: Long) {
-        requireActivity().supportFragmentManager.setFragmentResult(POST_ID_OPEN_REQ_KEY, bundleOf(POST_ID_REF_KEY to postId))
+    private fun onPostClicked(pos: Int) {
+        val postId = userPostedPhotoAdapter.getPostId(pos)
+        requireActivity().supportFragmentManager.setFragmentResult(POST_OPEN_REQ_KEY, bundleOf(POST_ID to postId, POST_POS to pos))
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,4 +102,14 @@ class PhotoGridFragment : Fragment() {
         binding.gridOfPosts.layoutManager = GridLayoutManager(requireContext(), spanCount)
         binding.gridOfPosts.setHasFixedSize(true)
     }
+    
+    
+    override fun onStart() {
+        super.onStart()
+        requireActivity().supportFragmentManager.setFragmentResultListener(DEL_POST_REQ_KEY, requireActivity()) { _, bundle ->
+            val pos = bundle.getInt(POST_POS)
+            userPostedPhotoAdapter.deletePostAt(pos)
+        }
+    }
+    
 }

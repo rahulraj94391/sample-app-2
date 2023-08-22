@@ -1,12 +1,8 @@
 package com.example.instagram
 
 import android.content.Context
-import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.WindowInsetsController
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import androidx.databinding.DataBindingUtil
@@ -38,31 +34,6 @@ class HomeActivity : AppCompatActivity() {
         
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
-        
-        when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {}
-            
-            Configuration.UI_MODE_NIGHT_NO -> {
-                if (Build.VERSION.SDK_INT >= 30) {
-                    window.decorView.windowInsetsController?.apply {
-                        // window.navigationBarColor = resources.getColor(android.R.color.)
-                        
-                        setSystemBarsAppearance(
-                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                        )
-                        setSystemBarsAppearance(
-                            WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS, WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
-                        )
-                    }
-                } else if (Build.VERSION.SDK_INT == 29) {
-                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                }
-                
-            }
-            
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-        }
-        
         
         // setup bottom navigation view with nav controller
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragContainerView) as NavHostFragment
@@ -118,25 +89,5 @@ class HomeActivity : AppCompatActivity() {
     private fun onSearchReselected() {
         // Log.d(TAG, "onSearchReselected: ")
         // supportFragmentManager.popBackStack(R.id.searchFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE )
-    }
-    
-    
-    override fun onNavigateUp(): Boolean {
-        Log.d(TAG, "onNavigateUp: ")
-        return super.onNavigateUp()
-    }
-    
-    
-    override fun onSupportNavigateUp(): Boolean {
-        //        return super.onSupportNavigateUp()
-        return navController.navigateUp() || super.onSupportNavigateUp()
-    }
-    
-    override fun onBackPressed() { //        Log.d(TAG, "onBackPressed: ")
-        super.onBackPressed()
-    }
-    
-    override fun onDestroy() {
-        super.onDestroy() //        Log.d(TAG, "onDestroy")
     }
 }

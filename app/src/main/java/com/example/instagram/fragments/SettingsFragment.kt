@@ -1,6 +1,6 @@
 package com.example.instagram.fragments
 
-import android.content.Context.MODE_PRIVATE
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -10,10 +10,15 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
+import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
+import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.example.instagram.R
 import com.example.instagram.databinding.FragmentSettingsBinding
+
 
 private const val TAG = "SettingsFragment_CommTag"
 
@@ -30,7 +35,30 @@ class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var sharedPref: SharedPreferences
     
-    private val biometricListener = CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedPref = requireActivity().getSharedPreferences(SETTINGS_PREF_NAME, Context.MODE_PRIVATE)
+    }
+    
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = DataBindingUtil.inflate(inflater, com.example.instagram.R.layout.fragment_settings, container, false)
+        return binding.root
+    }
+    
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.radioGroup.setOnCheckedChangeListener(themeListener)
+        binding.biometricSwitch.setOnCheckedChangeListener(biometricListener)
+        when (sharedPref.getInt(THEME_KEY, AUTO)) {
+            AUTO -> binding.rbDeviceSettings.isChecked = true
+            LIGHT_MODE -> binding.rbLightMode.isChecked = true
+            DARK_MODE -> binding.rbDarkMode.isChecked = true
+        }
+        binding.biometricSwitch.isChecked = sharedPref.getBoolean(BIOMETRIC_KEY, false)
+        binding.biometricSwitch.isEnabled = checkSupport() // enable switch when there is support
+    }
+    
+    private val biometricListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
         Log.d(TAG, "Button status is: $isChecked")
         if (isChecked) {
             sharedPref.edit().putBoolean(BIOMETRIC_KEY, true).apply()
@@ -43,12 +71,21 @@ class SettingsFragment : Fragment() {
     
     private val themeListener = RadioGroup.OnCheckedChangeListener { _, id ->
         when (id) {
-            R.id.rbDeviceSettings -> setSystemTheme()
-            R.id.rbLightMode -> setLightTheme()
-            R.id.rbDarkMode -> setDarkTheme()
+            com.example.instagram.R.id.rbDeviceSettings -> setSystemTheme()
+            com.example.instagram.R.id.rbLightMode -> setLightTheme()
+            com.example.instagram.R.id.rbDarkMode -> setDarkTheme()
         }
     }
     
+    private fun checkSupport(): Boolean {
+        val biometricManager = BiometricManager.from(requireContext())
+        val canAuthenticate = when (biometricManager.canAuthenticate(BIOMETRIC_WEAK or DEVICE_CREDENTIAL)) {
+            BIOMETRIC_SUCCESS, BIOMETRIC_ERROR_NONE_ENROLLED -> true
+            else -> false
+        }
+        Log.d(TAG, "canAuthenticate = $canAuthenticate")
+        return canAuthenticate
+    }
     
     private fun setSystemTheme() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
@@ -63,28 +100,5 @@ class SettingsFragment : Fragment() {
     private fun setLightTheme() {
         sharedPref.edit().putInt(THEME_KEY, LIGHT_MODE).apply()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-    }
-    
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedPref = requireActivity().getSharedPreferences(SETTINGS_PREF_NAME, MODE_PRIVATE)
-    }
-    
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false)
-        return binding.root
-    }
-    
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.radioGroup.setOnCheckedChangeListener(themeListener)
-        binding.biometricSwitch.setOnCheckedChangeListener(biometricListener)
-        
-        when (sharedPref.getInt(THEME_KEY, AUTO)) {
-            AUTO -> binding.rbDeviceSettings.isChecked = true
-            LIGHT_MODE -> binding.rbLightMode.isChecked = true
-            DARK_MODE -> binding.rbDarkMode.isChecked = true
-        }
-        binding.biometricSwitch.isChecked = sharedPref.getBoolean(BIOMETRIC_KEY, false)
     }
 }

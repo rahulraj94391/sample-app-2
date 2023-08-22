@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 private const val TAG = "HomeFragViewModel_CommTag"
 
 class HomeFragViewModel(private val currentProfile: Long, private val app: Application) : AndroidViewModel(app) {
+    var isFirstTime = true
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     private val imageUtil = ImageUtil(app)
     val postsToShow = MutableLiveData<MutableList<Post>>()

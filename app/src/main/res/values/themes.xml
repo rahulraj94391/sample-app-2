@@ -15,7 +15,8 @@
         <!-- System bar colors. -->
         <item name="android:statusBarColor">?attr/colorSecondaryContainer</item>
         <item name="android:navigationBarColor">?attr/colorSecondaryContainer</item>
-
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 
     <style name="bnv" parent="Widget.Material3.BottomNavigationView">
@@ -71,6 +72,4 @@
         <item name="android:textColor">@color/white</item>
         <item name="backgroundTint">@color/text_color</item>
     </style>
-
-
 </resources>

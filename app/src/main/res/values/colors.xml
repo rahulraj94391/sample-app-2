@@ -33,6 +33,7 @@
     <color name="deleteRipple">#80FF8D76</color>
     <color name="activeIndicator">#CFD6FF</color>
     <color name="search_border">#9ba9ff</color>
+    <color name="biometric_passed">#009D10</color>
 
 
 

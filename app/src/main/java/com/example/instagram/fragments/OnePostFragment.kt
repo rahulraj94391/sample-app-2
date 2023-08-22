@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -33,10 +34,12 @@ import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
 private const val TAG = "CommTag_OnePostFragment"
+const val HIDE_DELETE_BTN = -22
 
 class OnePostFragment : Fragment() {
     private lateinit var binding: FragmentOnePostBinding
     private var postId: Long by Delegates.notNull()
+    private var postPos: Int by Delegates.notNull()
     private lateinit var viewModel: OnePostFragViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var postPhotoAdapter: PostAdapter
@@ -49,6 +52,7 @@ class OnePostFragment : Fragment() {
         super.onCreate(savedInstanceState)
         db = AppDatabase.getDatabase(requireContext())
         postId = args!!.postId
+        postPos = args!!.pos
         lifecycleScope.launch {
             val profileId = db.postDao().getProfileId(postId)
             this@OnePostFragment.profileId.postValue(profileId)
@@ -74,7 +78,7 @@ class OnePostFragment : Fragment() {
         }
         
         profileId.observe(viewLifecycleOwner) {
-            if (it == mainViewModel.loggedInProfileId!!) {
+            if (it == mainViewModel.loggedInProfileId!! && postPos != HIDE_DELETE_BTN) {
                 binding.btnDeletePost.visibility = View.VISIBLE
                 binding.btnDeletePost.setOnClickListener { deleteBtn ->
                     deleteBtn.isEnabled = false
@@ -184,6 +188,7 @@ class OnePostFragment : Fragment() {
         val dialog = MaterialAlertDialogBuilder(requireContext()).setMessage("Delete this post ?").setCancelable(true).setPositiveButton("Yes") { _, _ ->
             lifecycleScope.launch {
                 viewModel.deletePost(postId)
+                requireActivity().supportFragmentManager.setFragmentResult(DEL_POST_REQ_KEY, bundleOf(POST_POS to postPos))
                 findNavController().navigateUp()
             }
         }.setNegativeButton("No") { dialogInterface, _ ->

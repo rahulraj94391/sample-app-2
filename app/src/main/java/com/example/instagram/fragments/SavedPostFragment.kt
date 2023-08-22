@@ -67,7 +67,7 @@ class SavedPostFragment : Fragment() {
     
     private fun onSavedPostClicked(pos: Int) {
         val postId = viewModel.listOfSavedPosts.value!![pos].postId
-        val action = SavedPostFragmentDirections.actionSavedPostFragmentToOnePostFragment(postId)
+        val action = SavedPostFragmentDirections.actionSavedPostFragmentToOnePostFragment(postId, HIDE_DELETE_BTN)
         findNavController().navigate(action)
     }
     

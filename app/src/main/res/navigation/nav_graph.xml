@@ -97,6 +97,9 @@
         <action
             android:id="@+id/action_onePostFragment_to_commentSheet"
             app:destination="@id/commentSheet" />
+        <argument
+            android:name="pos"
+            app:argType="integer" />
     </fragment>
     <dialog
         android:id="@+id/commentSheet"

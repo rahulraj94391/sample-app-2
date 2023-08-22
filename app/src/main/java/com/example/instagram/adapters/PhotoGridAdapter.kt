@@ -1,6 +1,5 @@
 package com.example.instagram.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "PhotoGridAdapter_CommTag"
 
-class PhotoGridAdapter(val listener: (Long) -> Unit) : RecyclerView.Adapter<PhotoGridAdapter.PhotoViewVH>() {
+class PhotoGridAdapter(val listener: (Int) -> Unit) : RecyclerView.Adapter<PhotoGridAdapter.PhotoViewVH>() {
     private var listOfImages: MutableList<OnePhotoPerPost> = mutableListOf()
     private lateinit var imageUtil: ImageUtil
     
@@ -30,9 +29,14 @@ class PhotoGridAdapter(val listener: (Long) -> Unit) : RecyclerView.Adapter<Phot
         
         init {
             image.setOnClickListener {
-                listener.invoke(listOfImages[adapterPosition].postId)
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    listener.invoke(adapterPosition)
             }
         }
+    }
+    
+    fun getPostId(pos: Int): Long {
+        return listOfImages[pos].postId
     }
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewVH {
@@ -49,9 +53,13 @@ class PhotoGridAdapter(val listener: (Long) -> Unit) : RecyclerView.Adapter<Phot
     }
     
     fun setNewList(newList: MutableList<OnePhotoPerPost>) {
-        Log.d(TAG, "new list size  = ${newList.size}")
         this.listOfImages = newList
         notifyDataSetChanged()
+    }
+    
+    fun deletePostAt(pos: Int) {
+        listOfImages.removeAt(pos)
+        notifyItemRemoved(pos)
     }
     
     override fun getItemCount(): Int {

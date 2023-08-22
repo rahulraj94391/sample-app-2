@@ -23,7 +23,7 @@ import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val TAG = "CommTag_HomeFragment"
+private const val TAG = "HomeFragment_CommTag"
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -36,8 +36,7 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         db = AppDatabase.getDatabase(requireContext())
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        val currentUser = mainViewModel.loggedInProfileId!!
-        viewModel = ViewModelProvider(this, ViewModelFactory(currentUser, requireActivity().application))[HomeFragViewModel::class.java]
+        viewModel = ViewModelProvider(this, ViewModelFactory(mainViewModel.loggedInProfileId!!, requireActivity().application))[HomeFragViewModel::class.java]
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -47,7 +46,8 @@ class HomeFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState == null) {
+        if (viewModel.isFirstTime) {
+            viewModel.isFirstTime = false
             viewModel.addNewPostToList(mainViewModel.loggedInProfileId!!)
         }
         homeAdapter = HomeAdapter(::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate)
@@ -97,8 +97,7 @@ class HomeFragment : Fragment() {
     }
     
     private fun onSavePostClicked(pos: Int, view: View) {
-        view as MaterialCheckBox
-        val checkedState = view.checkedState
+        val checkedState = (view as MaterialCheckBox).checkedState
         val postId = homeAdapter.getPostId(pos)
         val newState = if (checkedState == MaterialCheckBox.STATE_CHECKED) {
             viewModel.savePost(mainViewModel.loggedInProfileId!!, postId)
@@ -113,11 +112,6 @@ class HomeFragment : Fragment() {
             val savePayload = HomeAdapter.SavePayload(postId, newState)
             homeAdapter.notifyItemChanged(pos, savePayload)
         }
-    }
-    
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean("isFirstTime", false)
     }
     
     private fun openCommentBottomSheet(pos: Int) {

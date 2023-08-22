@@ -34,21 +34,18 @@ class ImageUtil(val context: Context) {
     private val errorBitmap: Bitmap = ContextCompat.getDrawable(context, R.drawable.loading_error)!!.toBitmap()
     
     suspend fun getBitmap(url: String): Bitmap {
-        Log.d(TAG, "getBitmap")
         val fileName = db.cacheDao().getCachedImageFileNameIfPresent(url)
         return if (fileName == null) newURLFound(url)
         else getImageFromCache("$fileName") ?: onEntryPresentAndFileMissing(url, fileName)
     }
     
     private suspend fun onEntryPresentAndFileMissing(url: String, fileName: Long): Bitmap {
-        Log.d(TAG, "onEntryPresentAndFileMissing")
         val downloadedBitmap = downloadBitmap(url) ?: return errorBitmap
         putImageInCache("$fileName", downloadedBitmap)
         return downloadedBitmap
     }
     
     private suspend fun newURLFound(url: String): Bitmap {
-        Log.d(TAG, "newURLFound as - $url")
         val downloadedBitmap = downloadBitmap(url) ?: return errorBitmap
         val newRec = db.cacheDao().insertCacheUrl(ImageCache(url, System.currentTimeMillis()))
         val newFileName: String = newRec.toString()
@@ -57,20 +54,17 @@ class ImageUtil(val context: Context) {
     }
     
     private fun getImageFromCache(fileName: String): Bitmap? {
-        Log.d(TAG, "getImageFromCache")
         val file = File(context.cacheDir, fileName)
         var bitmap: Bitmap? = null
         try {
             bitmap = BitmapFactory.decodeStream(FileInputStream(file))
         } catch (e: Exception) {
-            Log.d(TAG, "Exception while reading image file stream from cache.")
             e.message
         }
         return bitmap
     }
     
     private suspend fun putImageInCache(fileName: String, image: Bitmap) {
-        Log.d(TAG, "putImageInCache")
         val file = File(context.cacheDir, fileName)
         try {
             val outputStream = withContext(Dispatchers.IO) {
@@ -82,7 +76,6 @@ class ImageUtil(val context: Context) {
                 outputStream.close()
             }
         } catch (e: Exception) {
-            Log.d(TAG, "Exception while putting image file into cache.")
             e.message
         }
     }
@@ -198,7 +191,6 @@ class ImageUtil(val context: Context) {
                 .whereEqualTo("serial", "${postId}_0")
                 .get()
                 .await()
-            Log.d(TAG, "getOneImagePerPost: ${snapShots.size()}")
             for (i in snapShots) {
                 val link = i.data["$postId"].toString()
                 imgURLList.add(OnePhotoPerPost(postId, link))
