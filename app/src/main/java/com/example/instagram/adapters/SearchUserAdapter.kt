@@ -59,7 +59,7 @@ class SearchUserAdapter(
         notifyDataSetChanged()
     }
     
-    fun setNewList2(imagesNewList: MutableList<String>?) {
+    fun setImagesList(imagesNewList: MutableList<String>?) {
         this.imageList = imagesNewList!!
         notifyDataSetChanged()
     }

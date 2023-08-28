@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material/icons/materialicons/delete_outline/baseline_delete_outline_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/keyboard_arrow_right/baseline_keyboard_arrow_right_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,8 +33,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="baseline_delete_outline_24" />
-                            <entry key="sourceFile" value="$USER_HOME$/Desktop/icons8-medium.svg" />
+                            <entry key="outputName" value="arrow_right_24" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/delete-cross-svgrepo-com.svg" />
                           </map>
                         </option>
                       </PersistentState>

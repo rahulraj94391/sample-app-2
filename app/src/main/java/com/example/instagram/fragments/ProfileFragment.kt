@@ -45,7 +45,7 @@ import java.io.FileOutputStream
 import java.util.Objects
 import kotlin.properties.Delegates
 
-private const val TAG = "CommTag_ProfileFragment"
+private const val TAG = "ProfileFragment_CommTag"
 
 const val POST_OPEN_REQ_KEY = "postId"
 const val POST_ID = "postIdToOpen"
@@ -127,7 +127,7 @@ class ProfileFragment : Fragment() {
     private fun setOnClickListener() {
         binding.btnProfileBottomSheet.setOnClickListener {
             // check below condition to avoid crash when 'btnProfileBottomSheet' is tapped quickly.
-            if (findNavController().currentDestination?.id == R.id.profileMenu2) return@setOnClickListener
+            if (findNavController().currentDestination?.id != R.id.profileMenu2) return@setOnClickListener
             findNavController().navigate(R.id.action_profileFragment_to_profileMenu2)
         }
         if (::lastStatusProfSummary.isInitialized) {
@@ -276,12 +276,12 @@ class ProfileFragment : Fragment() {
     
     private fun saveImage(image: Bitmap?): Uri? {
         if (image == null) return null
-        val imagesFolder: File = File(requireActivity().cacheDir, "images")
+        val imagesFolder = File(requireActivity().cacheDir, "images")
         var uri: Uri? = null
         try {
             imagesFolder.mkdirs()
-            val file: File = File(imagesFolder, "shared_images.jpg")
-            val stream: FileOutputStream = FileOutputStream(file)
+            val file = File(imagesFolder, "shared_images.jpg")
+            val stream = FileOutputStream(file)
             image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             stream.flush()
             stream.close()

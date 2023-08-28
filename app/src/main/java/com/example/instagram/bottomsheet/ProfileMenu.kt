@@ -14,6 +14,8 @@ import com.example.instagram.MSharedPreferences
 import com.example.instagram.MainActivity
 import com.example.instagram.R
 import com.example.instagram.databinding.BottomsheetMyProfileMenuBinding
+import com.example.instagram.fragments.BIOMETRIC_KEY
+import com.example.instagram.fragments.SETTINGS_PREF_NAME
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -24,6 +26,10 @@ private const val TAG = "CommTag_ProfileMenu"
 
 class ProfileMenu : BottomSheetDialogFragment() {
     lateinit var binding: BottomsheetMyProfileMenuBinding
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
     
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState) as BottomSheetDialog
@@ -80,6 +86,7 @@ class ProfileMenu : BottomSheetDialogFragment() {
             .setMessage("Logout from Instagram ?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, _ ->
+                setBiometricToFalse()
                 logoutUser()
                 dismiss()
             }
@@ -88,6 +95,11 @@ class ProfileMenu : BottomSheetDialogFragment() {
                 dismiss()
             }
             .show()
+    }
+    
+    private fun setBiometricToFalse() {
+        val settingsPref = requireActivity().getSharedPreferences(SETTINGS_PREF_NAME, Context.MODE_PRIVATE)
+        settingsPref.edit().putBoolean(BIOMETRIC_KEY, false).apply()
     }
     
 }

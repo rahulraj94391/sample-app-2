@@ -102,6 +102,27 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
+                  <entry key="captionTagFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-4" />
+                            <option name="y" value="-375" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_captionTagFragment_to_tagFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="commentSheet">
                     <value>
                       <LayoutPositions>
@@ -226,6 +247,15 @@
                             <option name="y" value="35" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_postFragment_to_captionTagFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -282,6 +312,11 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_profileMenu2_to_savedPostFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_profileMenu2_to_settingsFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -352,6 +387,30 @@
                           <Point>
                             <option name="x" value="672" />
                             <option name="y" value="1170" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="tagFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-4" />
+                            <option name="y" value="-796" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="uploadDialog">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="375" />
+                            <option name="y" value="-767" />
                           </Point>
                         </option>
                       </LayoutPositions>

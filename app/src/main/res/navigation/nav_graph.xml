@@ -25,7 +25,15 @@
         android:id="@+id/postFragment"
         android:name="com.example.instagram.fragments.PostFragment"
         android:label="fragment_post"
-        tools:layout="@layout/fragment_post" />
+        tools:layout="@layout/fragment_post" >
+        <action
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right"
+            android:id="@+id/action_postFragment_to_captionTagFragment"
+            app:destination="@id/captionTagFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.instagram.fragments.SearchFragment"
@@ -190,4 +198,27 @@
         android:name="com.example.instagram.fragments.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/captionTagFragment"
+        android:name="com.example.instagram.fragments.CaptionTagFragment"
+        android:label="fragment_caption_tag"
+        tools:layout="@layout/fragment_caption_tag" >
+        <action
+            android:id="@+id/action_captionTagFragment_to_tagFragment"
+            app:destination="@id/tagFragment" />
+        <action
+            android:id="@+id/action_captionTagFragment_to_uploadDialog"
+            app:destination="@id/uploadDialog" />
+    </fragment>
+    <fragment
+        android:id="@+id/tagFragment"
+        android:name="com.example.instagram.fragments.TagFragment"
+        android:label="TagFragment"
+        tools:layout="@layout/fragment_tag"
+
+        />
+    <dialog
+        android:id="@+id/uploadDialog"
+        android:name="com.example.instagram.dialog.UploadDialog"
+        android:label="UploadDialog" />
 </navigation>

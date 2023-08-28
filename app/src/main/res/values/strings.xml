@@ -6,7 +6,7 @@
     <string name="must_contain_10_digit">Must contains 10 digits.</string>
     <string name="invalid_email">Invalid email id.</string>
     <string name="date_of_birth_format">%1$d-%2$d-%3$d</string>
-    <string name="new_post">New Post</string>
+    <string name="select_photos">Select Photos</string>
     <string name="upload_profile_picture">Upload Profile Picture</string>
     <string name="bio">Bio</string>
     <string name="username_imp">Username*</string>
@@ -28,6 +28,19 @@
     <string name="following">Following</string>
     <string name="settings">Settings</string>
     <string name="app_logo">App logo</string>
+    <string name="no_user_found">No user found.</string>
+    <string name="add_description">Add description</string>
+    <string name="post">Post</string>
+    <string name="what_s_on_your_mind">What\'s on your mind ?</string>
+    <string name="tag_people">Tag people</string>
+    <string name="saved_posts">Saved posts</string>
+    <string name="logout">Logout</string>
+    <string name="add_photos">Add Photos</string>
+    <string name="tags">Tags</string>
+    <string name="your_tags_will_appear_here">Your tags will appear here</string>
+    <string name="tap_here_to_start_selecting_photos">Tap here to start selecting photos</string>
+    <string name="next">Next</string>
+    <string name="add_more_photos">Add more photos</string>
 
     <string-array name="gender">
         <item>Male</item>

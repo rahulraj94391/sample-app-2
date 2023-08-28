@@ -50,11 +50,9 @@ class SearchFragment : Fragment(), SearchUsernameClickListener {
         }
 
         viewModel.imagesLiveData.observe(viewLifecycleOwner) {
-            searchAdapter.setNewList2(it)
+            searchAdapter.setImagesList(it)
         }
     
-//        binding.searchViewBar.setBackgroundResource(R.drawable.search_view_bg)
-        
         binding.searchViewBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -66,7 +64,7 @@ class SearchFragment : Fragment(), SearchUsernameClickListener {
                 else {
                     searchJob?.cancel()
                     searchJob = lifecycleScope.launch {
-                        delay(500)
+                        delay(800)
                         viewModel.getSearchResults(newText)
                     }
                     return true
@@ -78,7 +76,7 @@ class SearchFragment : Fragment(), SearchUsernameClickListener {
     override fun onClick(pos: Int) {
         val profileId = viewModel.searchLiveData.value?.get(pos)?.profile_id
         searchAdapter.setNewList(mutableListOf())
-        searchAdapter.setNewList2(mutableListOf())
+        searchAdapter.setImagesList(mutableListOf())
         val action = profileId?.let { SearchFragmentDirections.actionSearchFragmentToProfileFragment(it) }
         if (action != null) {
             findNavController().navigate(action)
@@ -87,7 +85,6 @@ class SearchFragment : Fragment(), SearchUsernameClickListener {
         viewModel.apply {
             searchLiveData.value?.clear()
             imagesLiveData.value?.clear()
-
         }
 //        java.lang.IllegalArgumentException: Navigation action/destination com.example.instagram:id/action_searchFragment_to_profileFragment cannot be found from the current destination Destination(com.example.instagram:id/onePostFragment) label=OnePostFragment class=com.example.instagram.fragments.OnePostFragment
     }

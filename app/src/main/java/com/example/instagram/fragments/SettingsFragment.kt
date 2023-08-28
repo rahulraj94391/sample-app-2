@@ -3,7 +3,6 @@ package com.example.instagram.fragments
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,17 +54,14 @@ class SettingsFragment : Fragment() {
             DARK_MODE -> binding.rbDarkMode.isChecked = true
         }
         binding.biometricSwitch.isChecked = sharedPref.getBoolean(BIOMETRIC_KEY, false)
-        binding.biometricSwitch.isEnabled = checkSupport() // enable switch when there is support
+        binding.biometricSwitch.isEnabled = checkSupport() // enable switch when device supports biometric
     }
     
     private val biometricListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
-        Log.d(TAG, "Button status is: $isChecked")
         if (isChecked) {
             sharedPref.edit().putBoolean(BIOMETRIC_KEY, true).apply()
-            
         } else {
             sharedPref.edit().putBoolean(BIOMETRIC_KEY, false).apply()
-            
         }
     }
     
@@ -83,7 +79,6 @@ class SettingsFragment : Fragment() {
             BIOMETRIC_SUCCESS, BIOMETRIC_ERROR_NONE_ENROLLED -> true
             else -> false
         }
-        Log.d(TAG, "canAuthenticate = $canAuthenticate")
         return canAuthenticate
     }
     

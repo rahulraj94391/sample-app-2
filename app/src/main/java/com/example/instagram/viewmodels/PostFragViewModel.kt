@@ -12,39 +12,48 @@ import androidx.work.WorkManager
 import com.example.instagram.ImageUtil
 import com.example.instagram.MSharedPreferences
 import com.example.instagram.database.AppDatabase
-import com.example.instagram.database.model.SearchResult
+import com.example.instagram.database.model.TagSearchResult
 import com.example.instagram.worker.POST_TAGS_KEY
 import com.example.instagram.worker.POST_TEXT_KEY
 import com.example.instagram.worker.PROFILE_ID_KEY
 import com.example.instagram.worker.UPLOAD_IMAGE_PATH_KEY
 import com.example.instagram.worker.UploadPostPictures
-import com.google.android.material.chip.Chip
 import kotlinx.coroutines.async
 
 private const val TAG = "CommTag_PostFragmentViewModel"
 
 class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
-    val imageUtil = ImageUtil(app)
-    val imagesLiveData = MutableLiveData<MutableList<String>>()
-    var postImagesUri: MutableList<Uri> = mutableListOf()
+    private val imageUtil = ImageUtil(app)
+    val postImagesUri: MutableList<Uri> = mutableListOf()
     var profileId: Long = -1
-    var tempListTagUser = MutableLiveData<MutableList<SearchResult>>()
-    var finalTagUserIds = mutableListOf<Pair<Chip, Long>>()
-    var tagsToUpload = mutableListOf<Long>()
+    val tagsToUpload = mutableListOf<Long>()
     var finalTextToUpload = ""
     
+    // this will be used to display only selected tags
+    val finalTags = mutableListOf<TagSearchResult>()
+    
+    // this list is used to display the search results of user
+    val tagSearchResults = MutableLiveData<MutableList<TagSearchResult>>()
+    
     init {
-        val sharedPreferences = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        val sharedPreferences = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         profileId = sharedPreferences.getLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
     }
     
     fun insertPost() {
+        if (finalTags.isNotEmpty()) {
+            finalTags.forEach {
+                tagsToUpload.add(it.profile_id)
+            }
+        }
+        
         uploadPostWork(uriToStringArray(postImagesUri))
         
         // clear all variables after inserting.
-        postImagesUri = mutableListOf()
-        finalTagUserIds.clear()
         tagsToUpload.clear()
+        postImagesUri.clear()
+        finalTags.clear()
+        finalTextToUpload = ""
     }
     
     private fun uriToStringArray(postImagesUri: MutableList<Uri>): Array<String> {
@@ -64,7 +73,6 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
             .putLongArray(POST_TAGS_KEY, tagsToUpload.toLongArray())
             .build()
         
-        
         val oneTimeWorkRequest = OneTimeWorkRequest
             .Builder(UploadPostPictures::class.java)
             .setInputData(data)
@@ -73,28 +81,42 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
         WorkManager.getInstance(app).enqueue(oneTimeWorkRequest)
     }
     
-    suspend fun getSearchResult(name: String) {
+    suspend fun getSearchResults(name: String) {
         val sharedPref = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         val ownID = sharedPref.getLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
         val db = AppDatabase.getDatabase(app)
         
-        val usersRes = viewModelScope.async {
+        // get profile_id, username, first_name, last_name
+        val searchResFormDB = viewModelScope.async {
             db.searchDao().getSearchResult(name, ownID)
         }
-        val searchResWOPhoto = usersRes.await()
+        val finalResultWoPicUrl = searchResFormDB.await()
         
-        val listOfImages = mutableListOf<String>()
-        for (i in searchResWOPhoto.indices) {
-            listOfImages.add(imageUtil.getProfilePictureUrl(searchResWOPhoto[i].profile_id) ?: "")
+        // get images from firebase
+        val imageUrlFromFirebase = viewModelScope.async {
+            val tempList: MutableList<String> = mutableListOf()
+            for (i in finalResultWoPicUrl) {
+                val img = imageUtil.getProfilePictureUrl(i.profile_id)
+                tempList.add(img.toString())
+            }
+            tempList
         }
         
-        tempListTagUser.postValue(searchResWOPhoto)
-        imagesLiveData.postValue(listOfImages)
+        
+        val finalListWithImages = imageUrlFromFirebase.await()
+        val finalListWithImage = mutableListOf<TagSearchResult>()
+        
+        for (i in finalResultWoPicUrl.indices) {
+            val singleRes = TagSearchResult(
+                finalResultWoPicUrl[i].profile_id,
+                finalResultWoPicUrl[i].first_name,
+                finalResultWoPicUrl[i].last_name,
+                finalResultWoPicUrl[i].username,
+                finalListWithImages[i]
+            )
+            finalListWithImage.add(singleRes)
+        }
+        tagSearchResults.postValue(finalListWithImage)
     }
     
-    suspend fun getNameOfUser(profileId: Long): String {
-        val db = AppDatabase.getDatabase(app)
-        val fullName = db.profileDao().getFullName(profileId)
-        return "${fullName.first_name} ${fullName.last_name}"
-    }
 }
