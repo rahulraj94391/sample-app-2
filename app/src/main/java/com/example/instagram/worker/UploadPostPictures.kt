@@ -29,7 +29,7 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         Log.d(TAG, "CHECK-POINT 1")
         
         //photo(s) Uri
-        val originalUri = inputData.getStringArray(UPLOAD_IMAGE_PATH_KEY) ?: return Result.failure().also { }
+        val originalUri = inputData.getStringArray(UPLOAD_IMAGE_PATH_KEY) ?: return Result.failure()
         
         // post text should not be null
         val postText = inputData.getString(POST_TEXT_KEY) ?: return Result.failure()

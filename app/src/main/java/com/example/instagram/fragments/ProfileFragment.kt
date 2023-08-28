@@ -127,7 +127,7 @@ class ProfileFragment : Fragment() {
     private fun setOnClickListener() {
         binding.btnProfileBottomSheet.setOnClickListener {
             // check below condition to avoid crash when 'btnProfileBottomSheet' is tapped quickly.
-            if (findNavController().currentDestination?.id != R.id.profileMenu2) return@setOnClickListener
+            if (findNavController().currentDestination?.id == R.id.profileMenu2) return@setOnClickListener
             findNavController().navigate(R.id.action_profileFragment_to_profileMenu2)
         }
         if (::lastStatusProfSummary.isInitialized) {

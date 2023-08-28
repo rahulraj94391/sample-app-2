@@ -202,13 +202,14 @@ class CreateNewAccountScreenTwoFragment : Fragment() {
     }
     
     private fun uploadProfileImage() {
-        profilePicUriToUpload.let { uri ->
+        profilePicUriToUpload.let { urii ->
+            val uri = imageUtil.getUriDownscaleImages(mutableListOf(urii))
             binding.profileImage.alpha = 0.3F
             binding.indicator.visibility = View.VISIBLE
             binding.uploadNewPicture.isEnabled = false
             binding.signUpBtn.isEnabled = false
             val storageRef = storageRef.reference.child("$profileId")
-            storageRef.putFile(uri).addOnCompleteListener { task ->
+            storageRef.putFile(uri[0]).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     storageRef.downloadUrl.addOnSuccessListener { uri2 ->
                         val map = HashMap<String, Any>()

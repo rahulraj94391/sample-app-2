@@ -1,6 +1,5 @@
 package com.example.instagram
 
-import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -70,7 +69,7 @@ class ImageUtil(val context: Context) {
             val outputStream = withContext(Dispatchers.IO) {
                 FileOutputStream(file)
             }
-            image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            image.compress(Bitmap.CompressFormat.JPEG, 20, outputStream)
             withContext(Dispatchers.IO) {
                 outputStream.flush()
                 outputStream.close()
@@ -97,44 +96,56 @@ class ImageUtil(val context: Context) {
         return photo.await()
     }
     
-    fun getBitmapFromUri(uri: Uri): Bitmap? {
-        val contentResolver: ContentResolver = context.contentResolver
+    fun getBitmapFromUri(uri: Uri, desiredRatio: Double = 0.8, desiredHeight: Double = 720.0): Bitmap? {
         return try {
-            ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, uri))
+            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
+            downScale(bitmap, desiredRatio, desiredHeight)
         } catch (e: IOException) {
             e.printStackTrace()
             null
         }
     }
     
-    fun resizePhoto(bitmap: Bitmap, H: Int = 377, W: Int = 720): Bitmap {
-        val w = bitmap.width
-        val h = bitmap.height
-        val aspRat = (w / h).toLong()
-        //        val W = (aspRat * H).toInt()
-        Log.d(TAG, "resizePhoto: height = $H, width = $W\nBitmap width = $w, height = $h\nAspect ratio = $aspRat")
-        val b = Bitmap.createScaledBitmap(bitmap, W, H, false)
-        return b
+    private fun downScale(bitmap: Bitmap?, desiredRatio: Double, desiredHeight: Double): Bitmap? {
+        if (bitmap == null) return null
+        val imageViewRatio = 4.toDouble() / 5.toDouble()
+        var w: Double
+        var h: Double
+        var newHeight = desiredHeight
+        var newWidth = desiredRatio * newHeight
+        
+        bitmap.apply {
+            w = this.width.toDouble()
+            h = this.height.toDouble()
+        }
+        val ratio = w / h
+        if (h <= newHeight && w <= newWidth) return bitmap
+        if (ratio < imageViewRatio) {
+            newWidth = ratio * newHeight
+        } else if (ratio > imageViewRatio) {
+            newHeight = newWidth / ratio
+        }
+        
+        return Bitmap.createScaledBitmap(bitmap, newWidth.toInt(), newHeight.toInt(), true)
     }
     
-    fun getUriDownscaleImages(postImagesUri: MutableList<Uri>): MutableList<Uri> {
-        //        val finalList = mutableListOf<Uri>()
-        //        postImagesUri.forEach {
-        //            val bitmap = getBitmapFromUri(it)!!
-        //            val downscaledBitmap = resizePhoto(bitmap)
-        //            val tempFile: File = File(context.cacheDir, "${System.currentTimeMillis()}.jpeg")
-        //            try {
-        //                val fos = FileOutputStream(tempFile)
-        //                downscaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-        //                fos.close()
-        //            } catch (e: IOException) {
-        //                // Handle error
-        //            }
-        //            finalList.add(Uri.fromFile(tempFile))
-        //        }
-        ////        Log.d(TAG, "URI_TEST - final uris list from ImageUtil = $finalList")
-        //        return finalList
-        return postImagesUri
+    fun getUriDownscaleImages(postImagesUri: MutableList<Uri>, desiredRatio: Double = 0.8, desiredHeight: Double = 720.0): MutableList<Uri> {
+        val finalList = mutableListOf<Uri>()
+        postImagesUri.forEach {
+            val downscaledBitmap = getBitmapFromUri(it, desiredRatio, desiredHeight)!!
+            val tempFile = File(context.cacheDir, "${System.currentTimeMillis()}.jpeg")
+            try {
+                val fos = FileOutputStream(tempFile)
+                downscaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                fos.close()
+            } catch (e: IOException) {
+                // Handle error
+            }
+            finalList.add(Uri.fromFile(tempFile))
+        }
+        Log.d(TAG, "URI_TEST - final uris list from ImageUtil = $finalList")
+        return finalList
+        // return postImagesUri
     }
     
     /*---------------------------------------------—---------------------------------------------—---------------------------------------------—---------------------------------------------—*/

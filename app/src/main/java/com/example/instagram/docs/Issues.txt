@@ -1,0 +1,15 @@
+1.  Bottom Navigation View tab_change_error
+    - crash
+    - action doesn't exist
+
+2.  Profile destination
+    - VP.saveState = false
+
+
+TODOO:
+
+1. Custom RV to send touch input to child, until a specific view is not at top.
+2. Get the height of device screen at runtime (returns 0){another approach to solve above problem}
+3. Picture cropping as 4:5 but didn't got satisfactory results.
+4. Tapping navigation destination again should pop out all the transaction on that specific tab.
+5. Assigning default value at runtime to a destination in navigation graph.

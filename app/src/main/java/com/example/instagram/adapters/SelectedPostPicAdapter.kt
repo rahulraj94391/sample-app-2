@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.instagram.ImageUtil
 import com.example.instagram.R
 
 import com.google.android.material.button.MaterialButton
@@ -19,15 +20,16 @@ const val CAPACITY = 6
 private const val TAG = "SelectedPostPicAdapter_CommTag"
 
 class SelectedPostPicAdapter(
-    val selectedPhotoList: MutableList<Uri>,
-    val addNewPhoto: () -> Unit,
+    private val selectedPhotoList: MutableList<Uri>,
     val deletePhoto: (pos: Int) -> Unit,
     val insListener: (Int) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mContext: Context
+    private lateinit var imageUtil: ImageUtil
     
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         mContext = recyclerView.context
+        imageUtil = ImageUtil(recyclerView.context)
         super.onAttachedToRecyclerView(recyclerView)
     }
     
@@ -45,24 +47,19 @@ class SelectedPostPicAdapter(
         }
     }
     
-    inner class AddPictureViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        init {
-            view.setOnClickListener { addNewPhoto.invoke() }
-        }
-    }
-    
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return SelectedPicViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_selected_photo, parent, false))
     }
     
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as SelectedPicViewHolder).apply {
-            imageView.setImageURI(selectedPhotoList[position])
+            // imageView.setImageURI(selectedPhotoList[position])
+            imageView.setImageBitmap(imageUtil.getBitmapFromUri(selectedPhotoList[position]))
         }
     }
     
     override fun getItemCount(): Int {
-        return selectedPhotoList.size /*+ 1*/
+        return selectedPhotoList.size
     }
     
     fun addImages(list: MutableList<Uri>) {
@@ -83,5 +80,4 @@ class SelectedPostPicAdapter(
         insListener(selectedPhotoList.size)
         notifyItemRemoved(pos)
     }
-    
 }
