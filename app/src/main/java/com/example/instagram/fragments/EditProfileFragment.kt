@@ -33,7 +33,8 @@ class EditProfileFragment : Fragment() {
     private val isUploadComplete = MutableLiveData(false)
     private var storageRef: FirebaseStorage = FirebaseStorage.getInstance()
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private lateinit var binding: FragmentEditProfileBinding
+    private var _binding: FragmentEditProfileBinding? = null
+    private val binding get() = _binding!!
     private lateinit var db: AppDatabase
     private lateinit var mainViewModel: MainViewModel
     private lateinit var imageUtil: ImageUtil
@@ -50,8 +51,13 @@ class EditProfileFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false)
         return binding.root
+    }
+    
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
     
     private val profilePicUri = registerForActivityResult(ActivityResultContracts.GetContent()) {
@@ -78,8 +84,11 @@ class EditProfileFragment : Fragment() {
                 lifecycleScope.launch { saveData() }
             } else {
                 it.isEnabled = true
-                val msg = if (fNameIsBlank) {"First name cannot be blank"}
-                else {"Last name cannot be blank"}
+                val msg = if (fNameIsBlank) {
+                    "First name cannot be blank"
+                } else {
+                    "Last name cannot be blank"
+                }
                 Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
             }
         }

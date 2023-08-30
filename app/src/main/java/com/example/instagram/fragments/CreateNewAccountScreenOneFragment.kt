@@ -26,7 +26,8 @@ import java.util.Calendar
 private const val TAG = "CreateNewAccountFragment_CommTag"
 
 class CreateNewAccountScreenOneFragment : Fragment() {
-    private lateinit var binding: FragmentCreateNewAccountScreenOneBinding
+    private var _binding: FragmentCreateNewAccountScreenOneBinding? = null
+    private val binding get() = _binding!!
     private lateinit var sharedViewModel: MainViewModel
     
     private lateinit var firstName: TextInputLayout
@@ -46,9 +47,14 @@ class CreateNewAccountScreenOneFragment : Fragment() {
     private var dobDate: Calendar = Calendar.getInstance()
     
     
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_new_account_screen_one, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_new_account_screen_one, container, false)
         return binding.root
+    }
+    
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

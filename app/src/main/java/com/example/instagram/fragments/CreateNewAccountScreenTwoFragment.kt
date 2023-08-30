@@ -41,7 +41,8 @@ const val CROSS = "╳ "
 private const val TAG = "CommTag_CreateNewAccountScreenT"
 
 class CreateNewAccountScreenTwoFragment : Fragment() {
-    private lateinit var binding: FragmentCreateNewAccountScreenTwoBinding
+    private var _binding: FragmentCreateNewAccountScreenTwoBinding? = null
+    private val binding get() = _binding!!
     private lateinit var sharedViewModel: MainViewModel
     private var storageRef: FirebaseStorage = FirebaseStorage.getInstance()
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -51,9 +52,15 @@ class CreateNewAccountScreenTwoFragment : Fragment() {
     private lateinit var profilePicUriToUpload: Uri
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_new_account_screen_two, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_new_account_screen_two, container, false)
         imageUtil = ImageUtil(requireContext())
         return binding.root
+    }
+    
+    
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

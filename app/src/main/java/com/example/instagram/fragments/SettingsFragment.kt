@@ -31,7 +31,8 @@ const val THEME_KEY = "theme_key"
 const val BIOMETRIC_KEY = "biometric"
 
 class SettingsFragment : Fragment() {
-    private lateinit var binding: FragmentSettingsBinding
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
     private lateinit var sharedPref: SharedPreferences
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +41,13 @@ class SettingsFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, com.example.instagram.R.layout.fragment_settings, container, false)
+        _binding = DataBindingUtil.inflate(inflater, com.example.instagram.R.layout.fragment_settings, container, false)
         return binding.root
+    }
+    
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

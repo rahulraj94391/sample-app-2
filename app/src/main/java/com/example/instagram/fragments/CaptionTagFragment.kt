@@ -20,7 +20,9 @@ import com.example.instagram.viewmodels.PostFragViewModel
 private const val TAG = "CaptionTagFragment_CommTag"
 
 class CaptionTagFragment : Fragment() {
-    private lateinit var binding: FragmentCaptionTagBinding
+    private var _binding: FragmentCaptionTagBinding? = null
+    private val binding get() = _binding!!
+    
     private lateinit var viewModel: PostFragViewModel
     
     
@@ -30,7 +32,7 @@ class CaptionTagFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_caption_tag, container, false)
+        _binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_caption_tag, container, false)
         return binding.root
     }
     
@@ -84,5 +86,10 @@ class CaptionTagFragment : Fragment() {
             return true
         }
         return false
+    }
+    
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

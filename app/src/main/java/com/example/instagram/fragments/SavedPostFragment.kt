@@ -23,7 +23,8 @@ import kotlinx.coroutines.launch
 private const val TAG = "CommTag_SavedPostFragment"
 
 class SavedPostFragment : Fragment() {
-    private lateinit var binding: FragmentSavedPostBinding
+    private var _binding: FragmentSavedPostBinding? = null
+    private val binding get() = _binding!!
     private lateinit var viewModel: SavedPostsViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var savedPostAdapter: SavedPostAdapter
@@ -31,8 +32,14 @@ class SavedPostFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewModel = ViewModelProvider(this)[SavedPostsViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_saved_post, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_saved_post, container, false)
         return binding.root
+    }
+    
+    override fun onDestroyView() {
+        binding.savedPostRV.adapter = null
+        _binding = null
+        super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

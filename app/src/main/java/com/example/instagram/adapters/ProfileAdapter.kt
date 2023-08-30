@@ -38,51 +38,43 @@ const val UNFOLLOW = "Unfollow"
 const val MESSAGE = "Message"
 
 class ProfileAdapter(
-    var profileSummary: ProfileSummary,
-    val OnFollowViewClicked: () -> Unit,
-    val OnFollowingViewClicked: () -> Unit,
-    val OnEditProfileClicked: () -> Unit,
-    val OnShareProfileClicked: () -> Unit,
-    val OnUnfollowClicked: () -> Unit,
-    val OnFollowClicked: () -> Unit,
-    val OnMessageClicked: () -> Unit,
-    var isFollowing: Boolean,
-    val ownId: Long,
+    private var profileSummary: ProfileSummary,
+    private val onFollowViewClicked: () -> Unit,
+    private val onFollowingViewClicked: () -> Unit,
+    private val onEditProfileClicked: () -> Unit,
+    private val onShareProfileClicked: () -> Unit,
+    private val onUnfollowClicked: () -> Unit,
+    private val onFollowClicked: () -> Unit,
+    private val onMessageClicked: () -> Unit,
+    private var isFollowing: Boolean,
+    private val ownId: Long,
     val userProfileId: Long,
-
-    ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mContext: Context
     private lateinit var imageUtil: ImageUtil
-
-    fun setNewSummary(profileSummary: ProfileSummary) {
-        this.profileSummary = profileSummary
-        notifyItemChanged(0)
-    }
 
     private fun btn(btnStart: MaterialButton, btnEnd: MaterialButton) {
         if (ownId == userProfileId) {
             btnStart.text = EDIT_PROFILE
             btnEnd.text = SHARE_PROFILE
-            btnStart.setOnClickListener { OnEditProfileClicked.invoke() }
-            btnEnd.setOnClickListener { OnShareProfileClicked.invoke() }
-        }
-        else if (isFollowing) {
+            btnStart.setOnClickListener { onEditProfileClicked.invoke() }
+            btnEnd.setOnClickListener { onShareProfileClicked.invoke() }
+        } else if (isFollowing) {
             btnStart.text = UNFOLLOW
             btnEnd.text = MESSAGE
             btnStart.setOnClickListener {
-                OnUnfollowClicked.invoke()
+                onUnfollowClicked.invoke()
                 isFollowing = !isFollowing
             }
-            btnEnd.setOnClickListener { OnMessageClicked.invoke() }
-        }
-        else {
+            btnEnd.setOnClickListener { onMessageClicked.invoke() }
+        } else {
             btnStart.text = FOLLOW
             btnEnd.text = MESSAGE
             btnStart.setOnClickListener {
-                OnFollowClicked.invoke()
+                onFollowClicked.invoke()
                 isFollowing = !isFollowing
             }
-            btnEnd.setOnClickListener { OnMessageClicked.invoke() }
+            btnEnd.setOnClickListener { onMessageClicked.invoke() }
         }
     }
 
@@ -102,8 +94,8 @@ class ProfileAdapter(
         val followingCount: TextView = view.findViewById(R.id.followingCount)
 
         init {
-            followerCount.setOnClickListener { OnFollowViewClicked.invoke() }
-            followingCount.setOnClickListener { OnFollowingViewClicked.invoke() }
+            followerCount.setOnClickListener { onFollowViewClicked.invoke() }
+            followingCount.setOnClickListener { onFollowingViewClicked.invoke() }
         }
 
     }

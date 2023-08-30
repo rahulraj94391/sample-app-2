@@ -20,7 +20,6 @@ import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.instagram.HomeActivity
 import com.example.instagram.MSharedPreferences
@@ -33,7 +32,6 @@ class SplashFragment : Fragment() {
     private lateinit var binding: FragmentSplashBinding
     private lateinit var sharedPref: SharedPreferences
     private lateinit var settingsSharedPref: SharedPreferences
-    private var scope = lifecycleScope
     private var cancellationSignall: CancellationSignal? = null
     private val authenticationCallback: BiometricPrompt.AuthenticationCallback
         get() = object : BiometricPrompt.AuthenticationCallback() {

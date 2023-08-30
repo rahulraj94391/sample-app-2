@@ -1,7 +1,6 @@
 package com.example.instagram.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,8 @@ import kotlinx.coroutines.launch
 private const val TAG = "TagFragment_CommTag"
 
 class TagFragment : Fragment() {
-    private lateinit var binding: FragmentTagBinding
+    private var _binding: FragmentTagBinding? = null
+    private val binding get() = _binding!!
     private lateinit var viewModel: PostFragViewModel
     private lateinit var tagsAdapter: TagsAdapter
     private lateinit var tagSearchResultAdapter: TagSearchResultAdapter
@@ -40,17 +40,25 @@ class TagFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_tag, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_tag, container, false)
         return binding.root
+    }
+    
+    override fun onDestroyView() {
+        binding.tags.adapter = null
+        _binding = null
+        super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
+        if (viewModel.finalTags.size > 0) binding.yourTagsWillAppearHere.visibility = View.INVISIBLE
+        
+        
         binding.searchViewBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
             override fun onQueryTextChange(newText: String?): Boolean {
-                Log.d(TAG, "onQueryTextChange: ")
                 if (newText!!.isEmpty()) {
                     binding.tagResults.visibility = View.INVISIBLE
                     binding.tags.visibility = View.VISIBLE
@@ -93,18 +101,15 @@ class TagFragment : Fragment() {
         tagSearchResultAdapter.clearList()
         tagsAdapter.addTag(tag)
         binding.searchViewBar.setQuery(null, false)
-        Log.d(TAG, "touch received at = $tag")
     }
     
     override fun onStart() {
         super.onStart()
         viewModel.tagSearchResults.observe(viewLifecycleOwner) {
             if (it.isEmpty() && binding.searchViewBar.query.toString().isNotBlank()) { // show - no users found ins
-                Log.d(TAG, "onStart: if-block\nquery = " + binding.searchViewBar.query)
                 binding.noUsersFoundIns.visibility = View.VISIBLE
                 return@observe
             } else { // hide - no users found ins
-                Log.d(TAG, "onStart: else-block")
                 binding.noUsersFoundIns.visibility = View.INVISIBLE
                 tagSearchResultAdapter.setNewTagSearchResult(it)
             }

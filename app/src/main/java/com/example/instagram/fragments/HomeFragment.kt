@@ -26,7 +26,8 @@ import kotlinx.coroutines.launch
 private const val TAG = "HomeFragment_CommTag"
 
 class HomeFragment : Fragment() {
-    private lateinit var binding: FragmentHomeBinding
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
     private lateinit var homeAdapter: HomeAdapter
     private lateinit var viewModel: HomeFragViewModel
     private lateinit var mainViewModel: MainViewModel
@@ -40,8 +41,14 @@ class HomeFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         return binding.root
+    }
+    
+    override fun onDestroyView() {
+        binding.homeRV.adapter = null
+        _binding = null
+        super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

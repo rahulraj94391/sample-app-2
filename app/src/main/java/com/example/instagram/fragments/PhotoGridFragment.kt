@@ -26,7 +26,8 @@ const val DEL_POST_REQ_KEY = "deletePostReqKey"
 private const val TAG = "CommTag_PhotoGridFragment"
 
 class PhotoGridFragment : Fragment() {
-    private lateinit var binding: FragmentPhotoGridBinding
+    private var _binding: FragmentPhotoGridBinding? = null
+    private val binding get() = _binding!!
     private lateinit var viewModel: PhotoGridFragViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var userPostedPhotoAdapter: PhotoGridAdapter
@@ -53,8 +54,14 @@ class PhotoGridFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_photo_grid, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_photo_grid, container, false)
         return binding.root
+    }
+    
+    override fun onDestroyView() {
+        binding.gridOfPosts.adapter = null
+        _binding = null
+        super.onDestroyView()
     }
     
     private fun onPostClicked(pos: Int) {
@@ -102,7 +109,6 @@ class PhotoGridFragment : Fragment() {
         binding.gridOfPosts.layoutManager = GridLayoutManager(requireContext(), spanCount)
         binding.gridOfPosts.setHasFixedSize(true)
     }
-    
     
     override fun onStart() {
         super.onStart()

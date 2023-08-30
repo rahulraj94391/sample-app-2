@@ -50,7 +50,7 @@ class HomeAdapter(
         val postDesc: TextView = item.findViewById(R.id.postDesc)
         val commentCount: TextView = item.findViewById(R.id.commentCount)
         val timeOfPost: TextView = item.findViewById(R.id.timeOfPost)
-        val adapter: PostAdapter = PostAdapter()
+        val adapter = PostAdapter()
         val indicator: TabLayout = item.findViewById(R.id.indicatorVP)
         
         init {
@@ -85,7 +85,7 @@ class HomeAdapter(
             likeCount.text = list[position].likeCount
             postDesc.text = list[position].postDesc
             commentCountDelegate(commentCount, list[position].postId)
-//            commentCount.text = list[position].commentCount
+            //            commentCount.text = list[position].commentCount
             timeOfPost.text = list[position].timeOfPost
             
             list[position].listOfPostPhotos.let {
@@ -102,16 +102,7 @@ class HomeAdapter(
     override fun onBindViewHolder(holder: PostVH, position: Int, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
             val item = payloads[0]
-            /*if (item is CommentPayload) {
-                val postId = item.postId
-                val newComment = item.newCommentString
-                if (list[position].postId != postId) return
-                list[position].commentCount = newComment
-                holder.apply {
-                    commentCount.text = list[position].commentCount
-                }
-                
-            } else*/ if (item is LikePayload) {
+            if (item is LikePayload) {
                 val postId = item.postId
                 val like = item.newLikeString
                 val newState = item.newState
@@ -161,12 +152,6 @@ class HomeAdapter(
     fun addNewPosts(newList: MutableList<Post>) {
         list.addAll(newList)
         notifyItemRangeInserted(itemCount, newList.size)
-        //notifyDataSetChanged()
-    }
-    
-    fun updateLikeInList(position: Int, newLikeData: String) {
-        list[position].likeCount = newLikeData
-        notifyItemChanged(position)
     }
     
     fun getPostId(position: Int): Long {
@@ -177,12 +162,6 @@ class HomeAdapter(
         return list[position].profileId
     }
     
-    fun deleteAllPosts() {
-        list.clear()
-        notifyItemRangeRemoved(0, itemCount)
-    }
-    
-    data class CommentPayload(val newCommentString: String, val postId: Long)
     data class LikePayload(val newLikeString: String, val postId: Long, val newState: Int)
     data class SavePayload(val postId: Long, val newState: Int)
 }

@@ -18,10 +18,10 @@ import kotlinx.coroutines.withContext
 private const val TAG = "CommTag_SearchUserAdapter"
 
 class SearchUserAdapter(
-    var searchResultList: MutableList<SearchResult>,
-    var listener: SearchUsernameClickListener,
-    val layoutRes: Int,
-    var imageList: MutableList<String>,
+    private var searchResultList: MutableList<SearchResult>,
+    var listener: (Int) -> Unit,
+    private val layoutRes: Int,
+    private var imageList: MutableList<String>,
 ) : RecyclerView.Adapter<SearchUserAdapter.SearchResultViewHolder>() {
     private lateinit var imgUtil: ImageUtil
     private lateinit var context: Context
@@ -72,13 +72,9 @@ class SearchUserAdapter(
         init {
             view.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
-                    listener.onClick(adapterPosition)
+                    listener(adapterPosition)
                 }
             }
         }
     }
-}
-
-interface SearchUsernameClickListener {
-    fun onClick(pos: Int)
 }

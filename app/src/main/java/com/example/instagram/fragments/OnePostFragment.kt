@@ -37,7 +37,8 @@ private const val TAG = "CommTag_OnePostFragment"
 const val HIDE_DELETE_BTN = -22
 
 class OnePostFragment : Fragment() {
-    private lateinit var binding: FragmentOnePostBinding
+    private var _binding: FragmentOnePostBinding? = null
+    private val binding get() = _binding!!
     private var postId: Long by Delegates.notNull()
     private var postPos: Int by Delegates.notNull()
     private lateinit var viewModel: OnePostFragViewModel
@@ -63,8 +64,13 @@ class OnePostFragment : Fragment() {
         db = AppDatabase.getDatabase(requireContext())
         viewModel = ViewModelProvider(this)[OnePostFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_one_post, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_one_post, container, false)
         return binding.root
+    }
+    
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

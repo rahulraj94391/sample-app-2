@@ -25,12 +25,12 @@ const val NO_FOLLOWERS = "No Follower"
 private const val TAG = "CommTag_ListFollowFragment"
 
 class ListFollowFragment : Fragment() {
-    private lateinit var binding: FragmentListFollowBinding
+    private var _binding: FragmentListFollowBinding? = null
+    private val binding get() = _binding!!
     private var profileId: Long by Delegates.notNull()
     private val args: ListFollowFragmentArgs by navArgs()
     private lateinit var viewModel: ListFollowFragViewModel
     private lateinit var adapter: FollowAdapter
-    
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,14 +40,28 @@ class ListFollowFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_follow, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_follow, container, false)
         return binding.root
+    }
+    
+    override fun onDestroyView() {
+        binding.usersRV.adapter = null
+        _binding = null
+        super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.type.text = args.type
         adapter = FollowAdapter()
+        
+        val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
+        divider.dividerInsetStart = dpToPx(84)
+        
+        binding.usersRV.addItemDecoration(divider)
+        binding.usersRV.adapter = adapter
+        binding.usersRV.layoutManager = LinearLayoutManager(requireContext())
+        
         viewModel.users.observe(viewLifecycleOwner) {
             if (it.size < 1) {
                 val ins = if (args.type == TYPE_FOLLOWER) NO_FOLLOWERS
@@ -59,12 +73,6 @@ class ListFollowFragment : Fragment() {
             binding.usersRV.visibility = View.VISIBLE
             adapter.updateList(it)
         }
-        val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
-        divider.dividerInsetStart = dpToPx(84)
-        
-        binding.usersRV.addItemDecoration(divider)
-        binding.usersRV.adapter = adapter
-        binding.usersRV.layoutManager = LinearLayoutManager(requireContext())
     }
     
     private fun dpToPx(dpValue: Int): Int {

@@ -74,7 +74,7 @@ class CommentAdapter(
     override fun onBindViewHolder(
         holder: CommentViewHolder,
         position: Int,
-        payload: MutableList<Any>
+        payload: MutableList<Any>,
     ) {
         if (profileImages.isNotEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {

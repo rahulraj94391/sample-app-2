@@ -27,10 +27,6 @@ private const val TAG = "CommTag_ProfileMenu"
 class ProfileMenu : BottomSheetDialogFragment() {
     lateinit var binding: BottomsheetMyProfileMenuBinding
     
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-    
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState) as BottomSheetDialog
     }
@@ -44,7 +40,7 @@ class ProfileMenu : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.savedPost.setOnClickListener { onSavedPostClicked() }
         binding.settings.setOnClickListener { onSettingsClicked() }
-        binding.logout.setOnClickListener { showLogoutDialog() }
+        binding.logout.setOnClickListener { onLogoutClicked() }
         
         val bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
         //        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -80,7 +76,7 @@ class ProfileMenu : BottomSheetDialogFragment() {
         requireActivity().finish()
     }
     
-    private fun showLogoutDialog() {
+    private fun onLogoutClicked() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Logout")
             .setMessage("Logout from Instagram ?")
@@ -101,5 +97,4 @@ class ProfileMenu : BottomSheetDialogFragment() {
         val settingsPref = requireActivity().getSharedPreferences(SETTINGS_PREF_NAME, Context.MODE_PRIVATE)
         settingsPref.edit().putBoolean(BIOMETRIC_KEY, false).apply()
     }
-    
 }

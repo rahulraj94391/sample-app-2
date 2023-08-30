@@ -19,13 +19,21 @@ import com.example.instagram.viewmodels.PostFragViewModel
 private const val TAG = "PostFragment_CommTag"
 
 class PostFragment : Fragment() {
-    private lateinit var binding: FragmentPostBinding
+    private var _binding: FragmentPostBinding? = null
+    private val binding get() = _binding!!
     private lateinit var viewModel: PostFragViewModel
     private lateinit var selectedPicAdapter: SelectedPostPicAdapter
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_post, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_post, container, false)
         return binding.root
+    }
+    
+    
+    override fun onDestroyView() {
+        binding.recyclerView.adapter = null
+        _binding = null
+        super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,7 +58,7 @@ class PostFragment : Fragment() {
             findNavController().navigate(action)
         }
     }
-
+    
     private fun deletePhoto(pos: Int) {
         selectedPicAdapter.deleteImage(pos)
     }

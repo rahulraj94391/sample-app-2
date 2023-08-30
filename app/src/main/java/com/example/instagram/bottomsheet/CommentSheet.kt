@@ -46,6 +46,11 @@ class CommentSheet : BottomSheetDialogFragment() {
         return super.onCreateDialog(savedInstanceState) as BottomSheetDialog
     }
     
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.commentRV.adapter = null
+    }
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         imageUtil = ImageUtil(requireContext())
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
@@ -63,7 +68,7 @@ class CommentSheet : BottomSheetDialogFragment() {
         with(bottomSheetBehavior) {
             isFitToContents = true
             isDraggable = true
-            //            halfExpandedRatio = 0.6f
+            // halfExpandedRatio = 0.6f
             state = BottomSheetBehavior.STATE_EXPANDED
         }
         
@@ -99,11 +104,9 @@ class CommentSheet : BottomSheetDialogFragment() {
             }
         })*/
         
-        commentAdapter =
-            CommentAdapter(this::showDeleteCommentDialog, mainViewModel.loggedInProfileId!!)
+        commentAdapter = CommentAdapter(this::showDeleteCommentDialog, mainViewModel.loggedInProfileId!!)
         binding.commentRV.adapter = commentAdapter
-        binding.commentRV.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.commentRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         
         viewModel.comments.observe(viewLifecycleOwner) {
             commentAdapter.updateList(it)
@@ -143,29 +146,22 @@ class CommentSheet : BottomSheetDialogFragment() {
     }
     
     private fun showDeleteCommentDialog(pos: Int) {
-        if (viewModel.comments.value!![pos].profileId != mainViewModel.loggedInProfileId!!)
-            return
-        MaterialAlertDialogBuilder(requireContext())
-            .setMessage("Delete Comment ?")
-            .setCancelable(true)
-            .setPositiveButton("Yes") { _, _ ->
-                lifecycleScope.launch {
-                    val commentId = viewModel.comments.value!![pos].commentId
-                    viewModel.deleteComment(commentId)
-                    viewModel.getComments(postId, mainViewModel.loggedInProfileId!!)
-                }
+        if (viewModel.comments.value!![pos].profileId != mainViewModel.loggedInProfileId!!) return
+        MaterialAlertDialogBuilder(requireContext()).setMessage("Delete Comment ?").setCancelable(true).setPositiveButton("Yes") { _, _ ->
+            lifecycleScope.launch {
+                val commentId = viewModel.comments.value!![pos].commentId
+                viewModel.deleteComment(commentId)
+                viewModel.getComments(postId, mainViewModel.loggedInProfileId!!)
             }
-            .setNegativeButton("No") { dialogInterface, _ ->
-                dialogInterface.cancel()
-            }
-            .show()
+        }.setNegativeButton("No") { dialogInterface, _ ->
+            dialogInterface.cancel()
+        }.show()
     }
     
     
     private fun isCommentQualified(commentText: String): Boolean {
         return if (commentText.isBlank()) {
-            Toast.makeText(requireContext(), "Cannot post blank comment.", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(requireContext(), "Cannot post blank comment.", Toast.LENGTH_SHORT).show()
             true
         } else {
             false

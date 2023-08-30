@@ -41,6 +41,8 @@
     <string name="tap_here_to_start_selecting_photos">Tap here to start selecting photos</string>
     <string name="next">Next</string>
     <string name="add_more_photos">Add more photos</string>
+    <string name="clear_all">clear all</string>
+    <string name="search_a_user">Search a user</string>
 
     <string-array name="gender">
         <item>Male</item>

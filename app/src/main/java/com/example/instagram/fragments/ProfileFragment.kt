@@ -53,7 +53,8 @@ const val POST_POS = "postIdPosition"
 
 class ProfileFragment : Fragment() {
     private lateinit var lastStatusProfSummary: ProfileSummary
-    private lateinit var binding: FragmentProfileBinding
+    private var _binding: FragmentProfileBinding? = null
+    private val binding get() = _binding!!
     private lateinit var mainViewModel: MainViewModel
     private lateinit var viewModel: ProfileFragViewModel
     private lateinit var db: AppDatabase
@@ -84,8 +85,13 @@ class ProfileFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         return binding.root
+    }
+    
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
     
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -197,7 +203,7 @@ class ProfileFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             if (it.profilePicUrl == null) return@launch
             setProfilePicTransition()
-            if(mainViewModel.profileImageBitmap == null) {
+            if (mainViewModel.profileImageBitmap == null) {
                 mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
             }
             withContext(Dispatchers.Main) {

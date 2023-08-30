@@ -4,14 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
 
-    android:padding="16dp">
+
+    >
 
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profileImage"
         android:layout_width="52dp"
         android:layout_height="52dp"
+        android:layout_margin="16dp"
         android:adjustViewBounds="true"
         android:padding="1dp"
         android:scaleType="centerCrop"
@@ -30,10 +35,12 @@
         android:layout_marginEnd="16dp"
         android:textSize="16sp"
         android:textStyle="bold"
+
         app:layout_constraintBottom_toTopOf="@+id/fullName"
         app:layout_constraintEnd_toStartOf="@+id/removeTag"
         app:layout_constraintStart_toEndOf="@+id/profileImage"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         tools:text="Username" />
 
     <TextView
@@ -53,11 +60,21 @@
         android:id="@+id/removeTag"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_margin="16dp"
         android:src="@drawable/delete_cross_svgrepo_com"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/icon_tint"
         tools:ignore="ContentDescription" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:dividerInsetStart="8dp"
+        app:dividerInsetEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
