@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.RecentSearchAdapter
 import com.example.instagram.adapters.SearchUserAdapter
@@ -28,6 +29,7 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: SearchFragViewModel
+    private lateinit var mainViewModel: MainViewModel
     private lateinit var searchAdapter: SearchUserAdapter
     private var searchJob: Job? = null
     private lateinit var db: AppDatabase
@@ -36,6 +38,8 @@ class SearchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = AppDatabase.getDatabase(requireContext())
+        viewModel = ViewModelProvider(requireActivity())[SearchFragViewModel::class.java]
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -58,7 +62,6 @@ class SearchFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[SearchFragViewModel::class.java]
         
         recentSearchAdapter = RecentSearchAdapter { pos ->
             gotoProfileScreen(recentSearchAdapter.getProfileId(pos))
@@ -89,7 +92,7 @@ class SearchFragment : Fragment() {
             searchAdapter.setImagesList(it)
         }
         
-        db.recentSearchDao().getAllSearchedNames().observe(viewLifecycleOwner) {
+        db.recentSearchDao().getAllSearchedNames(mainViewModel.loggedInProfileId!!).observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
                 return@observe
             }
@@ -159,7 +162,7 @@ class SearchFragment : Fragment() {
         searchAdapter.setNewList(mutableListOf())
         searchAdapter.setImagesList(mutableListOf())
         gotoProfileScreen(person.profile_id)
-        viewModel.addNameToRecentSearch(person.profile_id, person.first_name)
+        viewModel.addNameToRecentSearch(person.profile_id, person.first_name, mainViewModel.loggedInProfileId!!)
         binding.searchViewBar.setQuery("", false)
         viewModel.apply {
             searchLiveData.value?.clear()

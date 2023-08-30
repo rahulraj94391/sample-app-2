@@ -2,7 +2,6 @@ package com.example.instagram.fragments
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,8 +32,7 @@ class EditProfileFragment : Fragment() {
     private val isUploadComplete = MutableLiveData(false)
     private var storageRef: FirebaseStorage = FirebaseStorage.getInstance()
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private var _binding: FragmentEditProfileBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentEditProfileBinding
     private lateinit var db: AppDatabase
     private lateinit var mainViewModel: MainViewModel
     private lateinit var imageUtil: ImageUtil
@@ -51,13 +49,8 @@ class EditProfileFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false)
         return binding.root
-    }
-    
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
     }
     
     private val profilePicUri = registerForActivityResult(ActivityResultContracts.GetContent()) {
@@ -95,7 +88,8 @@ class EditProfileFragment : Fragment() {
         
         isUploadComplete.observe(viewLifecycleOwner) {
             if (it) {
-                findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
+                if (findNavController().currentDestination?.id == R.id.editProfileFragment)
+                    findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
             }
         }
     }
@@ -143,7 +137,7 @@ class EditProfileFragment : Fragment() {
         binding.indicator.visibility = View.VISIBLE
         binding.uploadNewPicture.isEnabled = false
         imageUriToUpload.let { urii ->
-            val uri = imageUtil.getUriDownscaleImages(mutableListOf(urii), 1.0, 480.0)
+            val uri = imageUtil.getUriDownscaleImages(mutableListOf(urii), 1.0, 720.0)
             
             val storageRef = storageRef.reference.child("$profileId")
             storageRef.putFile(uri[0]).addOnCompleteListener { task ->
@@ -158,7 +152,6 @@ class EditProfileFragment : Fragment() {
                                 if (it.isSuccessful) {
                                     lifecycleScope.launch {
                                         val profilePicUrl = getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return@launch
-                                        Log.d(TAG, "prof pic url = $profilePicUrl")
                                         withContext(Dispatchers.Main) {
                                             binding.profileImage.setImageBitmap(imageUtil.getBitmap(profilePicUrl))
                                             binding.profileImage.alpha = 1F
@@ -175,7 +168,6 @@ class EditProfileFragment : Fragment() {
                                 if (firestoreTask.isSuccessful) {
                                     lifecycleScope.launch {
                                         val profilePicUrl = getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return@launch
-                                        Log.d(TAG, "prof pic url = $profilePicUrl")
                                         withContext(Dispatchers.Main) {
                                             binding.profileImage.setImageBitmap(imageUtil.getBitmap(profilePicUrl))
                                             binding.profileImage.alpha = 1F

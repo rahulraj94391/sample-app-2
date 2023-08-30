@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class RecentSearch(
     val profileId: Long,
     val firstName: String,
+    val ownerId: Long,
 ) {
     @PrimaryKey(autoGenerate = true)
     var search_id: Long = 0

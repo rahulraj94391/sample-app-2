@@ -203,11 +203,11 @@ class ProfileFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             if (it.profilePicUrl == null) return@launch
             setProfilePicTransition()
-            if (mainViewModel.profileImageBitmap == null) {
-                mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
-            }
+            
+            mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
+            
             withContext(Dispatchers.Main) {
-                binding.profilePic.setImageBitmap(mainViewModel.profileImageBitmap)
+                binding.profilePic.setImageBitmap(ImageUtil(requireContext()).getBitmap(it.profilePicUrl))
             }
         }
     }

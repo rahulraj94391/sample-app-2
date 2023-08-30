@@ -12,6 +12,13 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.instagram.databinding.ActivityHomeBinding
+import com.example.instagram.fragments.HomeFragment
+import com.example.instagram.fragments.PostFragment
+import com.example.instagram.fragments.ProfileFragment
+import com.example.instagram.fragments.SearchFragment
+
+const val HIDDEN = true
+const val NOT_HIDDEN = false
 
 private const val TAG = "HomeActivity_CommTag"
 
@@ -19,6 +26,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var navController: NavController
     private lateinit var mainViewModel: MainViewModel
+    private var BOTTOM_NAV_CURRENT_STATE = NOT_HIDDEN
     
     
     override fun onCreate(savedInstanceState: Bundle?) {/*IMPORTANT    ----    START */ // first put the current user id in the Main ViewModel as the Home fragment starts creating once the Activity
@@ -46,12 +54,11 @@ class HomeActivity : AppCompatActivity() {
                 R.id.searchFragment -> {
                     onSearchReselected()
                 }
+                
                 R.id.profileFragment -> {}
             }
         }
         
-        
-        val drawable = getDrawable(R.drawable.loading_error)
         
         /*navController.addOnDestinationChangedListener { controller, dest, args ->
             when (dest.id) {
@@ -65,15 +72,44 @@ class HomeActivity : AppCompatActivity() {
             }
         }*/
         
-//        Log.d(TAG, "onCreate: before backstackChangeListener")
+        //        Log.d(TAG, "onCreate: before backstackChangeListener")
         navHostFragment.childFragmentManager.addOnBackStackChangedListener {
-            val backStackCount = navHostFragment.childFragmentManager.backStackEntryCount
-//            Log.d(TAG, "backstack count = $backStackCount")
+            val fm = navHostFragment.childFragmentManager
+            //            Log.d(TAG, "backstack count = $backStackCount")
+            val fragment = fm.findFragmentById(R.id.fragContainerView)
+            val state = when (fragment) {
+                is HomeFragment, is PostFragment, is SearchFragment, is ProfileFragment -> NOT_HIDDEN
+                else -> HIDDEN
+            }
+            if (BOTTOM_NAV_CURRENT_STATE != state) {
+                if (state == HIDDEN) {
+                    hideBottomNavigationView()
+                } else {
+                    showBottomNavigationView()
+                }
+            }
+            
         }
-    
+        
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-//            Log.e(TAG, "destination = ${destination.label}")
+            //            Log.e(TAG, "destination = ${destination.label}")
         }
+    }
+    
+    private fun hideBottomNavigationView() {
+        BOTTOM_NAV_CURRENT_STATE = HIDDEN
+        val view = binding.bottomNavView
+        /*view.clearAnimation()
+        view.animate().translationY(view.height.toFloat()).duration = 150*/
+        
+    }
+    
+    private fun showBottomNavigationView() {
+        BOTTOM_NAV_CURRENT_STATE = NOT_HIDDEN
+        val view = binding.bottomNavView
+        /*view.clearAnimation()
+        view.animate().translationY(0f).duration = 150*/
+        
     }
     
     override fun onResume() {
@@ -85,6 +121,7 @@ class HomeActivity : AppCompatActivity() {
             }
         }
     }
+    
     
     private fun onSearchReselected() {
         // Log.d(TAG, "onSearchReselected: ")

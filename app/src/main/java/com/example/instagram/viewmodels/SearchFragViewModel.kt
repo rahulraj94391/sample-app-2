@@ -42,8 +42,8 @@ class SearchFragViewModel(private val app: Application) : AndroidViewModel(app) 
         searchLiveData.postValue(finalResult)
     }
     
-    fun addNameToRecentSearch(id: Long, name: String) = viewModelScope.launch {
-        db.recentSearchDao().insertAndDeleteIfExist(RecentSearch(id, name))
+    fun addNameToRecentSearch(id: Long, name: String, ownerId: Long) = viewModelScope.launch {
+        db.recentSearchDao().insertAndDeleteIfExist(RecentSearch(id, name, ownerId))
     }
     
     fun deleteAllFromRecent() = viewModelScope.launch {

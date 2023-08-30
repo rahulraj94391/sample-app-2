@@ -96,7 +96,7 @@ class ImageUtil(val context: Context) {
         return photo.await()
     }
     
-    fun getBitmapFromUri(uri: Uri, desiredRatio: Double = 0.8, desiredHeight: Double = 720.0): Bitmap? {
+    fun getBitmapFromUri(uri: Uri, desiredRatio: Double = 0.8, desiredHeight: Double = 1080.0): Bitmap? {
         return try {
             val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
             downScale(bitmap, desiredRatio, desiredHeight)
@@ -129,7 +129,7 @@ class ImageUtil(val context: Context) {
         return Bitmap.createScaledBitmap(bitmap, newWidth.toInt(), newHeight.toInt(), true)
     }
     
-    fun getUriDownscaleImages(postImagesUri: MutableList<Uri>, desiredRatio: Double = 0.8, desiredHeight: Double = 720.0): MutableList<Uri> {
+    fun getUriDownscaleImages(postImagesUri: MutableList<Uri>, desiredRatio: Double = 0.8, desiredHeight: Double = 1080.0): MutableList<Uri> {
         val finalList = mutableListOf<Uri>()
         postImagesUri.forEach {
             val downscaledBitmap = getBitmapFromUri(it, desiredRatio, desiredHeight)!!

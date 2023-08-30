@@ -1,9 +1,11 @@
 package com.example.instagram.database
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.instagram.database.dao.CacheDao
 import com.example.instagram.database.dao.CommentDao
 import com.example.instagram.database.dao.FollowDao
@@ -29,7 +31,9 @@ import com.example.instagram.database.entity.RecentSearch
 import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.database.entity.Tag
 
-@Database(entities = [Comment::class, Follow::class, Likes::class, LoginCred::class, Post::class, PostImage::class, PostText::class, Profile::class, SavedPost::class, Tag::class, ImageCache::class, RecentSearch::class], version = 1)
+private const val TAG = "AppDatabase_CommTag"
+
+@Database(entities = [Comment::class, Follow::class, Likes::class, LoginCred::class, Post::class, PostImage::class, PostText::class, Profile::class, SavedPost::class, Tag::class, ImageCache::class, RecentSearch::class], version = 1, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun commentDao(): CommentDao
     abstract fun followDao(): FollowDao
@@ -53,6 +57,12 @@ abstract class AppDatabase : RoomDatabase() {
                 synchronized(this) {
                     INSTANCE = Room
                         .databaseBuilder(applicationContext, AppDatabase::class.java, "instaDB")
+                        .createFromAsset("database/instaDB.db", object : PrepackagedDatabaseCallback() {
+                            override fun onOpenPrepackagedDatabase(db: SupportSQLiteDatabase) {
+                                super.onOpenPrepackagedDatabase(db)
+                                Log.d(TAG, "Populating DB is done.")
+                            }
+                        })
                         .build()
                 }
             }
