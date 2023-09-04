@@ -22,9 +22,7 @@ private const val TAG = "CaptionTagFragment_CommTag"
 class CaptionTagFragment : Fragment() {
     private var _binding: FragmentCaptionTagBinding? = null
     private val binding get() = _binding!!
-    
     private lateinit var viewModel: PostFragViewModel
-    
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +74,6 @@ class CaptionTagFragment : Fragment() {
         override fun afterTextChanged(s: Editable?) {
             binding.btnPost.isEnabled = s?.isEmpty() != true && isInternetActive(requireContext())
         }
-        
     }
     
     private fun isInternetActive(context: Context): Boolean {

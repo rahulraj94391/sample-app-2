@@ -39,6 +39,8 @@ android {
 }
 
 dependencies {
+    // swipe refresh layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01"
     
     // nav component
     implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"

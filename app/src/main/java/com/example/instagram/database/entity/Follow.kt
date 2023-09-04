@@ -25,6 +25,7 @@ import androidx.room.PrimaryKey
 data class Follow(
     val owner_id: Long,
     val follower_id: Long,
+    val time:Long
 ) {
     @PrimaryKey(autoGenerate = true)
     var follow_row_id: Long = 0

@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.instagram.database.entity.Follow
 import com.example.instagram.database.model.FollowList
+import com.example.instagram.database.model.FollowLog
 
 @Dao
 interface FollowDao {
@@ -29,4 +30,7 @@ interface FollowDao {
     
     @Query("SELECT profile.profile_id, profile.first_name, profile.last_name, login_credential.username FROM profile LEFT JOIN login_credential ON profile.profile_id = login_credential.profile_id WHERE profile.profile_id IN (SELECT follower_id FROM follow WHERE owner_id = :profileId)")
     suspend fun getFollowingList(profileId: Long): MutableList<FollowList>
+    
+    @Query("select follow.owner_id, follow.time, login_credential.username from follow left join login_credential on follow.owner_id = login_credential.profile_id where follow.follower_id = :ownerId ORDER BY follow.time DESC")
+    suspend fun getFollowLog(ownerId: Long): List<FollowLog>
 }

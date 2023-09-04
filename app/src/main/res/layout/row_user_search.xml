@@ -15,11 +15,12 @@
         android:adjustViewBounds="true"
         android:padding="1dp"
         android:scaleType="centerCrop"
+        android:src="@drawable/person_24"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/circleImageView"
-        tools:src="@mipmap/ic_launcher" />
+        app:shapeAppearanceOverlay="@style/circleImageView" />
 
     <TextView
         android:id="@+id/username"

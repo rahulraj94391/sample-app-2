@@ -131,7 +131,7 @@ class EditProfileFragment : Fragment() {
         return image
     }
     
-    private fun uploadProfileImage(profileId: Long) {
+    private suspend fun uploadProfileImage(profileId: Long) {
         mainViewModel.profileImageBitmap = null
         binding.profileImage.alpha = 0.3F
         binding.indicator.visibility = View.VISIBLE

@@ -208,7 +208,7 @@ class CreateNewAccountScreenTwoFragment : Fragment() {
         return profileImageUrl
     }
     
-    private fun uploadProfileImage() {
+    private suspend fun uploadProfileImage() {
         profilePicUriToUpload.let { urii ->
             val uri = imageUtil.getUriDownscaleImages(mutableListOf(urii))
             binding.profileImage.alpha = 0.3F

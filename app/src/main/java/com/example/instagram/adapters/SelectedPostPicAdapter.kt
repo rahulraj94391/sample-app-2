@@ -10,8 +10,11 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.ImageUtil
 import com.example.instagram.R
-
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 const val PHOTO_ROW = 33
 const val ADD_PHOTO_ROW = 22
@@ -54,7 +57,12 @@ class SelectedPostPicAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as SelectedPicViewHolder).apply {
             // imageView.setImageURI(selectedPhotoList[position])
-            imageView.setImageBitmap(imageUtil.getBitmapFromUri(selectedPhotoList[position]))
+            CoroutineScope(Dispatchers.IO).launch {
+                val image = imageUtil.getBitmapFromUri(selectedPhotoList[position])
+                withContext(Dispatchers.Main) {
+                    imageView.setImageBitmap(image)
+                }
+            }
         }
     }
     

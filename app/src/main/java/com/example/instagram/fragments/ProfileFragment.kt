@@ -245,7 +245,7 @@ class ProfileFragment : Fragment() {
     
     private fun followProfile() {
         lifecycleScope.launch {
-            db.followDao().insertNewFollow(Follow(mainViewModel.loggedInProfileId!!, profileId))
+            db.followDao().insertNewFollow(Follow(mainViewModel.loggedInProfileId!!, profileId, System.currentTimeMillis()))
             viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
         }
     }

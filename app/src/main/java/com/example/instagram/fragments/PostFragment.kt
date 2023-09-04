@@ -44,6 +44,7 @@ class PostFragment : Fragment() {
         binding.recyclerView.apply {
             adapter = selectedPicAdapter
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            setItemViewCacheSize(5)
         }
         showHideListAndInstruction(viewModel.postImagesUri.size)
         

@@ -132,6 +132,8 @@ class HomeFragment : Fragment() {
     }
     
     private fun whenNotificationBtnClicked() {
-        Log.d(TAG, "Notification Btn Clicked")
+        if (findNavController().currentDestination?.id != R.id.homeFragment) return
+        val action = HomeFragmentDirections.actionHomeFragmentToNotificationFragment()
+        findNavController().navigate(action)
     }
 }

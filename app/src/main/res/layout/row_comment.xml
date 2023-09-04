@@ -13,22 +13,21 @@
         android:id="@+id/profileImage"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:padding="1dp"
         android:scaleType="centerCrop"
+        android:src="@drawable/person_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/circleImageView"
-        android:src="@drawable/ic_launcher_foreground" />
+        app:shapeAppearanceOverlay="@style/circleImageView" />
 
     <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="rahul"
         app:layout_constraintStart_toEndOf="@+id/profileImage"
         app:layout_constraintTop_toTopOf="parent"
-
-        />
+        tools:text="rahul" />
 
     <TextView
         android:id="@+id/commentTime"
@@ -36,12 +35,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="4h"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/username"
         app:layout_constraintTop_toTopOf="parent"
+        tools:text="4h"
 
         />
 
@@ -50,9 +49,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/username"
-        app:layout_constraintTop_toBottomOf="@id/username" />
+        app:layout_constraintTop_toBottomOf="@id/username"
+        tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s." />
 </androidx.constraintlayout.widget.ConstraintLayout>

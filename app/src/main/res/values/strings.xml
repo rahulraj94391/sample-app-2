@@ -43,6 +43,12 @@
     <string name="add_more_photos">Add more photos</string>
     <string name="clear_all">clear all</string>
     <string name="search_a_user">Search a user</string>
+    <string name="notifications">Notifications</string>
+    <string name="started_following_you">" started following you.  "</string>
+    <string name="liked_your_post">" liked your post.  "</string>
+    <string name="commented_on_your_post">" commented on your post.  "</string>
+    <string name="add_a_comment">Add a comment</string>
+    <string name="comments">Comments</string>
 
     <string-array name="gender">
         <item>Male</item>

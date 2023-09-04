@@ -20,19 +20,22 @@
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_notificationFragment"
+            app:destination="@id/notificationFragment" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
         android:name="com.example.instagram.fragments.PostFragment"
         android:label="fragment_post"
-        tools:layout="@layout/fragment_post" >
+        tools:layout="@layout/fragment_post">
         <action
+            android:id="@+id/action_postFragment_to_captionTagFragment"
+            app:destination="@id/captionTagFragment"
             app:enterAnim="@anim/enter_from_right"
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
-            app:popExitAnim="@anim/exit_to_right"
-            android:id="@+id/action_postFragment_to_captionTagFragment"
-            app:destination="@id/captionTagFragment" />
+            app:popExitAnim="@anim/exit_to_right" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -202,7 +205,7 @@
         android:id="@+id/captionTagFragment"
         android:name="com.example.instagram.fragments.CaptionTagFragment"
         android:label="fragment_caption_tag"
-        tools:layout="@layout/fragment_caption_tag" >
+        tools:layout="@layout/fragment_caption_tag">
         <action
             android:id="@+id/action_captionTagFragment_to_tagFragment"
             app:destination="@id/tagFragment" />
@@ -215,10 +218,14 @@
         android:name="com.example.instagram.fragments.TagFragment"
         android:label="TagFragment"
         tools:layout="@layout/fragment_tag"
-
         />
     <dialog
         android:id="@+id/uploadDialog"
         android:name="com.example.instagram.dialog.UploadDialog"
         android:label="UploadDialog" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.example.instagram.fragments.NotificationFragment"
+        android:label="NotificationFragment"
+        tools:layout="@layout/fragment_notification" />
 </navigation>

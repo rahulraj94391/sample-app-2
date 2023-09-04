@@ -24,7 +24,8 @@
                 android:gravity="center_vertical"
                 android:paddingStart="16dp"
                 android:paddingTop="4dp"
-                android:text="Post"
+                android:paddingEnd="16dp"
+                android:text="@string/post"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -50,7 +51,7 @@
                     android:adjustViewBounds="true"
                     android:padding="1dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_launcher_foreground"
+                    android:src="@drawable/person_24"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:shapeAppearanceOverlay="@style/circleImageView"
@@ -151,11 +152,11 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:text="50 likes"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/indicatorVP" />
+                    app:layout_constraintTop_toBottomOf="@+id/indicatorVP"
+                    tools:text="50 likes" />
 
                 <TextView
                     android:id="@+id/postDesc"
@@ -165,10 +166,10 @@
                     android:justificationMode="inter_word"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:text="loading ..."
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/likeCount" />
+                    app:layout_constraintTop_toBottomOf="@+id/likeCount"
+                    tools:text="loading ..." />
 
                 <TextView
                     android:id="@+id/commentCount"
@@ -177,10 +178,10 @@
                     android:layout_marginTop="4dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:text="View all 50 comments"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/postDesc" />
+                    app:layout_constraintTop_toBottomOf="@+id/postDesc"
+                    tools:text="View all 50 comments" />
 
                 <TextView
                     android:id="@+id/timeOfPost"

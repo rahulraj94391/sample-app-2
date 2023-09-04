@@ -34,7 +34,7 @@
                 android:adjustViewBounds="true"
                 android:padding="1dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/person_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/circleImageView"

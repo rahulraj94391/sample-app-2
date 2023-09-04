@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.instagram.database.entity.Comment
+import com.example.instagram.database.model.CommentLog
 
 @Dao
 interface CommentDao {
@@ -23,6 +24,9 @@ interface CommentDao {
     
     @Query("DELETE FROM comment WHERE comment_id = :commentId")
     suspend fun deleteCommentById(commentId: Long): Int
+    
+    @Query("SELECT comment.commenter_id, login_credential.username, comment.post_id, comment.comment_time FROM comment LEFT JOIN login_credential ON comment.commenter_id = login_credential.profile_id WHERE comment.post_id IN (SELECT post.post_id FROM post WHERE post.profile_id = :ownerId) AND commenter_id != :ownerId ORDER BY comment.comment_time DESC")
+    suspend fun getCommentLog(ownerId: Long): List<CommentLog>
 }
 
 

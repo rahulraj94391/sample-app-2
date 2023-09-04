@@ -1,11 +1,9 @@
 package com.example.instagram.database
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.instagram.database.dao.CacheDao
 import com.example.instagram.database.dao.CommentDao
 import com.example.instagram.database.dao.FollowDao
@@ -57,12 +55,7 @@ abstract class AppDatabase : RoomDatabase() {
                 synchronized(this) {
                     INSTANCE = Room
                         .databaseBuilder(applicationContext, AppDatabase::class.java, "instaDB")
-                        .createFromAsset("database/instaDB.db", object : PrepackagedDatabaseCallback() {
-                            override fun onOpenPrepackagedDatabase(db: SupportSQLiteDatabase) {
-                                super.onOpenPrepackagedDatabase(db)
-                                Log.d(TAG, "Populating DB is done.")
-                            }
-                        })
+                        //.createFromAsset("database/instaDB.db")
                         .build()
                 }
             }
