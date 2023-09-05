@@ -37,6 +37,8 @@
     <color name="biometric_passed">#009D10</color>
 
 
+    <color name="highlight">#337C8EFF</color>
+
 
 
 </resources>

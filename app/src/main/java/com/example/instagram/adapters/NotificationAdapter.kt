@@ -28,7 +28,13 @@ const val COMMENTLOG = 3
 
 private const val TAG = "NotifAdapter_CommTag"
 
-class NotificationAdapter(private val loggedInId: Long, private val spanBuilder: (String, Long, Int) -> SpannableStringBuilder) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NotificationAdapter(
+    private val loggedInId: Long,
+    private val spanBuilder: (String, Long, Int) -> SpannableStringBuilder,
+    private val openProfile: (Long) -> Unit,
+    private val openPost: (Long) -> Unit,
+    private val openCommentOnPost: (Long, Long) -> Unit,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var followLogs: List<FollowLog> = mutableListOf()
     private var likeLogs: List<LikeLog> = mutableListOf()
     private var commentLogs: List<CommentLog> = mutableListOf()
@@ -84,6 +90,8 @@ class NotificationAdapter(private val loggedInId: Long, private val spanBuilder:
         val log = originalList[ref.pos]
         holder.log.text = spanBuilder(log.username, log.time, FOLLOWLOG)
         
+        holder.itemView.setOnClickListener { openProfile(log.owner_id) }
+        
         CoroutineScope(Dispatchers.IO).launch {
             val imageURL = imageUtil.getProfilePictureUrl(log.owner_id) ?: return@launch
             val imageBitmap = imageUtil.getBitmap(imageURL)
@@ -123,6 +131,7 @@ class NotificationAdapter(private val loggedInId: Long, private val spanBuilder:
         val ref = placeHolderReference[pos]
         val originalList = whichList(ref.lstRef) as List<LikeLog>
         val log = originalList[ref.pos]
+        holder.itemView.setOnClickListener { openPost(log.post_id) }
         holder.log.text = spanBuilder(log.username, log.time, LIKELOG)
         CoroutineScope(Dispatchers.IO).launch {
             val imageURL = imageUtil.getProfilePictureUrl(log.profile_id) ?: return@launch
@@ -146,8 +155,7 @@ class NotificationAdapter(private val loggedInId: Long, private val spanBuilder:
         val originalList = whichList(ref.lstRef) as List<CommentLog>
         val log = originalList[ref.pos]
         holder.log.text = spanBuilder(log.username, log.time, COMMENTLOG)
-        
-        
+        holder.itemView.setOnClickListener { openCommentOnPost(log.post_id, log.comment_id) }
         CoroutineScope(Dispatchers.IO).launch {
             val imageURL = imageUtil.getProfilePictureUrl(log.commenter_id) ?: return@launch
             val bitmap = imageUtil.getBitmap(imageURL)

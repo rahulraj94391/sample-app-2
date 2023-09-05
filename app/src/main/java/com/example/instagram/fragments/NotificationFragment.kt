@@ -10,13 +10,16 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instagram.DateTime
+import com.example.instagram.HomeActivity
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.TimeFormatting
@@ -27,6 +30,11 @@ import com.example.instagram.database.AppDatabase
 import com.example.instagram.databinding.FragmentNotificationBinding
 import com.example.instagram.viewmodels.NotificationsFragViewModel
 import kotlinx.coroutines.launch
+
+const val KEY = "open_comment_on_post"
+const val COMM_ID = "comm_id"
+
+private const val TAG = "NotificationFragment_CommTag"
 
 class NotificationFragment : Fragment() {
     private var _binding: FragmentNotificationBinding? = null
@@ -39,9 +47,9 @@ class NotificationFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = AppDatabase.getDatabase(requireContext())
-        vm = ViewModelProvider(this)[NotificationsFragViewModel::class.java]
+        vm = ViewModelProvider(requireActivity())[NotificationsFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        notificationAdapter = NotificationAdapter(mainViewModel.loggedInProfileId!!, ::spanBuilder)
+        notificationAdapter = NotificationAdapter(mainViewModel.loggedInProfileId!!, ::spanBuilder, ::openProfile, ::openPost, ::openCommentOnPost)
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -94,6 +102,21 @@ class NotificationFragment : Fragment() {
         builder.setSpan(RelativeSizeSpan(0.9f), spanLen, spanLen + time.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         builder.setSpan(ForegroundColorSpan(resources.getColor(R.color.grey, requireActivity().theme)), spanLen, spanLen + time.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return builder
+    }
+    
+    private fun openCommentOnPost(postId: Long, commentId: Long) {
+        (requireActivity() as HomeActivity).navHostFragment.childFragmentManager.setFragmentResult(KEY, bundleOf(COMM_ID to commentId))
+        openPost(postId)
+    }
+    
+    private fun openPost(postId: Long) {
+        val action = NotificationFragmentDirections.actionNotificationFragmentToOnePostFragment(postId, HIDE_DELETE_BTN)
+        findNavController().navigate(action)
+    }
+    
+    private fun openProfile(profileId: Long) {
+        val action = NotificationFragmentDirections.actionNotificationFragmentToProfileFragment(profileId)
+        findNavController().navigate(action)
     }
     
     override fun onDestroyView() {

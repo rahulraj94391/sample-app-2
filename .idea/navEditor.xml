@@ -186,6 +186,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_homeFragment_to_notificationFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_homeFragment_to_profileFragment">
                               <value>
                                 <LayoutPositions />
@@ -225,6 +230,20 @@
                             <option name="x" value="427" />
                             <option name="y" value="-384" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_notificationFragment_to_onePostFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_notificationFragment_to_profileFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -402,8 +421,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="672" />
-                            <option name="y" value="1170" />
+                            <option name="x" value="1427" />
+                            <option name="y" value="799" />
                           </Point>
                         </option>
                       </LayoutPositions>

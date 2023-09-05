@@ -2,6 +2,7 @@ package com.example.instagram.bottomsheet
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,17 +12,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.instagram.HomeActivity
 import com.example.instagram.ImageUtil
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.CommentAdapter
 import com.example.instagram.databinding.BottomsheetCommentsBinding
+import com.example.instagram.fragments.COMM_ID
+import com.example.instagram.fragments.OPEN_AND_LOCATE_COMMENT_KEY
 import com.example.instagram.viewmodels.CommentDialogViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
@@ -110,6 +115,23 @@ class CommentSheet : BottomSheetDialogFragment() {
         
         viewModel.comments.observe(viewLifecycleOwner) {
             commentAdapter.updateList(it)
+            (requireActivity() as HomeActivity).navHostFragment.childFragmentManager.setFragmentResultListener(OPEN_AND_LOCATE_COMMENT_KEY, viewLifecycleOwner) { _, bundle ->
+                val commentId = bundle.getLong(COMM_ID)
+                Log.d(TAG, "commentId = $commentId")
+                val pos = commentAdapter.findPosition(commentId)
+                Log.d(TAG, "pos = $pos")
+                if (pos != -1) {
+                    lifecycleScope.launch {
+                        binding.commentRV.scrollToPosition(pos)
+                        delay(400)
+                        val vh = binding.commentRV.findViewHolderForAdapterPosition(pos)
+                        vh?.itemView?.setBackgroundColor(requireActivity().resources.getColor(R.color.highlight))
+                        delay(600)
+                        vh?.itemView?.setBackgroundColor(resources.getColor(android.R.color.transparent))
+                    }
+                }
+                (requireActivity() as HomeActivity).navHostFragment.childFragmentManager.clearFragmentResultListener(OPEN_AND_LOCATE_COMMENT_KEY)
+            }
         }
         
         viewModel.commenterImages.observe(viewLifecycleOwner) {
@@ -157,7 +179,6 @@ class CommentSheet : BottomSheetDialogFragment() {
             dialogInterface.cancel()
         }.show()
     }
-    
     
     private fun isCommentQualified(commentText: String): Boolean {
         return if (commentText.isBlank()) {

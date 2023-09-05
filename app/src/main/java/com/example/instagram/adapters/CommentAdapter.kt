@@ -65,17 +65,9 @@ class CommentAdapter(
         }
     }
     
+    fun addImageUrlToList(url: String) = profileImages.add(0, url)
     
-    fun addImageUrlToList(url: String) {
-        profileImages.add(0, url)
-    }
-    
-    
-    override fun onBindViewHolder(
-        holder: CommentViewHolder,
-        position: Int,
-        payload: MutableList<Any>,
-    ) {
+    override fun onBindViewHolder(holder: CommentViewHolder, position: Int, payload: MutableList<Any>) {
         if (profileImages.isNotEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
@@ -103,5 +95,15 @@ class CommentAdapter(
     fun updateList(newList: MutableList<Comment>) {
         this.commentList = newList
         notifyDataSetChanged()
+    }
+    
+    fun findPosition(commentId: Long): Int {
+        Log.d(TAG, "findPosition: ")
+        for (i in commentList.indices) {
+            Log.d(TAG, "${commentList[i]}")
+            if (commentId == commentList[i].commentId)
+                return i
+        }
+        return -1
     }
 }

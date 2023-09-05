@@ -15,14 +15,14 @@
             app:destination="@id/commentSheet" />
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
-            app:destination="@id/profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_notificationFragment"
+            app:destination="@id/notificationFragment"
             app:enterAnim="@anim/enter_from_right"
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
-        <action
-            android:id="@+id/action_homeFragment_to_notificationFragment"
-            app:destination="@id/notificationFragment" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
@@ -217,8 +217,7 @@
         android:id="@+id/tagFragment"
         android:name="com.example.instagram.fragments.TagFragment"
         android:label="TagFragment"
-        tools:layout="@layout/fragment_tag"
-        />
+        tools:layout="@layout/fragment_tag" />
     <dialog
         android:id="@+id/uploadDialog"
         android:name="com.example.instagram.dialog.UploadDialog"
@@ -227,5 +226,20 @@
         android:id="@+id/notificationFragment"
         android:name="com.example.instagram.fragments.NotificationFragment"
         android:label="NotificationFragment"
-        tools:layout="@layout/fragment_notification" />
+        tools:layout="@layout/fragment_notification">
+        <action
+            android:id="@+id/action_notificationFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_notificationFragment_to_onePostFragment"
+            app:destination="@id/onePostFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
 </navigation>

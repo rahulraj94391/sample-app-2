@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.instagram.DateTime
+import com.example.instagram.HomeActivity
 import com.example.instagram.ImageUtil
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
@@ -35,10 +36,10 @@ import kotlin.properties.Delegates
 
 private const val TAG = "CommTag_OnePostFragment"
 const val HIDE_DELETE_BTN = -22
+const val OPEN_AND_LOCATE_COMMENT_KEY = "open_and_locate_comment_key"
 
 class OnePostFragment : Fragment() {
-    private var _binding: FragmentOnePostBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentOnePostBinding
     private var postId: Long by Delegates.notNull()
     private var postPos: Int by Delegates.notNull()
     private lateinit var viewModel: OnePostFragViewModel
@@ -64,13 +65,8 @@ class OnePostFragment : Fragment() {
         db = AppDatabase.getDatabase(requireContext())
         viewModel = ViewModelProvider(this)[OnePostFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_one_post, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_one_post, container, false)
         return binding.root
-    }
-    
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,7 +76,6 @@ class OnePostFragment : Fragment() {
             commentCount.setOnClickListener { onCommentClicked() }
             btnSavePost.setOnClickListener { onSavePostClicked(it as MaterialCheckBox) }
             likeBtn.setOnClickListener { onLikeClicked(it as MaterialCheckBox) }
-            
         }
         
         profileId.observe(viewLifecycleOwner) {
@@ -156,6 +151,18 @@ class OnePostFragment : Fragment() {
         }
     }
     
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as HomeActivity).navHostFragment.childFragmentManager.setFragmentResultListener(KEY, requireActivity()) { _, bundle ->
+            (requireActivity() as HomeActivity).navHostFragment.childFragmentManager.setFragmentResult(OPEN_AND_LOCATE_COMMENT_KEY, bundle)
+            binding.comment.postDelayed({
+                onCommentClicked()
+                // prepare here FR API B
+                
+            }, 200)
+        }
+    }
+    
     private fun openProfile() {
         val a = OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId.value!!)
         findNavController().navigate(a)
@@ -204,6 +211,11 @@ class OnePostFragment : Fragment() {
         dialog.setOnCancelListener {
             binding.btnDeletePost.isEnabled = true
         }
+    }
+    
+    override fun onDestroy() {
+        (requireActivity() as HomeActivity).navHostFragment.childFragmentManager.clearFragmentResultListener(KEY)
+        super.onDestroy()
     }
     
     private fun onCommentClicked() {
