@@ -49,6 +49,8 @@
     <string name="commented_on_your_post">" commented on your post.  "</string>
     <string name="add_a_comment">Add a comment</string>
     <string name="comments">Comments</string>
+    <string name="follow_people_to_see_their_latest_feed">Follow people to see \ntheir latest feed</string>
+    <string name="nothing_here">Nothing Here</string>
 
     <string-array name="gender">
         <item>Male</item>

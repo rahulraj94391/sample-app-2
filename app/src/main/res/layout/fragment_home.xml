@@ -18,9 +18,9 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
-                android:background="?attr/colorSecondaryContainer"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorSecondaryContainer"
                 android:minHeight="?attr/actionBarSize"
                 app:layout_scrollFlags="scroll|enterAlways">
 
@@ -59,7 +59,9 @@
             android:clipChildren="false"
             android:paddingBottom="4dp"
             android:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:listitem="@layout/row_home_screen"
+            tools:visibility="visible" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/loadingProgressBar"
@@ -78,7 +80,7 @@
             android:clickable="false"
             android:gravity="center"
             android:padding="12dp"
-            android:text="Follow people to see \ntheir latest feed"
+            android:text="@string/follow_people_to_see_their_latest_feed"
             android:textColor="@color/logo_tint"
             android:textSize="24sp"
             android:textStyle="bold"

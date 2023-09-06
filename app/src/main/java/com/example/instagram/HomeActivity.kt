@@ -2,6 +2,7 @@ package com.example.instagram
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
@@ -53,14 +54,15 @@ class HomeActivity : AppCompatActivity() {
         navController = navHostFragment.findNavController()
         binding.bottomNavView.setupWithNavController(navController)
         binding.bottomNavView.setOnItemReselectedListener {
+            Log.d(TAG, "item = $it")
             val reselectedDestinationId = it.itemId
             navController.popBackStack(reselectedDestinationId, inclusive = false)
-            when (it.itemId) {
+            /*when (it.itemId) {
                 R.id.homeFragment -> {}
                 R.id.postFragment -> {}
                 R.id.searchFragment -> {}
                 R.id.profileFragment -> {}
-            }
+            }*/
         }
         
         
@@ -79,7 +81,6 @@ class HomeActivity : AppCompatActivity() {
         //        Log.d(TAG, "onCreate: before backstackChangeListener")
         navHostFragment.childFragmentManager.addOnBackStackChangedListener {
             val fm = navHostFragment.childFragmentManager
-            //            Log.d(TAG, "backstack count = $backStackCount")
             val state = when (fm.findFragmentById(R.id.fragContainerView)) {
                 is HomeFragment, is PostFragment, is SearchFragment, is ProfileFragment -> NOT_HIDDEN
                 else -> HIDDEN
@@ -95,7 +96,7 @@ class HomeActivity : AppCompatActivity() {
         }
         
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            //            Log.e(TAG, "destination = ${destination.label}")
+            Log.e(TAG, "destination = ${destination.label}")
         }
     }
     

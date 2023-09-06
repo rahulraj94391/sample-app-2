@@ -28,7 +28,6 @@
                 app:queryHint="Search name" />
         </LinearLayout>
 
-
         <LinearLayout
             android:id="@+id/startSearchInstruction"
             android:layout_width="0dp"
@@ -44,9 +43,9 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:importantForAccessibility="no"
                 android:src="@drawable/person_outlined"
-                app:tint="@color/logo_tint"
-                android:importantForAccessibility="no" />
+                app:tint="@color/logo_tint" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -55,7 +54,6 @@
                 android:text="@string/search_a_user"
                 android:textColor="@color/logo_tint"
                 android:textStyle="bold"
-
                 />
         </LinearLayout>
 
@@ -109,19 +107,16 @@
                     android:padding="2dp"
                     android:text="@string/clear_all"
                     android:textColor="#426AE1" />
-
             </LinearLayout>
-
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/oldSearches"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-
+                tools:listitem="@layout/row_user_search"
                 />
         </LinearLayout>
-
 
         <LinearLayout
             android:id="@+id/noUsersFoundIns"
@@ -140,18 +135,14 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginBottom="8dp"
-                android:src="@drawable/subtract_color_icon"
-                android:importantForAccessibility="no" />
+                android:importantForAccessibility="no"
+                android:src="@drawable/subtract_color_icon" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/no_user_found"
                 android:textStyle="bold" />
-
-
         </LinearLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -123,10 +123,10 @@ class CommentSheet : BottomSheetDialogFragment() {
                 if (pos != -1) {
                     lifecycleScope.launch {
                         binding.commentRV.scrollToPosition(pos)
-                        delay(400)
+                        delay(200)
                         val vh = binding.commentRV.findViewHolderForAdapterPosition(pos)
                         vh?.itemView?.setBackgroundColor(requireActivity().resources.getColor(R.color.highlight))
-                        delay(600)
+                        delay(400)
                         vh?.itemView?.setBackgroundColor(resources.getColor(android.R.color.transparent))
                     }
                 }

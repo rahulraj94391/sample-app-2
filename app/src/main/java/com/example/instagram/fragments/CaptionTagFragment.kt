@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +36,6 @@ class CaptionTagFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.postDesc.addTextChangedListener(CustomTextWatcher())
-        Log.d(TAG, "size of list = ${viewModel.postImagesUri.size}")
         
         binding.tagPeopleCard.setOnClickListener {
             val action = CaptionTagFragmentDirections.actionCaptionTagFragmentToTagFragment()
