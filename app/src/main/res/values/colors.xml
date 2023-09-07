@@ -5,13 +5,11 @@
     <color name="red">#FF6647</color>
     <color name="grey">#666666</color>
 
-
     <color name="col5">#7C8EFF</color>
     <color name="col1">#ffb5a7</color>
     <color name="col2">#fcd5ce</color>
     <color name="col3">#f8edeb</color>
     <color name="col4">#f9dcc4</color>
-
 
     <color name="col6">#27374D</color>
     <color name="col7">#526D82</color>
@@ -35,10 +33,7 @@
     <color name="activeIndicator">#CFD6FF</color>
     <color name="search_border">#9ba9ff</color>
     <color name="biometric_passed">#009D10</color>
-
-
     <color name="highlight">#337C8EFF</color>
-
-
-
+    <color name="internet_not_available">#DB2500</color>
+    <color name="internet_available">#009D10</color>
 </resources>

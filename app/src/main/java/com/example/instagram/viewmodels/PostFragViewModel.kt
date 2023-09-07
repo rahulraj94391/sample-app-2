@@ -3,10 +3,13 @@ package com.example.instagram.viewmodels
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.work.Constraints
 import androidx.work.Data
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.instagram.ImageUtil
@@ -19,6 +22,8 @@ import com.example.instagram.worker.PROFILE_ID_KEY
 import com.example.instagram.worker.UPLOAD_IMAGE_PATH_KEY
 import com.example.instagram.worker.UploadPostPictures
 import kotlinx.coroutines.async
+import java.util.UUID
+
 
 private const val TAG = "CommTag_PostFragmentViewModel"
 
@@ -28,6 +33,7 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
     var profileId: Long = -1
     val tagsToUpload = mutableListOf<Long>()
     var finalTextToUpload = ""
+    var uuidWorkReq = MutableLiveData<UUID>()
     
     // this will be used to display only selected tags
     val finalTags = mutableListOf<TagSearchResult>()
@@ -73,13 +79,20 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
             .putLongArray(POST_TAGS_KEY, tagsToUpload.toLongArray())
             .build()
         
+        val mConstraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        
         val oneTimeWorkRequest = OneTimeWorkRequest
             .Builder(UploadPostPictures::class.java)
+            .setConstraints(mConstraints)
             .setInputData(data)
             .build()
+    
+        Log.d(TAG, "uploadPostWork: ${oneTimeWorkRequest.id}")
         
         WorkManager.getInstance(app).enqueue(oneTimeWorkRequest)
+        uuidWorkReq.postValue(oneTimeWorkRequest.id)
     }
+    
     
     suspend fun getSearchResults(name: String) {
         val sharedPref = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
@@ -118,5 +131,4 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
         }
         tagSearchResults.postValue(finalListWithImage)
     }
-    
 }

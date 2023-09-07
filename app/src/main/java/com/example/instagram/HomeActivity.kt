@@ -1,13 +1,15 @@
 package com.example.instagram
 
 import android.content.Context
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -19,6 +21,7 @@ import com.example.instagram.fragments.ProfileFragment
 import com.example.instagram.fragments.SearchFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -34,6 +37,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var mainViewModel: MainViewModel
     lateinit var navHostFragment: NavHostFragment
     private var BOTTOM_NAV_CURRENT_STATE = NOT_HIDDEN
+    private val broadcastReceiver = InternetBroadcastReceiver(::showHideInternetLabel)
+    private var internetConnectivityJob: Job? = null
     
     
     override fun onCreate(savedInstanceState: Bundle?) {/*IMPORTANT    ----    START */ // first put the current user id in the Main ViewModel as the Home fragment starts creating once the Activity
@@ -54,7 +59,7 @@ class HomeActivity : AppCompatActivity() {
         navController = navHostFragment.findNavController()
         binding.bottomNavView.setupWithNavController(navController)
         binding.bottomNavView.setOnItemReselectedListener {
-            Log.d(TAG, "item = $it")
+            //            Log.d(TAG, "item = $it")
             val reselectedDestinationId = it.itemId
             navController.popBackStack(reselectedDestinationId, inclusive = false)
             /*when (it.itemId) {
@@ -96,7 +101,7 @@ class HomeActivity : AppCompatActivity() {
         }
         
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            Log.e(TAG, "destination = ${destination.label}")
+            //            Log.e(TAG, "destination = ${destination.label}")
         }
     }
     
@@ -121,12 +126,40 @@ class HomeActivity : AppCompatActivity() {
     
     override fun onResume() {
         super.onResume()
+        val filter = IntentFilter()
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(broadcastReceiver, filter)
         
         // this removes the tooltip from the menu of bottom navigation view
         binding.bottomNavView.menu.forEach {
             val view = binding.bottomNavView.findViewById<View>(it.itemId)
             view.setOnLongClickListener {
                 true
+            }
+        }
+    }
+    
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(broadcastReceiver)
+    }
+    
+    private fun showHideInternetLabel(status: Boolean) {
+        internetConnectivityJob?.cancel()
+        internetConnectivityJob = lifecycleScope.launch {
+            if (status) { // internet is not connected
+                binding.internetNotification.apply {
+                    text = getString(R.string.internet_not_connected)
+                    setBackgroundColor(resources.getColor(R.color.internet_not_available))
+                    visibility = View.VISIBLE
+                }
+            } else { // internet is connected
+                binding.internetNotification.apply {
+                    text = getString(R.string.internet_is_connected)
+                    setBackgroundColor(resources.getColor(R.color.internet_available))
+                    delay(1000)
+                    visibility = View.GONE
+                }
             }
         }
     }

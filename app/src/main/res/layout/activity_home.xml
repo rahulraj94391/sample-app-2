@@ -12,6 +12,21 @@
         android:layout_height="match_parent"
         tools:context=".HomeActivity">
 
+        <TextView
+            android:id="@+id/internetNotification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/internet_available"
+            android:gravity="center"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Internet not available" />
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragContainerView"
             android:name="androidx.navigation.fragment.NavHostFragment"
@@ -21,7 +36,7 @@
             app:layout_constraintBottom_toTopOf="@+id/bottomNavView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/internetNotification"
             app:navGraph="@navigation/nav_graph" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -29,8 +44,8 @@
             style="@style/bnv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:labelVisibilityMode="labeled"
             app:itemIconTint="@color/bottomNavigationView_iconColor"
+            app:labelVisibilityMode="labeled"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

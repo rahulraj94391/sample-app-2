@@ -51,6 +51,11 @@
     <string name="comments">Comments</string>
     <string name="follow_people_to_see_their_latest_feed">Follow people to see \ntheir latest feed</string>
     <string name="nothing_here">Nothing Here</string>
+    <string name="uploading_photos">Uploading Photos</string>
+    <string name="photos_are_being_uploaded">Photos are being uploaded ...</string>
+    <string name="go_to_home">Go to Home</string>
+    <string name="internet_not_connected">Internet is not connected.</string>
+    <string name="internet_is_connected">Internet is connected.</string>
 
     <string-array name="gender">
         <item>Male</item>

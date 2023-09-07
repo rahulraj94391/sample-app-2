@@ -78,6 +78,18 @@ class NotificationFragment : Fragment() {
         binding.notificationRV.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         
         vm.placeHolderReference.observe(viewLifecycleOwner) { placeHolderReference ->
+            if (placeHolderReference.size < 1) {
+                binding.apply {
+                    noNotificationInstruction.visibility = View.VISIBLE
+                    swipeRefreshNotification.visibility = View.INVISIBLE
+                }
+            } else {
+                binding.apply {
+                    noNotificationInstruction.visibility = View.INVISIBLE
+                    swipeRefreshNotification.visibility = View.VISIBLE
+                }
+            }
+            
             notificationAdapter.setNewList(vm.followLogs, vm.likeLogs, vm.commentLogs, placeHolderReference)
             if (binding.swipeRefreshNotification.isRefreshing) {
                 binding.swipeRefreshNotification.isRefreshing = false
