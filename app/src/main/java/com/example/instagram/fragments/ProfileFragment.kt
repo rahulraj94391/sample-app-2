@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -79,6 +80,7 @@ class ProfileFragment : Fragment() {
             val action = ProfileFragmentDirections.actionProfileFragmentToOnePostFragment(postId, pos)
             findNavController().navigate(action)
         }
+        
         lifecycleScope.launch {
             viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
         }
@@ -241,6 +243,11 @@ class ProfileFragment : Fragment() {
     
     private fun messageProfile() {
         Log.d(TAG, "messageProfile")
+        if (findNavController().currentDestination?.id != R.id.profileFragment) return
+        Toast.makeText(requireContext(), "Under development.", Toast.LENGTH_SHORT).show()
+        val action = ProfileFragmentDirections.actionProfileFragmentToChatWithUserFragment()
+        findNavController().navigate(action)
+        
     }
     
     private fun followProfile() {

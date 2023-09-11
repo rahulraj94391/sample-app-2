@@ -77,6 +77,7 @@ class NotificationFragment : Fragment() {
         
         binding.notificationRV.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         
+        
         vm.placeHolderReference.observe(viewLifecycleOwner) { placeHolderReference ->
             if (placeHolderReference.size < 1) {
                 binding.apply {

@@ -137,7 +137,7 @@ class EditProfileFragment : Fragment() {
         binding.indicator.visibility = View.VISIBLE
         binding.uploadNewPicture.isEnabled = false
         imageUriToUpload.let { urii ->
-            val uri = imageUtil.getUriDownscaleImages(mutableListOf(urii), 1.0, 720.0)
+            val uri = imageUtil.getUriDownscaleImages(mutableListOf(urii), 1.0, 1080.0)
             
             val storageRef = storageRef.reference.child("$profileId")
             storageRef.putFile(uri[0]).addOnCompleteListener { task ->

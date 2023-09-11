@@ -219,6 +219,7 @@ class OnePostFragment : Fragment() {
     }
     
     private fun onCommentClicked() {
+        if (findNavController().currentDestination?.id != R.id.onePostFragment) return
         val action = OnePostFragmentDirections.actionOnePostFragmentToCommentSheet(postId)
         findNavController().navigate(action)
     }

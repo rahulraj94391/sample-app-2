@@ -12,5 +12,9 @@
     <color name="deleteRipple">#FF8D76</color>
 
 
+    <color name="msg_bubble_received">#BDBDBD</color>
+    <color name="msg_txt_received">#282828</color>
+    <color name="msg_bubble_sent">#243443</color>
+
 
 </resources>

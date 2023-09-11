@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".fragments.ChatWithUserFragment">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorSecondaryContainer"
+                android:minHeight="?attr/actionBarSize">
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="4dp"
+                    android:src="@drawable/app_logo"
+                    app:tint="@color/icon_tint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="4dp"
+                    android:text="#Under Development"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnMessages"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="8dp"
+                    app:icon="@drawable/three_dots_vertical" />
+
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <include layout="@layout/bubble_received_txt_msg" />
+
+        <include layout="@layout/bubble_sent_txt_msg" />
+
+        <include layout="@layout/bubble_received_txt_msg" />
+
+        <include layout="@layout/bubble_sent_txt_msg" />
+
+        <include layout="@layout/bubble_received_txt_msg" />
+
+        <include layout="@layout/bubble_sent_txt_msg" />
+
+        <include layout="@layout/bubble_received_txt_msg" />
+
+        <include layout="@layout/bubble_sent_txt_msg" />
+
+        <include layout="@layout/bubble_received_txt_msg" />
+
+        <include layout="@layout/bubble_sent_txt_msg" />
+
+        <include layout="@layout/bubble_received_txt_msg" />
+
+        <include layout="@layout/bubble_sent_txt_msg" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</ScrollView>

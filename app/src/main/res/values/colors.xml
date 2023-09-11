@@ -36,4 +36,11 @@
     <color name="highlight">#337C8EFF</color>
     <color name="internet_not_available">#DB2500</color>
     <color name="internet_available">#009D10</color>
+
+
+    <color name="msg_bubble_received">#EBF2FF</color>
+    <color name="msg_txt_received">#212121</color>
+    <color name="msg_bubble_sent">#4990E2</color>
+    <color name="msg_txt_sent">#EDEDED</color>
+
 </resources>
