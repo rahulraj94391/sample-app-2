@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Rectangle -->
+    <item>
+        <shape android:shape="rectangle">
+            <size
+                android:width="300dp"
+                android:height="80dp" />
+            <solid android:color="@android:color/holo_orange_dark" />
+        </shape>
+    </item>
+    <item>
+        <rotate android:fromDegrees="90">
+            <shape android:shape="line">
+
+                <size
+                    android:width="100dp"
+                    android:height="40dp"
+
+                    android:color="#999999" />
+
+            </shape>
+        </rotate>
+    </item>
+
+    <!--<item
+        android:left="80dp">
+        <shape android:shape="rectangle">
+            <size
+                android:width="300dp"
+                android:height="60dp" />
+            <solid android:color="#F8F7F7" />
+        </shape>
+    </item>
+
+    <item
+        android:right="135dp">
+        <rotate android:fromDegrees="293">
+            <shape android:shape="rectangle">
+                <solid android:color="#F8F7F7" />
+            </shape>
+        </rotate>
+    </item>
+
+    &lt;!&ndash; Top Border &ndash;&gt;
+    <item
+        android:left="61dp"
+        android:bottom="78.8dp">
+        <shape android:shape="line">
+            <stroke
+                android:color="#999999"
+                android:width="1dp" />
+        </shape>
+    </item>
+
+    &lt;!&ndash; Left-Diagonal Border &ndash;&gt;
+    <item
+        android:right="220dp">
+        <rotate android:fromDegrees="293">
+            <shape android:shape="line">
+                <stroke
+                    android:color="#999999"
+                    android:width="1dp" />
+            </shape>
+        </rotate>
+    </item>-->
+
+</layer-list>

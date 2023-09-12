@@ -15,10 +15,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.instagram.databinding.ActivityHomeBinding
-import com.example.instagram.fragments.HomeFragment
-import com.example.instagram.fragments.PostFragment
-import com.example.instagram.fragments.ProfileFragment
-import com.example.instagram.fragments.SearchFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -86,7 +82,7 @@ class HomeActivity : AppCompatActivity() {
         //        Log.d(TAG, "onCreate: before backstackChangeListener")
         navHostFragment.childFragmentManager.addOnBackStackChangedListener {
             val fm = navHostFragment.childFragmentManager
-            val state = when (fm.findFragmentById(R.id.fragContainerView)) {
+            /*val state = when (fm.findFragmentById(R.id.fragContainerView)) {
                 is HomeFragment, is PostFragment, is SearchFragment, is ProfileFragment -> NOT_HIDDEN
                 else -> HIDDEN
             }
@@ -96,7 +92,7 @@ class HomeActivity : AppCompatActivity() {
                 } else {
                     showBottomNavigationView()
                 }
-            }
+            }*/
             
         }
         
