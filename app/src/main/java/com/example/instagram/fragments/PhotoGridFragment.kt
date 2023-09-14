@@ -2,6 +2,7 @@ package com.example.instagram.fragments
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.example.instagram.R
 import com.example.instagram.adapters.PhotoGridAdapter
 import com.example.instagram.databinding.FragmentPhotoGridBinding
 import com.example.instagram.viewmodels.PhotoGridFragViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
@@ -33,6 +35,8 @@ class PhotoGridFragment : Fragment() {
     private lateinit var userPostedPhotoAdapter: PhotoGridAdapter
     private var listRef: Int by Delegates.notNull()
     private var userProfId: Long by Delegates.notNull()
+    private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    
     
     companion object {
         fun newInstance(pos: Int, userProfId: Long): PhotoGridFragment {
@@ -56,12 +60,6 @@ class PhotoGridFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_photo_grid, container, false)
         return binding.root
-    }
-    
-    override fun onDestroyView() {
-        binding.gridOfPosts.adapter = null
-        _binding = null
-        super.onDestroyView()
     }
     
     private fun onPostClicked(pos: Int) {
@@ -118,4 +116,21 @@ class PhotoGridFragment : Fragment() {
         }
     }
     
+    override fun onResume() {
+        super.onResume()
+        /*firebaseFireStore.collection("postImages").addSnapshotListener { value, error ->
+            if (error != null) {
+                Log.w(TAG, "Listen failed.", error)
+                return@addSnapshotListener
+            }
+            Log.d(TAG, "changed snapshot size = ${value!!.size()}")
+        }*/
+    }
+    
+    override fun onDestroyView() {
+        Log.d(TAG, "onDestroyView: ")
+        binding.gridOfPosts.adapter = null
+        _binding = null
+        super.onDestroyView()
+    }
 }

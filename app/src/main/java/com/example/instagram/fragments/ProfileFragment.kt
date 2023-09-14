@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -22,9 +21,12 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.instagram.ChatActivity
 import com.example.instagram.ImageUtil
+import com.example.instagram.LOGGED_IN_ID
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
+import com.example.instagram.USER_ID
 import com.example.instagram.adapters.EDIT_PROFILE
 import com.example.instagram.adapters.FOLLOW
 import com.example.instagram.adapters.MESSAGE
@@ -242,12 +244,11 @@ class ProfileFragment : Fragment() {
     }
     
     private fun messageProfile() {
-        Log.d(TAG, "messageProfile")
         if (findNavController().currentDestination?.id != R.id.profileFragment) return
-        Toast.makeText(requireContext(), "Under development.", Toast.LENGTH_SHORT).show()
-        val action = ProfileFragmentDirections.actionProfileFragmentToChatWithUserFragment()
-        findNavController().navigate(action)
-        
+        val intent = Intent(requireActivity(), ChatActivity::class.java)
+        intent.putExtra(USER_ID, profileId)
+        intent.putExtra(LOGGED_IN_ID, mainViewModel.loggedInProfileId)
+        startActivity(intent)
     }
     
     private fun followProfile() {

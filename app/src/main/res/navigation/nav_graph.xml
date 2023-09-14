@@ -87,9 +87,6 @@
         <action
             android:id="@+id/action_profileFragment_to_profilePictureFragment"
             app:destination="@id/profilePictureFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_chatWithUserFragment"
-            app:destination="@id/chatWithUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/onePostFragment"
@@ -245,9 +242,4 @@
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
     </fragment>
-    <fragment
-        android:id="@+id/chatWithUserFragment"
-        android:name="com.example.instagram.fragments.ChatWithUserFragment"
-        android:label="fragment_chat_with_user"
-        tools:layout="@layout/fragment_chat_with_user" />
 </navigation>

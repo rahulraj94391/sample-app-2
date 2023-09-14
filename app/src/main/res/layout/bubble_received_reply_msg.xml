@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp"
     android:background="@drawable/bg_received_text_msg_bubble"
@@ -13,10 +13,6 @@
 
     <TextView
         android:id="@+id/replyToTxt"
-        app:layout_constraintEnd_toEndOf="@+id/time"
-        app:layout_constraintStart_toStartOf="@+id/msg"
-        app:layout_optimizationLevel="ratio"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -33,32 +29,29 @@
         android:text="Rishi Raj\nqui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in"
         android:textColor="@color/msg_txt_received"
         android:textSize="12sp"
-        app:layout_constraintWidth_min="120dp"
-        />
+        app:layout_constraintEnd_toEndOf="@+id/time"
+        app:layout_constraintStart_toStartOf="@+id/msg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_min="200dp"
+        app:layout_optimizationLevel="ratio" />
 
 
     <TextView
-
         android:id="@+id/msg"
-        app:layout_constraintEnd_toEndOf="@+id/time"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/replyToTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:maxWidth="350dp"
         android:padding="8dp"
         android:text="e df  s"
-        android:textColor="@color/msg_txt_received" />
+        android:textColor="@color/msg_txt_received"
+        app:layout_constraintEnd_toEndOf="@+id/time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/replyToTxt" />
 
 
     <TextView
         android:id="@+id/time"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="100"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -66,5 +59,10 @@
         android:layout_marginBottom="4dp"
         android:text="12:33 PM"
         android:textColor="@color/msg_txt_received"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="100"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/msg" />
 </androidx.constraintlayout.widget.ConstraintLayout>

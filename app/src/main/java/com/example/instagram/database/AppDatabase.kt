@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.instagram.database.dao.CacheDao
+import com.example.instagram.database.dao.ChatsDao
 import com.example.instagram.database.dao.CommentDao
 import com.example.instagram.database.dao.FollowDao
 import com.example.instagram.database.dao.LikesDao
@@ -16,6 +17,7 @@ import com.example.instagram.database.dao.RecentSearchDAO
 import com.example.instagram.database.dao.SavedPostDao
 import com.example.instagram.database.dao.SearchDao
 import com.example.instagram.database.dao.TagPeopleDao
+import com.example.instagram.database.entity.Chat
 import com.example.instagram.database.entity.Comment
 import com.example.instagram.database.entity.Follow
 import com.example.instagram.database.entity.ImageCache
@@ -31,7 +33,7 @@ import com.example.instagram.database.entity.Tag
 
 private const val TAG = "AppDatabase_CommTag"
 
-@Database(entities = [Comment::class, Follow::class, Likes::class, LoginCred::class, Post::class, PostImage::class, PostText::class, Profile::class, SavedPost::class, Tag::class, ImageCache::class, RecentSearch::class], version = 1, exportSchema = true)
+@Database(entities = [Comment::class, Follow::class, Likes::class, LoginCred::class, Post::class, PostImage::class, PostText::class, Profile::class, SavedPost::class, Tag::class, ImageCache::class, RecentSearch::class, Chat::class], version = 1, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun commentDao(): CommentDao
     abstract fun followDao(): FollowDao
@@ -44,6 +46,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao
     abstract fun postTextDao(): PostTextDao
     abstract fun cacheDao(): CacheDao
+    abstract fun chatDao(): ChatsDao
     abstract fun recentSearchDao(): RecentSearchDAO
     
     companion object {
@@ -55,7 +58,7 @@ abstract class AppDatabase : RoomDatabase() {
                 synchronized(this) {
                     INSTANCE = Room
                         .databaseBuilder(applicationContext, AppDatabase::class.java, "instaDB")
-                        .createFromAsset("database/instaDB.db")
+//                        .createFromAsset("database/instaDB.db")
                         .build()
                 }
             }
