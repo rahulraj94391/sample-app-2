@@ -11,7 +11,7 @@ data class Chat(
     var message: String,
     var timeStamp: Long,
     var messageType: Int,
-    var replyTo: Long = -1,
+    var replyToChat: Long = -1,
 ) {
     @PrimaryKey(autoGenerate = true)
     var rowId: Long = 0

@@ -1,6 +1,5 @@
 package com.example.instagram.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +34,7 @@ class RecentSearchAdapter(val onClick: (Int) -> Unit) : RecyclerView.Adapter<Rec
     }
     
     override fun getItemCount(): Int {
-        Log.d(TAG, "getItemCount: ${list.size}")
+//        Log.d(TAG, "getItemCount: ${list.size}")
         return list.size
     }
     

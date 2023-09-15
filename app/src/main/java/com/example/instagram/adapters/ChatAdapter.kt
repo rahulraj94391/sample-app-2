@@ -1,5 +1,6 @@
 package com.example.instagram.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.DateTime
 import com.example.instagram.R
+import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Chat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 const val REGULAR_SENT = 1
 const val REPLY_SENT = 2
@@ -16,14 +22,33 @@ const val REGULAR_RECEIVED = 3
 const val REPLY_RECEIVED = 4
 const val DATE = 5
 
+private const val TAG = "ChatAdapter_CommTag"
 
-class ChatAdapter(val userId: Long, val myId: Long) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter(
+    private val userId: Long,
+    private val myId: Long,
+    private val onLongClick: (chat: Chat) -> Unit,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var chats = mutableListOf<Chat>()
+    private lateinit var db: AppDatabase
+    
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        db = AppDatabase.getDatabase(recyclerView.context)
+        super.onAttachedToRecyclerView(recyclerView)
+    }
     
     inner class RegularSentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val msg: TextView = view.findViewById(R.id.msg)
         val time: TextView = view.findViewById(R.id.time)
         val tick: ImageView = view.findViewById(R.id.seen)
+        
+        init {
+            view.setOnLongClickListener {
+                onLongClick(chats[adapterPosition])
+                true
+            }
+        }
+        
     }
     
     inner class ReplySentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -31,17 +56,38 @@ class ChatAdapter(val userId: Long, val myId: Long) : RecyclerView.Adapter<Recyc
         val msg: TextView = view.findViewById(R.id.msg)
         val time: TextView = view.findViewById(R.id.time)
         val tick: ImageView = view.findViewById(R.id.seen)
+        
+        init {
+            view.setOnLongClickListener {
+                onLongClick(chats[adapterPosition])
+                true
+            }
+        }
     }
     
     inner class RegularReceivedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val msg: TextView = view.findViewById(R.id.msg)
         val time: TextView = view.findViewById(R.id.time)
+        
+        init {
+            view.setOnLongClickListener {
+                onLongClick(chats[adapterPosition])
+                true
+            }
+        }
     }
     
     inner class ReplyReceivedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val msg: TextView = view.findViewById(R.id.msg)
         val time: TextView = view.findViewById(R.id.time)
         val replyToTxt: TextView = view.findViewById(R.id.replyToTxt)
+        
+        init {
+            view.setOnLongClickListener {
+                onLongClick(chats[adapterPosition])
+                true
+            }
+        }
     }
     
     inner class DateViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -70,13 +116,13 @@ class ChatAdapter(val userId: Long, val myId: Long) : RecyclerView.Adapter<Recyc
             
             REPLY_RECEIVED -> {
                 (holder as ReplyReceivedViewHolder).apply {
-                
+                    bindReplyReceived(position, holder)
                 }
             }
             
             REPLY_SENT -> {
                 (holder as ReplySentViewHolder).apply {
-                
+                    bindReplySent(position, holder)
                 }
             }
             
@@ -88,6 +134,42 @@ class ChatAdapter(val userId: Long, val myId: Long) : RecyclerView.Adapter<Recyc
                 }
             }
         }
+    }
+    
+    private fun bindReplyReceived(position: Int, holder: ReplyReceivedViewHolder) {
+        val replyChatId = chats[position].replyToChat
+        
+        CoroutineScope(Dispatchers.IO).launch {
+            val originalChat = db.chatDao().getChat(replyChatId)
+            withContext(Dispatchers.Main) {
+                holder.replyToTxt.text = originalChat?.let {
+                    it.message
+                }
+            }
+        }
+        
+        holder.msg.text = chats[position].message
+        holder.time.text = DateTime.getChatMessageTime(chats[position].timeStamp)
+    }
+    
+    
+    private fun bindReplySent(position: Int, holder: ReplySentViewHolder) {
+        val replyChatId = chats[position].replyToChat
+        Log.d(TAG, "is replyChatId Null = $replyChatId")
+        
+        CoroutineScope(Dispatchers.IO).launch {
+            val originalChat = db.chatDao().getChat(replyChatId)
+            Log.d(TAG, "is originalChat Null = $originalChat")
+            withContext(Dispatchers.Main) {
+                holder.replyToTxt.text = originalChat?.let {
+                    it.message
+                }
+                holder.msg.text = chats[position].message
+                holder.time.text = DateTime.getChatMessageTime(chats[position].timeStamp)
+            }
+        }
+        
+        // implement the function here which turn the color of tick to GREEN
     }
     
     override fun getItemCount(): Int {
@@ -109,10 +191,21 @@ class ChatAdapter(val userId: Long, val myId: Long) : RecyclerView.Adapter<Recyc
     fun addNewChats(newList: MutableList<Chat>) {
         chats.addAll(newList)
         notifyItemRangeInserted(chats.size, newList.size)
+        logChatList()
     }
     
     fun addSentChat(chat: Chat) {
         chats.add(0, chat)
         notifyItemInserted(0)
+        logChatList()
     }
+    
+    private fun logChatList(){
+        Log.e(TAG, "logChatList:")
+        for(i in chats.indices){
+            val chat = chats[i]
+            Log.i(TAG, "    $i -> $chat")
+        }
+    }
+    
 }

@@ -1,9 +1,14 @@
 package com.example.instagram
 
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
+
 
 object DateTime {
+    private val locale = Locale("en", "IN")
+    
     private const val ONE_SEC = 1000
     private const val ONE_MIN = 60 * 1000
     private const val ONE_HOUR = 60 * 60 * 1000
@@ -53,16 +58,47 @@ object DateTime {
     
     
     fun getChatMessageTime(milliseconds: Long): String {
-        val format = SimpleDateFormat("hh:mm")
+        val format = SimpleDateFormat("hh:mm", locale)
         return format.format(Date(milliseconds))
     }
     
-    fun getChatSeparatorTime(milliseconds: Long): String {
-        // TODO : Complete Date function
-    
-    
+    fun getChatSeparatorTime(millis: Long): String? {
+        val currentDay = getTimeString(System.currentTimeMillis())
+        val startingDayMillis = getMillis(currentDay)
+        for (i in 0..6) {
+            val startLimit = startingDayMillis - i * ONE_DAY
+            val endLimit = startingDayMillis + (i + 1) * ONE_DAY
+            if (millis in startLimit until endLimit) {
+                return when (i) {
+                    0 -> "Today"
+                    1 -> "Yesterday"
+                    else -> getTimeAsDay(millis)
+                }
+            }
+        }
+        return getTimeString(millis)
     }
     
+    private fun getTimeAsDay(milliseconds: Long?): String? {
+        val format = SimpleDateFormat("EEEE", locale)
+        return format.format(Date(milliseconds!!))
+    }
+    
+    private fun getTimeString(milliseconds: Long?): String {
+        val format = SimpleDateFormat("d MMMM yyyy", locale)
+        return format.format(Date(milliseconds!!))
+    }
+    
+    private fun getMillis(dateString: String): Long {
+        // String dateString = "4 May 1999";
+        val sdf = SimpleDateFormat("d MMMM yyyy", locale)
+        val date: Date = try {
+            sdf.parse(dateString)!!
+        } catch (e: ParseException) {
+            throw RuntimeException(e)
+        }
+        return date.time
+    }
 }
 
 enum class TimeFormatting {

@@ -12,7 +12,7 @@
         android:id="@+id/dateSeparator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_chat_date_seperator"
+        android:background="@drawable/bg_chat_date_separator"
         android:paddingStart="8dp"
         android:paddingTop="4dp"
         android:paddingEnd="8dp"

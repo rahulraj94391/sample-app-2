@@ -1,6 +1,12 @@
 package com.example.instagram
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -11,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.adapters.ChatAdapter
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Chat
+import com.example.instagram.database.model.FullName
 import com.example.instagram.databinding.ActivityChatBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,14 +38,16 @@ class ChatActivity : AppCompatActivity() {
     private var chatsLive = MutableLiveData<MutableList<Chat>>()
     private lateinit var imageUtil: ImageUtil
     private lateinit var manager: LinearLayoutManager
+    private lateinit var userFullName: FullName
     
+    // message reply vars
+    private var replyToChatId: Long = -1
     
     // recycler view vars to load more data
     var isScrolling = false
     var currentItems: Int = 0
     var totalItems: Int = 0
     var scrolledOut: Int = 0
-    
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,10 +65,13 @@ class ChatActivity : AppCompatActivity() {
         }
         
         db = AppDatabase.getDatabase(this)
-        chatAdapter = ChatAdapter(userId, loggedInUserId)
+        chatAdapter = ChatAdapter(userId, loggedInUserId, ::onLongClick)
         binding.sendBtn.setOnClickListener { onSendButtonClicked() }
         
-        
+        binding.discardBtn.setOnClickListener {
+            replyToChatId = (-1).toLong()
+            hideReplyPreview()
+        }
         
         lifecycleScope.launch {
             val url = imageUtil.getProfilePictureUrl(userId)
@@ -70,8 +82,8 @@ class ChatActivity : AppCompatActivity() {
         }
         
         lifecycleScope.launch {
-            val fullName = db.profileDao().getFullName(userId)
-            val name = fullName.first_name + " " + fullName.last_name
+            userFullName = db.profileDao().getFullName(userId)
+            val name = userFullName.first_name + " " + userFullName.last_name
             withContext(Dispatchers.Main) {
                 binding.fullName.text = name
             }
@@ -96,11 +108,17 @@ class ChatActivity : AppCompatActivity() {
             Toast.makeText(this, "Message cannot be blank.", Toast.LENGTH_SHORT).show()
             return
         }
-        val chat = Chat(loggedInUserId, userId, text, System.currentTimeMillis(), 1)
+        val chat = if (replyToChatId != (-1).toLong()) {
+            Chat(loggedInUserId, userId, text, System.currentTimeMillis(), 2, replyToChatId)
+        } else {
+            Chat(loggedInUserId, userId, text, System.currentTimeMillis(), 1)
+        }
         chatAdapter.addSentChat(chat)
         lifecycleScope.launch { db.chatDao().insertNewChat(chat) }
         binding.messageBox.text.clear()
-        binding.chatRV.smoothScrollToPosition(0)
+        binding.chatRV.scrollToPosition(0)
+        replyToChatId = (-1).toLong()
+        hideReplyPreview()
     }
     
     private fun loadMoreChats() {
@@ -118,6 +136,33 @@ class ChatActivity : AppCompatActivity() {
             layoutManager = manager
             addOnScrollListener(scrollListener)
         }
+    }
+    
+    private fun onLongClick(chat: Chat) {
+        Log.d(TAG, "Chat = $chat")
+        Log.d(TAG, "Chat rowID = ${chat.rowId}")
+        replyToChatId = chat.rowId
+        showReplyPreview()
+        val name = if (chat.senderId == userId) "${userFullName.first_name} ${userFullName.last_name}" else resources.getString(R.string.you)
+        bindDataInReplyPreview(name, chat.message)
+    }
+    
+    private fun showReplyPreview() {
+        binding.replyToTxtPreview.visibility = View.VISIBLE
+        binding.discardBtn.visibility = View.VISIBLE
+    }
+    
+    private fun hideReplyPreview() {
+        binding.replyToTxtPreview.visibility = View.GONE
+        binding.discardBtn.visibility = View.GONE
+    }
+    
+    private fun bindDataInReplyPreview(name: String, message: String) {
+        val builder = SpannableStringBuilder()
+        builder.append(name)
+        builder.setSpan(StyleSpan(Typeface.BOLD), 0, name.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        builder.append("\n").append(message)
+        binding.replyToTxtPreview.text = builder
     }
     
     private val scrollListener = object : RecyclerView.OnScrollListener() {
@@ -139,4 +184,10 @@ class ChatActivity : AppCompatActivity() {
             }
         }
     }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        replyToChatId = (-1).toLong()
+    }
+    
 }

@@ -1,68 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="4dp"
-    android:layout_marginBottom="4dp"
-    android:background="@drawable/bg_received_text_msg_bubble"
-    android:backgroundTint="@color/msg_bubble_received"
-    android:gravity="center"
-    android:minWidth="120dp">
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/replyToTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/bg_reply_text_sent"
-        android:ellipsize="end"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:justificationMode="inter_word"
-        android:lineHeight="15dp"
-        android:maxLines="3"
-        android:paddingStart="8dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="8dp"
-        android:text="Rishi Raj\nqui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in"
-        android:textColor="@color/msg_txt_received"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/time"
-        app:layout_constraintStart_toStartOf="@+id/msg"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_min="200dp"
-        app:layout_optimizationLevel="ratio" />
-
-
-    <TextView
-        android:id="@+id/msg"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:maxWidth="350dp"
-        android:padding="8dp"
-        android:text="e df  s"
-        android:textColor="@color/msg_txt_received"
-        app:layout_constraintEnd_toEndOf="@+id/time"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/replyToTxt" />
-
-
-    <TextView
-        android:id="@+id/time"
+        android:id="@+id/dateSeparator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="8dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_chat_date_separator"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        android:text="d MMMM yyyy"
+        android:visibility="gone" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:text="12:33 PM"
-        android:textColor="@color/msg_txt_received"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="100"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/msg" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:background="@drawable/bg_received_text_msg_bubble"
+        android:backgroundTint="@color/msg_bubble_received"
+        android:gravity="center"
+        android:maxWidth="350dp"
+        android:minWidth="150dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/replyToTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_reply_text_sent"
+            android:ellipsize="end"
+            android:justificationMode="inter_word"
+            android:lineHeight="15dp"
+            android:maxWidth="320dp"
+            android:maxLines="3"
+            android:minWidth="128dp"
+            android:padding="8dp"
+            android:text="Rahul Raj\nSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut"
+            android:textColor="@color/msg_txt_received"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="start"
+            android:justificationMode="inter_word"
+            android:maxWidth="320dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:text="Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed utSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed utSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut"
+            android:textColor="@color/msg_txt_received" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="end"
+            android:maxWidth="350dp"
+            android:text="12:33 PM"
+            android:textColor="@color/msg_txt_received"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>
+
+    <!--
+    change width of "replyToTxt" accordingly
+    1 > 2 : (WC)
+    1 <= 2 : (MP)
+    -->

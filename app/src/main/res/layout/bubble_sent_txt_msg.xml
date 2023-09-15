@@ -8,7 +8,7 @@
 
     >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -16,11 +16,12 @@
         android:layout_marginBottom="4dp"
         android:background="@drawable/bg_sent_text_msg_bubble"
         android:backgroundTint="@color/msg_bubble_sent"
-        android:minWidth="120dp">
+        android:minWidth="120dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/msg"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:justificationMode="inter_word"
@@ -31,36 +32,35 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/seen"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/tick_sign"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/msg"
-            app:tint="@color/white" />
+            android:gravity="end"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="12:33 PM"
-            android:textColor="@color/msg_txt_sent"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/seen"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/msg" />
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="12:33 PM"
+                android:textColor="@color/msg_txt_sent"
+                android:textSize="12sp" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+            <ImageView
+                android:id="@+id/seen"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_gravity="center_vertical"
+                android:importantForAccessibility="no"
+                android:src="@drawable/tick_sign"
+                app:tint="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
 
 

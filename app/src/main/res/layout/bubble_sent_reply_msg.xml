@@ -6,7 +6,21 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/dateSeparator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_chat_date_separator"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        android:text="d MMMM yyyy"
+        android:visibility="gone" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -14,71 +28,82 @@
         android:layout_marginBottom="4dp"
         android:background="@drawable/bg_sent_text_msg_bubble"
         android:backgroundTint="@color/msg_bubble_sent"
-        android:minWidth="120dp">
+        android:gravity="center"
+        android:maxWidth="350dp"
+        android:minWidth="150dp"
+        android:orientation="vertical"
+
+        >
 
         <TextView
             android:id="@+id/replyToTxt"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="12dp"
             android:background="@drawable/bg_reply_text_sent"
             android:ellipsize="end"
-            android:foreground="?android:attr/selectableItemBackground"
             android:justificationMode="inter_word"
             android:lineHeight="15dp"
+            android:maxWidth="320dp"
             android:maxLines="3"
+            android:minWidth="128dp"
             android:padding="8dp"
-            android:text="You\nqui dolorem "
+            android:text="Rahul Raj\nSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed utSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed utSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut"
             android:textColor="@color/msg_txt_received"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@id/seen"
-            app:layout_constraintStart_toStartOf="@+id/msg"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_min="120dp"
-            app:layout_optimizationLevel="ratio" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/msg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:justificationMode="inter_word"
-            android:maxWidth="300dp"
-            android:padding="8dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="20dp"
-            android:text="Los du qui do a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a "
-            android:textColor="@color/msg_txt_sent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/replyToTxt" />
-
-        <ImageView
-            android:id="@+id/seen"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/tick_sign"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/msg"
-            app:tint="@color/white" />
-
-        <TextView
-            android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="12:33 PM"
-            android:textColor="@color/msg_txt_sent"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/seen"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/msg" />
+            android:layout_gravity="start"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="start"
+            android:justificationMode="inter_word"
+            android:maxWidth="320dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:text="Sed t"
+            android:textColor="@color/msg_txt_sent" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="end"
+            android:orientation="horizontal">
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="12:33 PM"
+                android:textColor="@color/msg_txt_sent"
+                android:textSize="12sp" />
+
+
+            <ImageView
+                android:id="@+id/seen"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_gravity="center_vertical"
+                android:importantForAccessibility="no"
+                android:src="@drawable/tick_sign"
+                app:tint="@color/white"
+
+                />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    </LinearLayout>
 </LinearLayout>
 

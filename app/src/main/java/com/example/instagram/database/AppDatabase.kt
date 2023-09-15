@@ -33,7 +33,25 @@ import com.example.instagram.database.entity.Tag
 
 private const val TAG = "AppDatabase_CommTag"
 
-@Database(entities = [Comment::class, Follow::class, Likes::class, LoginCred::class, Post::class, PostImage::class, PostText::class, Profile::class, SavedPost::class, Tag::class, ImageCache::class, RecentSearch::class, Chat::class], version = 1, exportSchema = true)
+@Database(
+    entities = [
+        Comment::class,
+        Follow::class,
+        Likes::class,
+        LoginCred::class,
+        Post::class,
+        PostImage::class,
+        PostText::class,
+        Profile::class,
+        SavedPost::class,
+        Tag::class,
+        ImageCache::class,
+        RecentSearch::class,
+        Chat::class
+    ],
+    version = 1,
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun commentDao(): CommentDao
     abstract fun followDao(): FollowDao
@@ -58,7 +76,7 @@ abstract class AppDatabase : RoomDatabase() {
                 synchronized(this) {
                     INSTANCE = Room
                         .databaseBuilder(applicationContext, AppDatabase::class.java, "instaDB")
-//                        .createFromAsset("database/instaDB.db")
+                        //.createFromAsset("database/instaDB.db")
                         .build()
                 }
             }
