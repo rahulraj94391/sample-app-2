@@ -113,12 +113,18 @@ class ChatActivity : AppCompatActivity() {
         } else {
             Chat(loggedInUserId, userId, text, System.currentTimeMillis(), 1)
         }
-        chatAdapter.addSentChat(chat)
-        lifecycleScope.launch { db.chatDao().insertNewChat(chat) }
-        binding.messageBox.text.clear()
-        binding.chatRV.scrollToPosition(0)
-        replyToChatId = (-1).toLong()
-        hideReplyPreview()
+        
+        lifecycleScope.launch {
+            val id = db.chatDao().insertNewChat(chat)
+            chat.rowId = id
+            chatAdapter.addSentChat(chat)
+            withContext(Dispatchers.Main) {
+                binding.messageBox.text.clear()
+                binding.chatRV.scrollToPosition(0)
+                hideReplyPreview()
+            }
+            replyToChatId = (-1).toLong()
+        }
     }
     
     private fun loadMoreChats() {

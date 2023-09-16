@@ -14,5 +14,5 @@ interface ChatsDao {
     suspend fun getChat(chatId: Long): Chat
     
     @Insert
-    suspend fun insertNewChat(chat: Chat)
+    suspend fun insertNewChat(chat: Chat): Long
 }

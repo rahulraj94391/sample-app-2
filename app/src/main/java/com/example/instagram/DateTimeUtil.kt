@@ -7,7 +7,9 @@ import java.util.Locale
 
 
 object DateTime {
+    private const val datePattern = "d MMMM yyyy"
     private val locale = Locale("en", "IN")
+    private val dayMonthYearFormat = SimpleDateFormat(datePattern, locale)
     
     private const val ONE_SEC = 1000
     private const val ONE_MIN = 60 * 1000
@@ -62,7 +64,7 @@ object DateTime {
         return format.format(Date(milliseconds))
     }
     
-    fun getChatSeparatorTime(millis: Long): String? {
+    fun getChatSeparatorTime(millis: Long): String {
         val currentDay = getTimeString(System.currentTimeMillis())
         val startingDayMillis = getMillis(currentDay)
         for (i in 0..6) {
@@ -79,25 +81,35 @@ object DateTime {
         return getTimeString(millis)
     }
     
-    private fun getTimeAsDay(milliseconds: Long?): String? {
+    private fun getTimeAsDay(milliseconds: Long): String {
         val format = SimpleDateFormat("EEEE", locale)
-        return format.format(Date(milliseconds!!))
+        return format.format(Date(milliseconds))
     }
     
-    private fun getTimeString(milliseconds: Long?): String {
-        val format = SimpleDateFormat("d MMMM yyyy", locale)
-        return format.format(Date(milliseconds!!))
+    private fun getTimeString(milliseconds: Long): String {
+        return dayMonthYearFormat.format(Date(milliseconds))
     }
     
     private fun getMillis(dateString: String): Long {
-        // String dateString = "4 May 1999";
-        val sdf = SimpleDateFormat("d MMMM yyyy", locale)
         val date: Date = try {
-            sdf.parse(dateString)!!
+            dayMonthYearFormat.parse(dateString)!!
         } catch (e: ParseException) {
             throw RuntimeException(e)
         }
         return date.time
+    }
+    
+    fun isSameDay(time1: Long, time2: Long): Boolean {
+        // Convert the provided timestamps to IST Date objects
+        val date1 = Date(time1)
+        val date2 = Date(time2)
+        
+        // Format the Date objects to compare the date parts (year, month, and day)
+        val formattedDate1 = dayMonthYearFormat.format(date1)
+        val formattedDate2 = dayMonthYearFormat.format(date2)
+        
+        // Compare the formatted dates to check if they are the same
+        return formattedDate1 == formattedDate2
     }
 }
 

@@ -2,6 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -12,13 +13,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/bg_chat_date_separator"
         android:paddingStart="8dp"
         android:paddingTop="4dp"
         android:paddingEnd="8dp"
         android:paddingBottom="4dp"
-        android:text="d MMMM yyyy"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:text="d MMMM yyyy" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -31,9 +33,7 @@
         android:gravity="center"
         android:maxWidth="350dp"
         android:minWidth="150dp"
-        android:orientation="vertical"
-
-        >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/replyToTxt"
@@ -50,9 +50,9 @@
             android:maxLines="3"
             android:minWidth="128dp"
             android:padding="8dp"
-            android:text="Rahul Raj\nSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed utSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed utSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut"
             android:textColor="@color/msg_txt_received"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:text="Rahul Raj\nSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed utSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed utSed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut Sed ut perspiciatis Sed ut" />
 
         <TextView
             android:id="@+id/msg"
@@ -67,8 +67,8 @@
             android:maxWidth="320dp"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
-            android:text="Sed t"
-            android:textColor="@color/msg_txt_sent" />
+            android:textColor="@color/msg_txt_sent"
+            tools:text="Sed t" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -80,16 +80,14 @@
             android:gravity="end"
             android:orientation="horizontal">
 
-
             <TextView
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="12:33 PM"
                 android:textColor="@color/msg_txt_sent"
-                android:textSize="12sp" />
-
+                android:textSize="12sp"
+                tools:text="12:33 PM" />
 
             <ImageView
                 android:id="@+id/seen"
@@ -98,12 +96,8 @@
                 android:layout_gravity="center_vertical"
                 android:importantForAccessibility="no"
                 android:src="@drawable/tick_sign"
-                app:tint="@color/white"
-
-                />
+                app:tint="@color/white" />
         </androidx.appcompat.widget.LinearLayoutCompat>
-
-
     </LinearLayout>
 </LinearLayout>
 
