@@ -1,6 +1,7 @@
 package com.example.instagram.adapters
 
-import android.util.Log
+import android.content.Context
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,15 +25,19 @@ const val REPLY_RECEIVED = 4
 private const val TAG = "ChatAdapter_CommTag"
 
 class ChatAdapter(
+    private val userLastOnlineTime: Long,
     private val userId: Long,
     private val myId: Long,
     private val onLongClick: (chat: Chat) -> Unit,
+    private val highlightOriginalMsg: (chatId: Long) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var chats = mutableListOf<Chat>()
+    var chats = mutableListOf<Chat>()
     private lateinit var db: AppDatabase
+    private lateinit var mContext: Context
     
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        db = AppDatabase.getDatabase(recyclerView.context)
+        mContext = recyclerView.context
+        db = AppDatabase.getDatabase(mContext)
         super.onAttachedToRecyclerView(recyclerView)
     }
     
@@ -49,6 +54,14 @@ class ChatAdapter(
             }
         }
         
+        
+        //        init {
+        //            view.setOnLongClickListener {
+        //                onLongClick(chats[adapterPosition])
+        //                true
+        //            }
+        //        }
+        
     }
     
     inner class ReplySentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -63,6 +76,9 @@ class ChatAdapter(
             view.setOnLongClickListener {
                 onLongClick(chats[adapterPosition])
                 true
+            }
+            replyToTxt.setOnClickListener {
+                highlightOriginalMsg(chats[adapterPosition].replyToChat)
             }
         }
     }
@@ -93,11 +109,11 @@ class ChatAdapter(
                 onLongClick(chats[adapterPosition])
                 true
             }
+            
+            replyToTxt.setOnClickListener {
+                highlightOriginalMsg(chats[adapterPosition].replyToChat)
+            }
         }
-    }
-    
-    inner class DateViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val date: TextView = view.findViewById(R.id.dateSeparator)
     }
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -112,40 +128,28 @@ class ChatAdapter(
     
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
-            REGULAR_RECEIVED -> {
-                (holder as RegularReceivedViewHolder).apply {
-                    msg.text = chats[position].message
-                    time.text = DateTime.getChatMessageTime(chats[position].timeStamp)
-                    showTimeStamp(holder.dateSeparator, position)
-                }
-            }
-            
-            REPLY_RECEIVED -> {
-                (holder as ReplyReceivedViewHolder).apply {
-                    bindReplyReceived(position, holder)
-                }
-            }
-            
-            REPLY_SENT -> {
-                (holder as ReplySentViewHolder).apply {
-                    bindReplySent(position, holder)
-                }
-            }
-            
-            REGULAR_SENT -> {
-                (holder as RegularSentViewHolder).apply {
-                    msg.text = chats[position].message
-                    time.text = DateTime.getChatMessageTime(chats[position].timeStamp)
-                    showTimeStamp(holder.dateSeparator, position)
-                    /*tick*/
-                }
-            }
+            REGULAR_RECEIVED -> bindRegularReceived(position, holder as RegularReceivedViewHolder)
+            REPLY_RECEIVED -> bindReplyReceived(position, holder as ReplyReceivedViewHolder)
+            REPLY_SENT -> bindReplySent(position, holder as ReplySentViewHolder)
+            REGULAR_SENT -> bindRegularSent(position, holder as RegularSentViewHolder)
         }
+    }
+    
+    private fun bindRegularSent(position: Int, holder: RegularSentViewHolder) {
+        holder.msg.text = chats[position].message
+        holder.time.text = DateTime.getChatMessageTime(chats[position].timeStamp)
+        showTimeStamp(holder.dateSeparator, position)
+        isMessageRead(chats[position].timeStamp, holder.tick)
+    }
+    
+    private fun bindRegularReceived(position: Int, holder: RegularReceivedViewHolder) {
+        holder.msg.text = chats[position].message
+        holder.time.text = DateTime.getChatMessageTime(chats[position].timeStamp)
+        showTimeStamp(holder.dateSeparator, position)
     }
     
     private fun bindReplyReceived(position: Int, holder: ReplyReceivedViewHolder) {
         val replyChatId = chats[position].replyToChat
-        
         CoroutineScope(Dispatchers.IO).launch {
             val originalChat = db.chatDao().getChat(replyChatId)
             withContext(Dispatchers.Main) {
@@ -155,9 +159,7 @@ class ChatAdapter(
                 holder.time.text = DateTime.getChatMessageTime(chats[position].timeStamp)
             }
         }
-        
         showTimeStamp(holder.dateSeparator, position)
-        
     }
     
     private fun showTimeStamp(dateSeparator: TextView, position: Int) {
@@ -189,7 +191,7 @@ class ChatAdapter(
         }
         
         showTimeStamp(holder.dateSeparator, position)
-        
+        isMessageRead(chats[position].timeStamp, holder.tick)
         // implement the function here which turn the color of tick to GREEN
     }
     
@@ -212,21 +214,11 @@ class ChatAdapter(
     fun addNewChats(newList: MutableList<Chat>) {
         chats.addAll(newList)
         notifyItemRangeInserted(chats.size, newList.size)
-        //        logChatList()
     }
     
     fun addSentChat(chat: Chat) {
         chats.add(0, chat)
         notifyItemInserted(0)
-        //        logChatList()
-    }
-    
-    private fun logChatList() {
-        Log.e(TAG, "logChatList:")
-        for (i in chats.indices) {
-            val chat = chats[i]
-            Log.i(TAG, "    $i -> $chat")
-        }
     }
     
     private fun setReplyMsgContainerWidth(msgRepliedTo: String, msg: String, replyToTxt: TextView) {
@@ -237,4 +229,16 @@ class ChatAdapter(
         }
     }
     
+    private fun isMessageRead(chatTime: Long, tick: ImageView) {
+        if (chatTime <= userLastOnlineTime) {
+            tick.setColorFilter(mContext.resources.getColor(R.color.msg_read, mContext.theme), PorterDuff.Mode.SRC_IN)
+        } else {
+            tick.setColorFilter(mContext.resources.getColor(R.color.white, mContext.theme), PorterDuff.Mode.SRC_IN)
+        }
+    }
 }
+
+
+
+
+

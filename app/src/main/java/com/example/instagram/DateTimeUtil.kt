@@ -60,7 +60,7 @@ object DateTime {
     
     
     fun getChatMessageTime(milliseconds: Long): String {
-        val format = SimpleDateFormat("hh:mm", locale)
+        val format = SimpleDateFormat("hh:mm aa", locale)
         return format.format(Date(milliseconds))
     }
     
@@ -100,22 +100,16 @@ object DateTime {
     }
     
     fun isSameDay(time1: Long, time2: Long): Boolean {
-        // Convert the provided timestamps to IST Date objects
         val date1 = Date(time1)
         val date2 = Date(time2)
-        
-        // Format the Date objects to compare the date parts (year, month, and day)
         val formattedDate1 = dayMonthYearFormat.format(date1)
         val formattedDate2 = dayMonthYearFormat.format(date2)
-        
-        // Compare the formatted dates to check if they are the same
         return formattedDate1 == formattedDate2
     }
 }
 
 enum class TimeFormatting {
-    POST,
-    COMMENT
+    POST, COMMENT
 }
 
 enum class PostTimeNotation(val timeNotation: String) {

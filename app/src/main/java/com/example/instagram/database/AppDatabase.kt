@@ -8,6 +8,7 @@ import com.example.instagram.database.dao.CacheDao
 import com.example.instagram.database.dao.ChatsDao
 import com.example.instagram.database.dao.CommentDao
 import com.example.instagram.database.dao.FollowDao
+import com.example.instagram.database.dao.LastOnlineDao
 import com.example.instagram.database.dao.LikesDao
 import com.example.instagram.database.dao.LoginCredDao
 import com.example.instagram.database.dao.PostDao
@@ -21,6 +22,7 @@ import com.example.instagram.database.entity.Chat
 import com.example.instagram.database.entity.Comment
 import com.example.instagram.database.entity.Follow
 import com.example.instagram.database.entity.ImageCache
+import com.example.instagram.database.entity.LastOnline
 import com.example.instagram.database.entity.Likes
 import com.example.instagram.database.entity.LoginCred
 import com.example.instagram.database.entity.Post
@@ -47,7 +49,8 @@ private const val TAG = "AppDatabase_CommTag"
         Tag::class,
         ImageCache::class,
         RecentSearch::class,
-        Chat::class
+        Chat::class,
+        LastOnline::class
     ],
     version = 1,
     exportSchema = false
@@ -66,6 +69,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun cacheDao(): CacheDao
     abstract fun chatDao(): ChatsDao
     abstract fun recentSearchDao(): RecentSearchDAO
+    abstract fun lastOnlineDao(): LastOnlineDao
     
     companion object {
         @Volatile

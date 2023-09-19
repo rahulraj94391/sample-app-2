@@ -27,6 +27,7 @@ import com.example.instagram.LOGGED_IN_ID
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.USER_ID
+import com.example.instagram.USER_LAST_LOGIN
 import com.example.instagram.adapters.EDIT_PROFILE
 import com.example.instagram.adapters.FOLLOW
 import com.example.instagram.adapters.MESSAGE
@@ -127,10 +128,9 @@ class ProfileFragment : Fragment() {
     }
     
     private fun setProfilePicTransition() {
-        binding.profilePic.setOnLongClickListener {
+        binding.profilePic.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.profilePic to "image_big")
             findNavController().navigate(R.id.action_profileFragment_to_profilePictureFragment, null, null, extras)
-            true
         }
     }
     
@@ -245,10 +245,16 @@ class ProfileFragment : Fragment() {
     
     private fun messageProfile() {
         if (findNavController().currentDestination?.id != R.id.profileFragment) return
-        val intent = Intent(requireActivity(), ChatActivity::class.java)
-        intent.putExtra(USER_ID, profileId)
-        intent.putExtra(LOGGED_IN_ID, mainViewModel.loggedInProfileId)
-        startActivity(intent)
+        lifecycleScope.launch {
+            val intent = Intent(requireActivity(), ChatActivity::class.java)
+            val userLastTime = db.lastOnlineDao().getUserLastOnlineStatus(profileId, mainViewModel.loggedInProfileId!!)?.time ?: 0L
+            intent.apply {
+                putExtra(USER_LAST_LOGIN, userLastTime)
+                putExtra(USER_ID, profileId)
+                putExtra(LOGGED_IN_ID, mainViewModel.loggedInProfileId)
+            }
+            startActivity(intent)
+        }
     }
     
     private fun followProfile() {

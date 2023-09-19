@@ -45,6 +45,7 @@
 
     <color name="msg_bubble_sent">#4990E2</color>
     <color name="msg_txt_sent">#EDEDED</color>
+    <color name="msg_read">#08C200</color>
 
 
 

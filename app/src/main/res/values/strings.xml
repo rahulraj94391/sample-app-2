@@ -57,6 +57,7 @@
     <string name="internet_not_connected">Internet is not connected.</string>
     <string name="internet_is_connected">Internet is connected.</string>
     <string name="you">You</string>
+    <string name="message">Message</string>
 
     <string-array name="gender">
         <item>Male</item>

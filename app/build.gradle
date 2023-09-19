@@ -41,7 +41,7 @@ android {
 dependencies {
     // swipe refresh layout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01"
-    
+
     // nav component
     implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"
     implementation "androidx.navigation:navigation-ui-ktx:2.6.0"
@@ -52,7 +52,7 @@ dependencies {
 
     //work manager
     implementation 'androidx.work:work-runtime-ktx:2.8.1'
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 
     // room
@@ -68,9 +68,9 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
 
     // viewModel and lifecycle scope
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
 
     // already added START
     implementation 'androidx.core:core-ktx:1.10.1'
@@ -82,9 +82,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     // already added END
 
+    // testing
     testImplementation 'com.google.truth:truth:1.1.4'
     androidTestImplementation 'com.google.truth:truth:1.1.4'
 
+    // biometric
     implementation 'androidx.biometric:biometric:1.1.0'
-
 }
