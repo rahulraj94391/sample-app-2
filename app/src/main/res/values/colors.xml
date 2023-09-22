@@ -42,13 +42,7 @@
     <color name="msg_txt_received">#212121</color>
     <color name="msg_txt_reply_received">#D1DDF3</color>
 
-
     <color name="msg_bubble_sent">#4990E2</color>
     <color name="msg_txt_sent">#EDEDED</color>
     <color name="msg_read">#08C200</color>
-
-
-
-
-
 </resources>

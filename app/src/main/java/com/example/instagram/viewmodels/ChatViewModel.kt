@@ -28,6 +28,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     // message reply vars
     var replyToChat: Chat? = null
     
+    var replyLive = MutableLiveData<Chat?>()
+    
+    
     fun isUserNameInitialized(): Boolean = ::userFullName.isInitialized
     
     fun loadChats(userId: Long, myId: Long, chatsLoaded: Int) {

@@ -13,7 +13,7 @@ interface LastOnlineDao {
     suspend fun getUserLastOnlineStatus(userId: Long, myId: Long): LastOnline?
     
     @Query("select * from last_online where sender = :myId AND receiver = :userId")
-    suspend fun getMyLastOnlineStatus(myId: Long, userId: Long): LastOnline?
+    suspend fun getMyLastOnlineTime(myId: Long, userId: Long): LastOnline?
     
 //    @Query("UPDATE last_online SET time = :time where sender = :myId and receiver = :userId")
     @Update

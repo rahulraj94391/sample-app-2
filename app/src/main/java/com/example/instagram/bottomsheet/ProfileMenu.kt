@@ -78,15 +78,15 @@ class ProfileMenu : BottomSheetDialogFragment() {
     
     private fun onLogoutClicked() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Logout")
-            .setMessage("Logout from Instagram ?")
+            .setTitle(resources.getString(R.string.logout))
+            .setMessage(resources.getString(R.string.logout_from_instagram))
             .setCancelable(false)
-            .setPositiveButton("Yes") { _, _ ->
+            .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
                 setBiometricToFalse()
                 logoutUser()
                 dismiss()
             }
-            .setNegativeButton("No") { dialogInterface, _ ->
+            .setNegativeButton(resources.getString(R.string.no)) { dialogInterface, _ ->
                 dialogInterface.cancel()
                 dismiss()
             }
