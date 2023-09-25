@@ -3,6 +3,7 @@ package com.example.instagram.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.example.instagram.database.entity.Chat
 
 @Dao()
@@ -15,4 +16,8 @@ interface ChatsDao {
     
     @Insert
     suspend fun insertNewChat(chat: Chat): Long
+    
+    @Update
+    suspend fun markChatsAsDeleted(chats: List<Chat>): Int
+    
 }

@@ -15,7 +15,7 @@
         android:backgroundTint="@color/msg_bubble_received"
         android:gravity="center"
         android:maxWidth="350dp"
-        android:minWidth="120dp"
+        android:minWidth="150dp"
         android:orientation="vertical">
 
         <TextView

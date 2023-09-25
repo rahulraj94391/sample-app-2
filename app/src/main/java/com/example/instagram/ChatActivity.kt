@@ -20,12 +20,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.example.instagram.adapters.ChatAdapter
+import com.example.instagram.adapters.REGULAR_RECEIVED
+import com.example.instagram.adapters.REGULAR_SENT
+import com.example.instagram.adapters.REPLY_RECEIVED
+import com.example.instagram.adapters.REPLY_SENT
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Chat
 import com.example.instagram.database.entity.LastOnline
 import com.example.instagram.databinding.ActivityChatBinding
 import com.example.instagram.itemDecoration.ChatItemDecoration
 import com.example.instagram.viewmodels.ChatViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -50,6 +56,7 @@ class ChatActivity : AppCompatActivity() {
     private var isRecreating: Boolean = false
     private lateinit var dateDecoration: ItemDecoration
     private lateinit var itemTouchHelper: ItemTouchHelper
+    private lateinit var haptics: Haptics
     
     // recycler view vars to load more data
     var isScrolling = false
@@ -57,13 +64,14 @@ class ChatActivity : AppCompatActivity() {
     var totalItems: Int = 0
     var scrolledOut: Int = 0
     
-    inner class TouchHelper(val adapter: ChatAdapter) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+    inner class TouchHelper(val adapter: ChatAdapter) : ItemTouchHelper.SimpleCallback(0, 0) {
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
             return false
         }
         
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            Log.d(TAG, "onSwiped: called")
+            Log.e(TAG, "onSwiped: called")
+            haptics.light()
             // val animator = ValueAnimator.ofFloat(viewHolder.itemView.translationX, 0f)
             // animator.addUpdateListener { animation ->
             //     viewHolder.itemView.translationX = animation.animatedValue as Float
@@ -71,33 +79,42 @@ class ChatActivity : AppCompatActivity() {
             // animator.duration = 200
             // animator.start()
             itemTouchHelper.attachToRecyclerView(null)
-            chatViewModel.replyToChat = chatViewModel.chatAdapter?.chats?.get(viewHolder.itemView.tag as Int)
+            chatViewModel.replyToChat = chatViewModel.chatAdapter?.chats?.get((viewHolder.itemView.tag as Pair<Int, Int>).first)
             bindDataInReplyPreview()
             showReplyPreview()
             itemTouchHelper.attachToRecyclerView(binding.chatRV)
             
+            Log.e(TAG, "onSwiped ENDED")
         }
         
         override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-            val maxSwipe = viewHolder.itemView.width / 6.toFloat()
-            Log.d(TAG, "maxSwipe = $maxSwipe")
-            Log.d(TAG, "dX = $dX")
+            val maxSwipe = viewHolder.itemView.width / 8.toFloat()
             val clampedDX = dX.coerceIn(-maxSwipe, maxSwipe)
             super.onChildDraw(c, recyclerView, viewHolder, clampedDX, dY, actionState, isCurrentlyActive)
-            Log.d(TAG, "clammed = ${clampedDX}")
+            
             Log.d(
                 TAG, "onChildDraw: \n" +
+                        "maxSwipe = $maxSwipe\n" +
                         "dX = $dX\n" +
+                        "clammed = $clampedDX\n" +
                         "dY = $dY\n" +
                         "actionState = $actionState\n" +
                         "isCurrentlyActive = $isCurrentlyActive"
             )
         }
         
+        override fun getSwipeDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+            val pair = viewHolder.itemView.tag as Pair<Int, Int>
+            return when (pair.second) {
+                REGULAR_SENT, REPLY_SENT, REGULAR_RECEIVED, REPLY_RECEIVED -> ItemTouchHelper.RIGHT
+                else -> 0
+            }
+        }
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        haptics = Haptics(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat)
         chatViewModel = ViewModelProvider(this)[ChatViewModel::class.java]
         db = AppDatabase.getDatabase(this)
@@ -112,6 +129,13 @@ class ChatActivity : AppCompatActivity() {
             }
         }
         
+        //
+        chatViewModel.chatAdapter?.otherMessageCount?.observe(this) { msgCount ->
+            //            if (msgCount > 0) {
+            Log.d(TAG, "other user's or deleted messages selected count = $msgCount")
+            //            }
+        }
+        
         chatViewModel.chatsLive.observe(this) {
             if (it.isEmpty() || isRecreating) return@observe
             chatViewModel.chatAdapter!!.addNewChats(it)
@@ -120,6 +144,9 @@ class ChatActivity : AppCompatActivity() {
         binding.discardBtn.setOnClickListener {
             chatViewModel.replyToChat = null
             hideReplyPreview()
+        }
+        binding.userImage.setOnClickListener {
+            showDeleteMessageAlert()
         }
         setUserProfilePictureAndName()
     }
@@ -155,7 +182,7 @@ class ChatActivity : AppCompatActivity() {
     
     private fun initializeVariables() {
         if (chatViewModel.chatAdapter == null) {
-            chatViewModel.chatAdapter = ChatAdapter(userLastTime, userId, myId, ::onLongClick, ::highlightMsg)
+            chatViewModel.chatAdapter = ChatAdapter(userLastTime, userId, myId, ::onLongClick, ::highlightMsg, ::spanBuilder)
             chatViewModel.loadChats(userId, myId, chatViewModel.chatAdapter!!.itemCount)
         }
         
@@ -170,10 +197,7 @@ class ChatActivity : AppCompatActivity() {
             layoutManager = llManager
             addOnScrollListener(scrollListener)
         }
-        
         itemTouchHelper.attachToRecyclerView(binding.chatRV)
-        
-        
     }
     
     private fun onSendButtonClicked() {
@@ -240,16 +264,58 @@ class ChatActivity : AppCompatActivity() {
     }
     
     private fun bindDataInReplyPreview() {
-        Log.d(TAG, "bindDataInReplyPreview: inside")
-        val chat = chatViewModel.replyToChat!!
+        binding.replyToTxtPreview.text = spanBuilder(chatViewModel.replyToChat!!)
+    }
+    
+    private fun spanBuilder(chat: Chat): SpannableStringBuilder {
         val name = if (chat.senderId == userId) "${chatViewModel.userFullName.first_name} ${chatViewModel.userFullName.last_name}" else resources.getString(R.string.you)
         val builder = SpannableStringBuilder()
         builder.append(name)
         builder.setSpan(StyleSpan(Typeface.BOLD), 0, name.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         builder.append("\n").append(chat.message)
-        Log.e(TAG, "Previous data = ${binding.replyToTxtPreview.text}")
-        binding.replyToTxtPreview.text = builder
-        Log.e(TAG, "Current data = ${binding.replyToTxtPreview.text}")
+        return builder
+    }
+    
+    private fun markChatsAsDelete() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val list = chatViewModel.chatAdapter?.selectedItems ?: return@launch
+            for (chat in list) {
+                chat.messageType = 3 // "3" represents chat as deleted.
+            }
+            val rowsAffected = db.chatDao().markChatsAsDeleted(list)
+            Log.d(TAG, "markChatsAsDelete: rows affected = $rowsAffected")
+            list.clear()
+            Log.d(TAG, "after clearing list size = ${chatViewModel.chatAdapter?.selectedItems?.size}")
+            withContext(Dispatchers.Main) {
+                chatViewModel.chatAdapter!!.notifyDataSetChanged()
+            }
+        }
+    }
+    
+    private fun abortMessageDelete() {
+        chatViewModel.chatAdapter?.apply {
+            selectedItems.clear()
+            notifyDataSetChanged()
+        }
+    }
+    
+    private fun showDeleteMessageAlert() {
+        if (chatViewModel.chatAdapter?.selectedItems?.size!! < 1) return
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Delete chats.")
+            .setMessage("Delete ${chatViewModel.chatAdapter?.selectedItems?.size} message(s) ?")
+            .setNeutralButton("Cancel") { dialog, which ->
+                abortMessageDelete()
+            }
+            .setNegativeButton("No") { dialog, which ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("Yes") { dialog, which ->
+                markChatsAsDelete()
+                dialog.dismiss()
+            }
+            .setCancelable(false)
+            .show()
     }
     
     override fun onPause() {

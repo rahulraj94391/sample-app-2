@@ -56,4 +56,6 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         val url = imageUtil.getProfilePictureUrl(userId)
         return url?.let { imageUtil.getBitmap(it) }
     }
+    
+    
 }

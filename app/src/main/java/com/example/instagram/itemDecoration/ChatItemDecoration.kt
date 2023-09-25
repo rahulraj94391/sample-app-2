@@ -63,10 +63,10 @@ class ChatItemDecoration(private val context: Context, private val chats: List<C
         
         for (i in 0 until parent.childCount) {
             val child = parent.getChildAt(i)
-            val idx = child.tag as Int
-            
+            val pair = child.tag as Pair<*, *>
+            val idx = pair.first as Int
             if (idx == chats.size - 1 || !DateTime.isSameDay(chats[idx].timeStamp, chats[idx + 1].timeStamp)) {
-                val text = DateTime.getChatSeparatorTime(chats[child.tag as Int].timeStamp)
+                val text = DateTime.getChatSeparatorTime(chats[idx].timeStamp)
                 textPaint.getTextBounds(text, 0, text.length, textBounds)
                 val bottom = child.top.toFloat() - boxTopAndBottomMargin
                 val top = bottom - textBounds.height() - boxTopAndBottomMargin
@@ -82,7 +82,8 @@ class ChatItemDecoration(private val context: Context, private val chats: List<C
     }
     
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        val i = view.tag as Int
+        val pair = view.tag as Pair<*, *>
+        val i = pair.first as Int
         if (i == chats.size - 1 || !DateTime.isSameDay(chats[i].timeStamp, chats[i + 1].timeStamp)) {
             outRect.set(0, topOffsetForViewHolder, 0, 0)
         } else {
