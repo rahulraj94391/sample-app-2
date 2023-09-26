@@ -62,6 +62,7 @@
     <string name="you">You</string>
     <string name="message">Message</string>
     <string name="this_message_has_been_deleted">This message has been deleted.</string>
+    <string name="deleteChatMenu">Delete</string>
 
     <string-array name="gender">
         <item>Male</item>

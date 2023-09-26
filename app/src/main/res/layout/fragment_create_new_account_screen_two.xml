@@ -30,8 +30,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/circleImageView"
-                app:strokeColor="@color/search_border"
-                app:strokeWidth="1dp" />
+
+                app:strokeWidth="0dp" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/indicator"

@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.instagram.HomeActivity
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.HomeAdapter
@@ -89,6 +90,7 @@ class HomeFragment : Fragment() {
         val checkedState = (view as MaterialCheckBox).checkedState
         val postId = homeAdapter.getPostId(pos)
         val newState = if (checkedState == MaterialCheckBox.STATE_CHECKED) {
+            (requireActivity() as HomeActivity).haptics.light()
             viewModel.likePost(postId, mainViewModel.loggedInProfileId!!)
             MaterialCheckBox.STATE_CHECKED
         } else {
@@ -108,6 +110,7 @@ class HomeFragment : Fragment() {
         val checkedState = (view as MaterialCheckBox).checkedState
         val postId = homeAdapter.getPostId(pos)
         val newState = if (checkedState == MaterialCheckBox.STATE_CHECKED) {
+            (requireActivity() as HomeActivity).haptics.light()
             viewModel.savePost(mainViewModel.loggedInProfileId!!, postId)
             MaterialCheckBox.STATE_CHECKED
         } else {
@@ -126,6 +129,7 @@ class HomeFragment : Fragment() {
         val postId: Long = homeAdapter.getPostId(pos)
         val action = HomeFragmentDirections.actionHomeFragmentToCommentSheet(postId)
         findNavController().navigate(action)
+        (requireActivity() as HomeActivity).haptics.light()
     }
     
     private fun whenMessagesBtnClicked() {

@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/cancel/baseline_cancel_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialiconsround/do_disturb_on/round_do_disturb_on_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,8 +33,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="dadada" />
-                            <entry key="outputName" value="cancel_24" />
+                            <entry key="color" value="c93131" />
+                            <entry key="outputName" value="subtract_color_icon2" />
                             <entry key="sourceFile" value="$USER_HOME$/Downloads/autumn.svg" />
                           </map>
                         </option>

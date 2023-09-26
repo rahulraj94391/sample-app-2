@@ -58,7 +58,7 @@
                 android:layout_gravity="center_vertical"
                 android:importantForAccessibility="no"
                 android:src="@drawable/tick_sign"
-                app:tint="@color/white" />
+                app:tint="@color/col8" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

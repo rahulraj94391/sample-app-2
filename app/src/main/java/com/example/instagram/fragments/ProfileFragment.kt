@@ -22,6 +22,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.instagram.ChatActivity
+import com.example.instagram.HomeActivity
 import com.example.instagram.ImageUtil
 import com.example.instagram.LOGGED_IN_ID
 import com.example.instagram.MainViewModel
@@ -245,6 +246,7 @@ class ProfileFragment : Fragment() {
     
     private fun messageProfile() {
         if (findNavController().currentDestination?.id != R.id.profileFragment) return
+        (requireActivity() as HomeActivity).haptics.light()
         lifecycleScope.launch {
             val intent = Intent(requireActivity(), ChatActivity::class.java)
             val userLastTime = db.lastOnlineDao().getUserLastOnlineStatus(profileId, mainViewModel.loggedInProfileId!!)?.time ?: 0L
@@ -258,6 +260,7 @@ class ProfileFragment : Fragment() {
     }
     
     private fun followProfile() {
+        (requireActivity() as HomeActivity).haptics.light()
         lifecycleScope.launch {
             db.followDao().insertNewFollow(Follow(mainViewModel.loggedInProfileId!!, profileId, System.currentTimeMillis()))
             viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
@@ -265,6 +268,7 @@ class ProfileFragment : Fragment() {
     }
     
     private fun unFollowProfile() {
+        (requireActivity() as HomeActivity).haptics.light()
         lifecycleScope.launch {
             db.followDao().deleteFollow(mainViewModel.loggedInProfileId!!, profileId)
             viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)

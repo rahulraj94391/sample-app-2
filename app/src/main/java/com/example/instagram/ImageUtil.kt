@@ -30,7 +30,7 @@ class ImageUtil(val context: Context) {
     private val db = AppDatabase.getDatabase(context)
     private var storageRef: FirebaseStorage = FirebaseStorage.getInstance()
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val errorBitmap: Bitmap = ContextCompat.getDrawable(context, R.drawable.loading_error)!!.toBitmap()
+    private val errorBitmap: Bitmap = ContextCompat.getDrawable(context, R.drawable.person_24)!!.toBitmap()
     
     suspend fun getBitmap(url: String): Bitmap {
         val fileName = db.cacheDao().getCachedImageFileNameIfPresent(url)

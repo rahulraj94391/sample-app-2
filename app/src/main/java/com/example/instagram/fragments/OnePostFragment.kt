@@ -84,6 +84,7 @@ class OnePostFragment : Fragment() {
                 binding.btnDeletePost.setOnClickListener { deleteBtn ->
                     deleteBtn.isEnabled = false
                     deletePostDialog()
+                    (requireActivity() as HomeActivity).haptics.heavy()
                 }
             }
         }
@@ -169,10 +170,12 @@ class OnePostFragment : Fragment() {
     }
     
     private fun viewPagerDoubleClicked(viewPager2: ViewPager2) { // Todo: double tap on viewpage to like post
+    
     }
     
     private fun onSavePostClicked(it: MaterialCheckBox) {
         if (it.isChecked) {
+            (requireActivity() as HomeActivity).haptics.light()
             lifecycleScope.launch {
                 db.savedPostDao().savePost(SavedPost(mainViewModel.loggedInProfileId!!, postId, System.currentTimeMillis()))
             }
@@ -185,6 +188,7 @@ class OnePostFragment : Fragment() {
     
     private fun onLikeClicked(it: MaterialCheckBox) {
         if (it.isChecked) { // setLikeColorAsPerState(it, true)
+            (requireActivity() as HomeActivity).haptics.light()
             lifecycleScope.launch {
                 db.likesDao().insertNewLike(Likes(postId, mainViewModel.loggedInProfileId!!, System.currentTimeMillis()))
                 viewModel.getLikeCount(postId)
@@ -220,6 +224,7 @@ class OnePostFragment : Fragment() {
     
     private fun onCommentClicked() {
         if (findNavController().currentDestination?.id != R.id.onePostFragment) return
+        (requireActivity() as HomeActivity).haptics.light()
         val action = OnePostFragmentDirections.actionOnePostFragmentToCommentSheet(postId)
         findNavController().navigate(action)
     }

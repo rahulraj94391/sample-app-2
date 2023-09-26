@@ -27,7 +27,7 @@ const val REPLY_RECEIVED = 4
 const val DELETE_SENT = 5
 const val DELETE_RECEIVED = 6
 
-const val MAX_MSG_SELECTION = 50
+const val MAX_MSG_SELECTION_IN_SELECT_MODE = 50
 
 private const val TAG = "ChatAdapter_CommTag"
 
@@ -40,14 +40,17 @@ class ChatAdapter(
     private val replyTextBuilder: (chat: Chat) -> SpannableStringBuilder,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var _chats = mutableListOf<Chat>()
-    val chats: List<Chat> get() = _chats
-    val selectedItems = mutableListOf<Chat>()
-    private var isSelectMode = false
     private lateinit var db: AppDatabase
     private lateinit var mContext: Context
     private var _otherMessageCount = MutableLiveData(0)
-    val otherMessageCount get() = _otherMessageCount
     private var isToastShown = false
+    val chats: List<Chat> get() = _chats
+    var lastOtherMsgCount = 0
+    val selectedItems = mutableListOf<Chat>()
+    var isSelectMode = false
+    val selectedMessageCount = MutableLiveData(0)
+    val otherMessageCount get() = _otherMessageCount
+    
     
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         mContext = recyclerView.context
@@ -304,9 +307,9 @@ class ChatAdapter(
     
     private fun isMessageRead(chatTime: Long, tick: ImageView) {
         if (chatTime <= userLastOnlineTime) {
-            tick.setColorFilter(mContext.resources.getColor(R.color.msg_read, mContext.theme), PorterDuff.Mode.SRC_IN)
-        } else {
             tick.setColorFilter(mContext.resources.getColor(R.color.white, mContext.theme), PorterDuff.Mode.SRC_IN)
+        } else {
+            tick.setColorFilter(mContext.resources.getColor(R.color.col8, mContext.theme), PorterDuff.Mode.SRC_IN)
         }
     }
     
@@ -318,16 +321,19 @@ class ChatAdapter(
         val isNotMyMessage = chat.senderId == userId || (chat.senderId == myId && chat.messageType == 3)
         
         if (selectedItems.contains(chat)) {
-            holder.itemView.setBackgroundColor(mContext.resources.getColor(android.R.color.transparent, mContext.theme))
-            selectedItems.remove(chat)
             if (isNotMyMessage) {
                 _otherMessageCount.postValue(_otherMessageCount.value!! - 1)
             }
+            
+            holder.itemView.setBackgroundColor(mContext.resources.getColor(android.R.color.transparent, mContext.theme))
+            selectedItems.remove(chat)
+            
+            selectedMessageCount.postValue(selectedMessageCount.value!! - 1)
         } else {
-            if (selectedItems.size >= MAX_MSG_SELECTION) {
+            if (selectedItems.size >= MAX_MSG_SELECTION_IN_SELECT_MODE) {
                 if (!isToastShown) {
                     Toast.makeText(mContext, "Can select at most ${selectedItems.size} at a time.", Toast.LENGTH_SHORT).show()
-                    //                    isToastShown = true // enable this to show toast once.
+                    // isToastShown = true // enable this to show toast once.
                 }
                 return
             }
@@ -335,13 +341,25 @@ class ChatAdapter(
             if (isNotMyMessage) {
                 _otherMessageCount.postValue(_otherMessageCount.value!! + 1)
             }
+            
+            
             holder.itemView.setBackgroundColor(mContext.resources.getColor(R.color.col9, mContext.theme))
             selectedItems.add(chat)
+            
+            selectedMessageCount.postValue(selectedMessageCount.value!! + 1)
         }
         
         if (selectedItems.size < 1) {
             isSelectMode = false
         }
+    }
+    
+    fun resetSelectMode() {
+        otherMessageCount.postValue(0)
+        selectedMessageCount.postValue(0)
+        isSelectMode = false
+        selectedItems.clear()
+        notifyDataSetChanged()
     }
     
     private fun isChatAlreadyInSelectMode(chat: Chat, holder: RecyclerView.ViewHolder) {

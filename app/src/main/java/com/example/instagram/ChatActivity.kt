@@ -7,6 +7,9 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.util.Log
+import android.view.ActionMode
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -37,6 +40,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
+
 const val USER_ID = "user_chat_id"
 const val LOGGED_IN_ID = "my_chat_id"
 const val USER_LAST_LOGIN = "user_last_login"
@@ -57,6 +61,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var dateDecoration: ItemDecoration
     private lateinit var itemTouchHelper: ItemTouchHelper
     private lateinit var haptics: Haptics
+    private var actionMode: ActionMode? = null
     
     // recycler view vars to load more data
     var isScrolling = false
@@ -112,6 +117,37 @@ class ChatActivity : AppCompatActivity() {
         }
     }
     
+    private val mActionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return true
+        }
+        
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            if (chatViewModel.chatAdapter?.otherMessageCount?.value!! > 0) {
+                menu?.clear()
+            } else {
+                mode?.menuInflater?.inflate(R.menu.chat_menu, menu)
+            }
+            return true
+        }
+        
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            when (item?.itemId) {
+                R.id.deleteChats -> {
+                    showDeleteMessageAlert()
+                    return true
+                }
+            }
+            
+            return false
+        }
+        
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            actionMode = null
+            chatViewModel.chatAdapter?.resetSelectMode()
+        }
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         haptics = Haptics(this)
@@ -129,11 +165,21 @@ class ChatActivity : AppCompatActivity() {
             }
         }
         
-        //
-        chatViewModel.chatAdapter?.otherMessageCount?.observe(this) { msgCount ->
-            //            if (msgCount > 0) {
-            Log.d(TAG, "other user's or deleted messages selected count = $msgCount")
-            //            }
+        chatViewModel.chatAdapter?.selectedMessageCount?.observe(this) {
+            if (it < 1) {
+                actionMode?.finish()
+                return@observe
+            }
+            actionMode = actionMode ?: startActionMode(mActionModeCallback)
+            actionMode?.title = if (it > 1) "$it messages selected." else "$it message selected."
+        }
+        
+        chatViewModel.chatAdapter?.otherMessageCount?.observe(this) {
+            val prev = chatViewModel.chatAdapter?.lastOtherMsgCount!!
+            val current = it
+            if (prev == current) return@observe
+            actionMode?.invalidate()
+            chatViewModel.chatAdapter?.lastOtherMsgCount = it
         }
         
         chatViewModel.chatsLive.observe(this) {
@@ -144,9 +190,6 @@ class ChatActivity : AppCompatActivity() {
         binding.discardBtn.setOnClickListener {
             chatViewModel.replyToChat = null
             hideReplyPreview()
-        }
-        binding.userImage.setOnClickListener {
-            showDeleteMessageAlert()
         }
         setUserProfilePictureAndName()
     }
@@ -181,16 +224,18 @@ class ChatActivity : AppCompatActivity() {
     }
     
     private fun initializeVariables() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
+        }
         if (chatViewModel.chatAdapter == null) {
             chatViewModel.chatAdapter = ChatAdapter(userLastTime, userId, myId, ::onLongClick, ::highlightMsg, ::spanBuilder)
             chatViewModel.loadChats(userId, myId, chatViewModel.chatAdapter!!.itemCount)
         }
-        
         itemTouchHelper = ItemTouchHelper(TouchHelper(chatViewModel.chatAdapter!!))
-        
         llManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
         dateDecoration = ChatItemDecoration(this@ChatActivity, chatViewModel.chatAdapter!!.chats)
-        //        dateDecoration = DividerItemDecoration(this@ChatActivity)
         binding.chatRV.apply {
             addItemDecoration(dateDecoration)
             adapter = chatViewModel.chatAdapter!!
@@ -304,17 +349,14 @@ class ChatActivity : AppCompatActivity() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Delete chats.")
             .setMessage("Delete ${chatViewModel.chatAdapter?.selectedItems?.size} message(s) ?")
-            .setNeutralButton("Cancel") { dialog, which ->
-                abortMessageDelete()
-            }
             .setNegativeButton("No") { dialog, which ->
                 dialog.dismiss()
             }
             .setPositiveButton("Yes") { dialog, which ->
                 markChatsAsDelete()
                 dialog.dismiss()
+                chatViewModel.chatAdapter?.resetSelectMode()
             }
-            .setCancelable(false)
             .show()
     }
     

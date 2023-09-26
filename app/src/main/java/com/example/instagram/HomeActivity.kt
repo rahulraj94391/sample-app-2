@@ -28,6 +28,7 @@ const val DURATION = 80L
 private const val TAG = "HomeActivity_CommTag"
 
 class HomeActivity : AppCompatActivity() {
+    lateinit var haptics: Haptics
     private lateinit var binding: ActivityHomeBinding
     private lateinit var navController: NavController
     private lateinit var mainViewModel: MainViewModel
@@ -49,6 +50,10 @@ class HomeActivity : AppCompatActivity() {
         
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
+        
+        // haptic
+        haptics = Haptics(this)
+        
         
         // setup bottom navigation view with nav controller
         navHostFragment = supportFragmentManager.findFragmentById(R.id.fragContainerView) as NavHostFragment
