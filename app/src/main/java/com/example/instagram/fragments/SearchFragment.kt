@@ -158,7 +158,17 @@ class SearchFragment : Fragment() {
     }
     
     private fun onClick(pos: Int) {
-        val person = viewModel.searchLiveData.value?.get(pos) ?: return
+        
+        
+        val person = try {
+            viewModel.searchLiveData.value?.get(pos)!!
+        } catch (e: Exception) {
+            Log.e(TAG, "onClick: ${e.printStackTrace()}")
+            return
+        }
+        
+        
+        
         searchAdapter.setNewList(mutableListOf())
         searchAdapter.setImagesList(mutableListOf())
         gotoProfileScreen(person.profile_id)
