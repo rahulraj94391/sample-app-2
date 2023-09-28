@@ -22,6 +22,7 @@ class HomeFragViewModel(private val currentProfile: Long, private val app: Appli
     private val imageUtil = ImageUtil(app)
     val postsToShow = MutableLiveData<MutableList<Post>>()
     private val postIdsAlreadyShown = mutableSetOf<Long>()
+    val listOfPosts: MutableList<Post>? = null
     
     fun addNewPostToList(loggedInProfileId: Long) {
         postIdsAlreadyShown.clear()

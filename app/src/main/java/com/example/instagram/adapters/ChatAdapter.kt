@@ -35,7 +35,6 @@ class ChatAdapter(
     private val userLastOnlineTime: Long,
     private val userId: Long,
     private val myId: Long,
-    private val onLongClick: (chat: Chat) -> Unit,
     private val highlightOriginalMsg: (chatId: Long) -> Unit,
     private val replyTextBuilder: (chat: Chat) -> SpannableStringBuilder,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -192,7 +191,7 @@ class ChatAdapter(
             REGULAR_RECEIVED -> RegularReceivedViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bubble_received_txt_msg, parent, false))
             REPLY_RECEIVED -> ReplyReceivedViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bubble_received_reply_msg, parent, false))
             DELETE_RECEIVED -> DeleteReceivedViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bubble_received_msg_deleted, parent, false))
-            else -> throw Exception("Viewtype($viewType) is unknown for chat recycler view.")
+            else -> throw Exception("onCreateViewHolder: Viewtype($viewType) is unknown for chat recycler view")
         }
     }
     

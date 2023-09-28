@@ -1,12 +1,10 @@
 package com.example.instagram.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -31,7 +29,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var homeAdapter: HomeAdapter
-    private lateinit var viewModel: HomeFragViewModel
+    private lateinit var homeViewModel: HomeFragViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var db: AppDatabase
     
@@ -39,7 +37,7 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         db = AppDatabase.getDatabase(requireContext())
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        viewModel = ViewModelProvider(this, ViewModelFactory(mainViewModel.loggedInProfileId!!, requireActivity().application))[HomeFragViewModel::class.java]
+        homeViewModel = ViewModelProvider(this, ViewModelFactory(mainViewModel.loggedInProfileId!!, requireActivity().application))[HomeFragViewModel::class.java]
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -55,18 +53,18 @@ class HomeFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (viewModel.isFirstTime) {
-            viewModel.isFirstTime = false
-            viewModel.addNewPostToList(mainViewModel.loggedInProfileId!!)
+        if (homeViewModel.isFirstTime) {
+            homeViewModel.isFirstTime = false
+            homeViewModel.addNewPostToList(mainViewModel.loggedInProfileId!!)
         }
-        homeAdapter = HomeAdapter(::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate)
+        homeAdapter = HomeAdapter(::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate, homeViewModel)
         binding.btnMessages.setOnClickListener { whenMessagesBtnClicked() }
         binding.btnNotifications.setOnClickListener { whenNotificationBtnClicked() }
         
         binding.homeRV.adapter = homeAdapter
         binding.homeRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         
-        viewModel.postsToShow.observe(viewLifecycleOwner) {
+        homeViewModel.postsToShow.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
             binding.homeRV.visibility = View.VISIBLE
             if (it.size == 0) binding.followToSeeFeed.visibility = View.VISIBLE
@@ -91,16 +89,16 @@ class HomeFragment : Fragment() {
         val postId = homeAdapter.getPostId(pos)
         val newState = if (checkedState == MaterialCheckBox.STATE_CHECKED) {
             (requireActivity() as HomeActivity).haptics.light()
-            viewModel.likePost(postId, mainViewModel.loggedInProfileId!!)
+            homeViewModel.likePost(postId, mainViewModel.loggedInProfileId!!)
             MaterialCheckBox.STATE_CHECKED
         } else {
-            viewModel.removeLike(postId, mainViewModel.loggedInProfileId!!)
+            homeViewModel.removeLike(postId, mainViewModel.loggedInProfileId!!)
             MaterialCheckBox.STATE_UNCHECKED
         }
         
         lifecycleScope.launch {
             delay(100)
-            val likeString = viewModel.getFormattedLikeCount(postId)
+            val likeString = homeViewModel.getFormattedLikeCount(postId)
             val likePayload = HomeAdapter.LikePayload(likeString, postId, newState)
             homeAdapter.notifyItemChanged(pos, likePayload)
         }
@@ -111,10 +109,10 @@ class HomeFragment : Fragment() {
         val postId = homeAdapter.getPostId(pos)
         val newState = if (checkedState == MaterialCheckBox.STATE_CHECKED) {
             (requireActivity() as HomeActivity).haptics.light()
-            viewModel.savePost(mainViewModel.loggedInProfileId!!, postId)
+            homeViewModel.savePost(mainViewModel.loggedInProfileId!!, postId)
             MaterialCheckBox.STATE_CHECKED
         } else {
-            viewModel.removeSavedPost(mainViewModel.loggedInProfileId!!, postId) //            view.setButtonIconTintList()
+            homeViewModel.removeSavedPost(mainViewModel.loggedInProfileId!!, postId) //            view.setButtonIconTintList()
             MaterialCheckBox.STATE_UNCHECKED
         }
         
@@ -133,8 +131,9 @@ class HomeFragment : Fragment() {
     }
     
     private fun whenMessagesBtnClicked() {
-        Log.d(TAG, "Messages Btn Clicked")
-        Toast.makeText(requireContext(), "Under development.", Toast.LENGTH_SHORT).show()
+        if (findNavController().currentDestination?.id != R.id.homeFragment) return
+        val action = HomeFragmentDirections.actionHomeFragmentToLatestChatsFragment()
+        findNavController().navigate(action)
     }
     
     private fun whenNotificationBtnClicked() {

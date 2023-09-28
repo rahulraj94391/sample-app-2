@@ -16,6 +16,8 @@ import androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
 import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.instagram.R
 import com.example.instagram.databinding.FragmentSettingsBinding
 
 
@@ -51,6 +53,10 @@ class SettingsFragment : Fragment() {
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
         super.onViewCreated(view, savedInstanceState)
         binding.radioGroup.setOnCheckedChangeListener(themeListener)
         binding.biometricSwitch.setOnCheckedChangeListener(biometricListener)

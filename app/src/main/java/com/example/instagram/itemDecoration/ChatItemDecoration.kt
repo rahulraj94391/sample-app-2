@@ -2,12 +2,10 @@ package com.example.instagram.itemDecoration
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.util.TypedValue
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.DateTime
 import com.example.instagram.R
@@ -23,12 +21,12 @@ class ChatItemDecoration(private val context: Context, private val chats: List<C
     private val topOffsetForViewHolder: Int
     
     private val boxPaint: Paint = Paint().apply {
-        color = ContextCompat.getColor(context, R.color.col9)
+        color = context.resources.getColor(R.color.date_rect, context.theme)
         style = Paint.Style.FILL
     }
     
     private val textPaint = Paint().apply {
-        color = Color.BLACK
+        color = context.resources.getColor(R.color.text_color, context.theme)
         textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14f, context.resources.displayMetrics)
         isAntiAlias = true
     }

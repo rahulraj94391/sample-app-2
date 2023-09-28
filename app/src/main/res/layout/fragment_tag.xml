@@ -13,8 +13,8 @@
         android:orientation="vertical"
         tools:context=".fragments.TagFragment">
 
-        <LinearLayout
-            android:id="@+id/ll"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorSecondaryContainer"
@@ -22,16 +22,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchViewBar"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/search_view_bg"
-                app:iconifiedByDefault="false"
-                app:queryBackground="@android:color/transparent"
-                app:queryHint="Search a user" />
-        </LinearLayout>
+                android:minHeight="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchViewBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/search_view_bg"
+                    app:iconifiedByDefault="false"
+                    app:queryBackground="@android:color/transparent"
+                    app:queryHint="Search a user" />
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <TextView
             android:id="@+id/textView2"
@@ -44,7 +52,7 @@
             android:textStyle="bold"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll" />
+            app:layout_constraintTop_toBottomOf="@+id/appbar" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tags"
@@ -68,15 +76,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll"
+            app:layout_constraintTop_toBottomOf="@+id/appbar"
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginBottom="8dp"
-                android:src="@drawable/subtract_color_icon"
-                android:importantForAccessibility="no" />
+                android:importantForAccessibility="no"
+                android:src="@drawable/subtract_color_icon" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -97,14 +105,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll">
+            app:layout_constraintTop_toBottomOf="@+id/appbar">
 
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginBottom="8dp"
-                android:src="@drawable/tag"
-                android:importantForAccessibility="no" />
+                android:importantForAccessibility="no"
+                android:src="@drawable/tag" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -123,7 +131,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll" />
+            app:layout_constraintTop_toBottomOf="@+id/appbar" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

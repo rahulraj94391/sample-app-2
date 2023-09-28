@@ -23,6 +23,14 @@
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_latestChatsFragment"
+            app:destination="@id/latestChatsFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right"
+            />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
@@ -208,7 +216,13 @@
         tools:layout="@layout/fragment_caption_tag">
         <action
             android:id="@+id/action_captionTagFragment_to_tagFragment"
-            app:destination="@id/tagFragment" />
+            app:destination="@id/tagFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right"
+
+            />
         <action
             android:id="@+id/action_captionTagFragment_to_uploadDialog"
             app:destination="@id/uploadDialog" />
@@ -242,4 +256,11 @@
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
     </fragment>
+    <fragment
+        android:id="@+id/latestChatsFragment"
+        android:name="com.example.instagram.fragments.LatestChatsFragment"
+        android:label="LatestChatsFragment"
+        tools:layout="@layout/fragment_latest_chats"
+
+        />
 </navigation>

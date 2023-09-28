@@ -96,7 +96,7 @@ class ImageUtil(val context: Context) {
         return photo.await()
     }
     
-    suspend fun getBitmapFromUri(uri: Uri, desiredRatio: Double = 0.8, desiredHeight: Double = 1440.0): Bitmap? {
+    suspend fun getBitmapFromUri(uri: Uri, desiredRatio: Double = 0.8, desiredHeight: Double = 1080.0): Bitmap? {
         return try {
             val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
             downScale(bitmap, desiredRatio, desiredHeight)
@@ -129,14 +129,14 @@ class ImageUtil(val context: Context) {
         return Bitmap.createScaledBitmap(bitmap, newWidth.toInt(), newHeight.toInt(), true)
     }
     
-    suspend fun getUriDownscaleImages(postImagesUri: MutableList<Uri>, desiredRatio: Double = 0.8, desiredHeight: Double = 1440.0): MutableList<Uri> {
+    suspend fun getUriDownscaleImages(postImagesUri: MutableList<Uri>, desiredRatio: Double = 0.8, desiredHeight: Double = 1080.0): MutableList<Uri> {
         val finalList = mutableListOf<Uri>()
         postImagesUri.forEach {
             val downscaledBitmap = getBitmapFromUri(it, desiredRatio, desiredHeight)!!
             val tempFile = File(context.cacheDir, "${System.currentTimeMillis()}.jpeg")
             try {
                 val fos = FileOutputStream(tempFile)
-                downscaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                downscaledBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fos)
                 fos.close()
             } catch (e: IOException) {
                 // Handle error
@@ -288,3 +288,5 @@ class ImageUtil(val context: Context) {
         }
     }*/
 }
+//select * from chat where senderId = 2 or receiverId =2 order by rowId desc;
+

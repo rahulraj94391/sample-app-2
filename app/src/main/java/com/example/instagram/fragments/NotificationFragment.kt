@@ -39,7 +39,7 @@ private const val TAG = "NotificationFragment_CommTag"
 class NotificationFragment : Fragment() {
     private var _binding: FragmentNotificationBinding? = null
     private val binding get() = _binding!!
-    private lateinit var vm: NotificationsFragViewModel
+    private lateinit var viewModel: NotificationsFragViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var notificationAdapter: NotificationAdapter
     private lateinit var db: AppDatabase
@@ -47,7 +47,7 @@ class NotificationFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = AppDatabase.getDatabase(requireContext())
-        vm = ViewModelProvider(requireActivity())[NotificationsFragViewModel::class.java]
+        viewModel = ViewModelProvider(this)[NotificationsFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         notificationAdapter = NotificationAdapter(mainViewModel.loggedInProfileId!!, ::spanBuilder, ::openProfile, ::openPost, ::openCommentOnPost)
     }
@@ -59,26 +59,28 @@ class NotificationFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //        if (viewModel.placeHolderReference.value?.isNotEmpty() == true) {
         lifecycleScope.launch {
-            vm.getActivityLog(mainViewModel.loggedInProfileId!!)
+            viewModel.getActivityLog(mainViewModel.loggedInProfileId!!)
         }
-        //        }
-        
+        binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
         binding.swipeRefreshNotification.setOnRefreshListener {
             lifecycleScope.launch {
-                vm.getActivityLog(mainViewModel.loggedInProfileId!!)
+                viewModel.getActivityLog(mainViewModel.loggedInProfileId!!)
             }
         }
         binding.notificationRV.apply {
             adapter = notificationAdapter
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         }
         
-        binding.notificationRV.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
-        
-        
-        vm.placeHolderReference.observe(viewLifecycleOwner) { placeHolderReference ->
+        viewModel.placeHolderReference.observe(viewLifecycleOwner) { placeHolderReference ->
+            binding.progressBar.visibility = View.INVISIBLE
+            binding.notificationRV.visibility = View.VISIBLE
+            
             if (placeHolderReference.size < 1) {
                 binding.apply {
                     noNotificationInstruction.visibility = View.VISIBLE
@@ -91,7 +93,7 @@ class NotificationFragment : Fragment() {
                 }
             }
             
-            notificationAdapter.setNewList(vm.followLogs, vm.likeLogs, vm.commentLogs, placeHolderReference)
+            notificationAdapter.setNewList(viewModel.followLogs, viewModel.likeLogs, viewModel.commentLogs, placeHolderReference)
             if (binding.swipeRefreshNotification.isRefreshing) {
                 binding.swipeRefreshNotification.isRefreshing = false
             }
@@ -133,7 +135,7 @@ class NotificationFragment : Fragment() {
     }
     
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+        super.onDestroyView()
     }
 }

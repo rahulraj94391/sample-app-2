@@ -88,6 +88,7 @@
                 style="?attr/materialIconButtonStyle"
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:button="@drawable/selector_like_icon"
                 app:buttonTint="@color/material_checkbox_tint"
                 app:layout_constraintStart_toStartOf="parent"

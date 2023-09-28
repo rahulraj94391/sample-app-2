@@ -15,7 +15,6 @@
             android:splitMotionEvents="false">
 
             <View
-
                 android:layout_width="40dp"
                 android:layout_height="3dp"
                 android:layout_gravity="center_horizontal"
@@ -51,6 +50,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="@string/settings"
+                    android:textColor="@color/text_color"
                     android:textSize="18sp" />
 
                 <ImageView
@@ -89,6 +89,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="@string/saved_posts"
+                    android:textColor="@color/text_color"
                     android:textSize="18sp" />
 
                 <ImageView
@@ -128,6 +129,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="@string/logout"
+                    android:textColor="@color/text_color"
                     android:textSize="18sp" />
 
                 <ImageView

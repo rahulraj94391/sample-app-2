@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -143,6 +144,7 @@ class ChatActivity : AppCompatActivity() {
         }
         
         override fun onDestroyActionMode(mode: ActionMode?) {
+            
             actionMode = null
             chatViewModel.chatAdapter?.resetSelectMode()
         }
@@ -197,7 +199,11 @@ class ChatActivity : AppCompatActivity() {
     private fun setUserProfilePictureAndName() {
         lifecycleScope.launch {
             val userprofilePicture = chatViewModel.getUserImage(userId)
-            binding.userImage.setImageBitmap(userprofilePicture)
+            if (userprofilePicture != null) {
+                binding.userImage.setImageBitmap(userprofilePicture)
+            } else {
+                binding.userImage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.person_24, theme))
+            }
         }
         
         lifecycleScope.launch {
@@ -230,7 +236,7 @@ class ChatActivity : AppCompatActivity() {
             finish()
         }
         if (chatViewModel.chatAdapter == null) {
-            chatViewModel.chatAdapter = ChatAdapter(userLastTime, userId, myId, ::onLongClick, ::highlightMsg, ::spanBuilder)
+            chatViewModel.chatAdapter = ChatAdapter(userLastTime, userId, myId, ::highlightMsg, ::spanBuilder)
             chatViewModel.loadChats(userId, myId, chatViewModel.chatAdapter!!.itemCount)
         }
         itemTouchHelper = ItemTouchHelper(TouchHelper(chatViewModel.chatAdapter!!))
@@ -287,12 +293,12 @@ class ChatActivity : AppCompatActivity() {
             }*/
     }
     
-    private fun onLongClick(chat: Chat) {
-        Log.d(TAG, "onLongClick -->\n" + "chat id = ${chat.rowId}\n" + "chat message = ${chat.message}\n")
-        chatViewModel.replyToChat = chat
-        bindDataInReplyPreview()
-        showReplyPreview()
-    }
+    //    private fun onLongClick(chat: Chat) {
+    //        Log.d(TAG, "onLongClick -->\n" + "chat id = ${chat.rowId}\n" + "chat message = ${chat.message}\n")
+    //        chatViewModel.replyToChat = chat
+    //        bindDataInReplyPreview()
+    //        showReplyPreview()
+    //    }
     
     private fun showReplyPreview() {
         findViewById<TextView>(R.id.replyToTxtPreview).visibility = View.VISIBLE

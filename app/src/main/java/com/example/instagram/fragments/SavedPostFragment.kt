@@ -16,7 +16,7 @@ import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.SavedPostAdapter
 import com.example.instagram.databinding.FragmentSavedPostBinding
-import com.example.instagram.viewmodels.SavedPostsViewModel
+import com.example.instagram.viewmodels.SavedPostsFragViewModel
 import kotlinx.coroutines.launch
 
 
@@ -25,12 +25,12 @@ private const val TAG = "CommTag_SavedPostFragment"
 class SavedPostFragment : Fragment() {
     private var _binding: FragmentSavedPostBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: SavedPostsViewModel
+    private lateinit var viewModel: SavedPostsFragViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var savedPostAdapter: SavedPostAdapter
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        viewModel = ViewModelProvider(this)[SavedPostsViewModel::class.java]
+        viewModel = ViewModelProvider(this)[SavedPostsFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_saved_post, container, false)
         return binding.root
@@ -46,7 +46,10 @@ class SavedPostFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         savedPostAdapter = SavedPostAdapter(this::onSavedPostClicked, this::onLongClick)
         binding.savedPostRV.adapter = savedPostAdapter
-        
+        binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
         lifecycleScope.launch {
             viewModel.getSavedPosts(mainViewModel.loggedInProfileId!!)
         }

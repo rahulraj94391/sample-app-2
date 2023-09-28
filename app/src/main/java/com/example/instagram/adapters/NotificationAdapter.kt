@@ -14,7 +14,7 @@ import com.example.instagram.database.entity.Follow
 import com.example.instagram.database.model.CommentLog
 import com.example.instagram.database.model.FollowLog
 import com.example.instagram.database.model.LikeLog
-import com.example.instagram.viewmodels.Data
+import com.example.instagram.viewmodels.Notification
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +38,7 @@ class NotificationAdapter(
     private var followLogs: List<FollowLog> = mutableListOf()
     private var likeLogs: List<LikeLog> = mutableListOf()
     private var commentLogs: List<CommentLog> = mutableListOf()
-    private var placeHolderReference: MutableList<Data> = mutableListOf()
+    private var placeHolderReference: MutableList<Notification> = mutableListOf()
     private lateinit var db: AppDatabase
     private lateinit var imageUtil: ImageUtil
     
@@ -175,7 +175,7 @@ class NotificationAdapter(
     
     override fun getItemViewType(position: Int) = placeHolderReference[position].lstRef
     
-    fun setNewList(followLogs: List<FollowLog>, likeLogs: List<LikeLog>, commentLogs: List<CommentLog>, placeHolderReference: MutableList<Data>) {
+    fun setNewList(followLogs: List<FollowLog>, likeLogs: List<LikeLog>, commentLogs: List<CommentLog>, placeHolderReference: MutableList<Notification>) {
         this.followLogs = followLogs
         this.likeLogs = likeLogs
         this.commentLogs = commentLogs

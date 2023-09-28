@@ -17,17 +17,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center_vertical"
-                android:paddingStart="16dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="16dp"
-                android:text="@string/post"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical"
+                    android:paddingTop="4dp"
+                    android:text="@string/post"
+                    android:textColor="@color/text_color"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+
+            </androidx.appcompat.widget.Toolbar>
+
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -63,6 +71,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
+                    android:textColor="@color/text_color"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/profileImage"
                     app:layout_constraintEnd_toStartOf="@+id/btnDeletePost"
@@ -86,6 +95,7 @@
                     app:layout_constraintStart_toEndOf="@+id/username"
                     app:layout_constraintTop_toTopOf="@+id/profileImage"
                     app:rippleColor="@color/deleteRipple"
+                    tools:ignore="SpeakableTextPresentCheck"
                     tools:visibility="visible" />
 
                 <androidx.viewpager2.widget.ViewPager2
@@ -114,13 +124,15 @@
                     app:tabGravity="center"
                     app:tabIndicatorHeight="0dp"
                     app:tabMaxWidth="8dp"
-                    app:tabPadding="0dp" />
+                    app:tabPadding="0dp"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/likeBtn"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:button="@drawable/selector_like_icon"
                     app:buttonTint="@color/material_checkbox_tint"
                     app:layout_constraintStart_toStartOf="parent"
@@ -134,7 +146,8 @@
                     android:layout_marginStart="8dp"
                     app:icon="@drawable/outline_comment_24"
                     app:layout_constraintStart_toEndOf="@+id/likeBtn"
-                    app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2" />
+                    app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/btnSavePost"
@@ -152,6 +165,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
+                    android:textColor="@color/text_color"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -166,6 +180,7 @@
                     android:justificationMode="inter_word"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
+                    android:textColor="@color/text_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/likeCount"
@@ -178,6 +193,7 @@
                     android:layout_marginTop="4dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
+                    android:textColor="@color/text_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/postDesc"
@@ -191,6 +207,7 @@
                     android:layout_marginBottom="100dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
+                    android:textColor="@color/text_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

@@ -1,5 +1,6 @@
 package com.example.instagram.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -20,4 +21,9 @@ interface ChatsDao {
     @Update
     suspend fun markChatsAsDeleted(chats: List<Chat>): Int
     
+    @Query("SELECT * from chat where senderId = :myId or receiverId = :myId ORDER by timeStamp DESC")
+    fun getMyLatestChatsPerUser(myId: Long): LiveData<List<Chat>>
+    
+    
 }
+

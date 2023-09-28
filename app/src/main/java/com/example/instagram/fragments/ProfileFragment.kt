@@ -107,6 +107,14 @@ class ProfileFragment : Fragment() {
             binding.btnProfileBottomSheet.visibility = View.INVISIBLE
         }
         
+        if (mainViewModel.loggedInProfileId!! != profileId) {
+            binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
+            binding.toolbar.setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+        }
+        
+        
         binding.viewPagerPostAndTagPhoto.adapter = ScreenSlidePagerAdapter(requireActivity())
         TabLayoutMediator(binding.tabLayout, binding.viewPagerPostAndTagPhoto) { tab, position ->
             when (position) {

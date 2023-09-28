@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.instagram.ImageUtil
 import com.example.instagram.R
 import com.example.instagram.database.model.Post
+import com.example.instagram.viewmodels.HomeFragViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.tabs.TabLayout
@@ -28,6 +30,7 @@ class HomeAdapter(
     val likeListener: (Int, View) -> Unit,
     val saveListener: (Int, View) -> Unit,
     val commentCountDelegate: (TextView, Long) -> Unit,
+    private val homeViewModel: HomeFragViewModel,
 ) : RecyclerView.Adapter<HomeAdapter.PostVH>() {
     private lateinit var mContext: Context
     private lateinit var imageUtil: ImageUtil
@@ -36,7 +39,13 @@ class HomeAdapter(
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         mContext = recyclerView.context
         imageUtil = ImageUtil(mContext)
+        homeViewModel.listOfPosts?.let { list.addAll(it) }
         super.onAttachedToRecyclerView(recyclerView)
+    }
+    
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        homeViewModel.listOfPosts?.addAll(list)
+        super.onDetachedFromRecyclerView(recyclerView)
     }
     
     inner class PostVH(item: View) : RecyclerView.ViewHolder(item) {
@@ -141,7 +150,7 @@ class HomeAdapter(
             val bitmap = list[position].profileImageUrl?.let { imageUtil.getBitmap(it) }
             withContext(Dispatchers.Main) {
                 if (bitmap == null) {
-                    profileImage.setImageDrawable(mContext.resources.getDrawable(R.drawable.person_outlined))
+                    profileImage.setImageDrawable(ResourcesCompat.getDrawable(mContext.resources, R.drawable.person_outlined, mContext.theme))
                 } else {
                     profileImage.setImageBitmap(bitmap)
                 }

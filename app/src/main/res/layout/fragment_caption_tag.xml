@@ -32,8 +32,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:paddingTop="4dp"
+
                     android:text="@string/add_description"
+                    android:textColor="@color/text_color"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     tools:ignore="SpUsage" />
@@ -96,7 +97,8 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:padding="8dp"
-                    android:text="@string/tag_people" />
+                    android:text="@string/tag_people"
+                    android:textColor="@color/text_color" />
 
                 <TextView
                     android:id="@+id/tagPeopleCount"
@@ -104,6 +106,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:padding="8dp"
+                    android:textColor="@color/text_color"
                     tools:text="None" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </com.google.android.material.card.MaterialCardView>

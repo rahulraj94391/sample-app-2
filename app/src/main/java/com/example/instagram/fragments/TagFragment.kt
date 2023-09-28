@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instagram.R
 import com.example.instagram.adapters.TagSearchResultAdapter
@@ -52,7 +53,10 @@ class TagFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+        binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
         if (viewModel.finalTags.size > 0) binding.yourTagsWillAppearHere.visibility = View.INVISIBLE
         
         binding.searchViewBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

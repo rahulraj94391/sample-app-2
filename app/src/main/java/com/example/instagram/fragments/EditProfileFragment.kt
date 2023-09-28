@@ -62,6 +62,11 @@ class EditProfileFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+        
         lifecycleScope.launch { loadData() }
         val uploadNewPic = binding.uploadNewPicture
         uploadNewPic.setOnClickListener {
@@ -137,7 +142,7 @@ class EditProfileFragment : Fragment() {
         binding.indicator.visibility = View.VISIBLE
         binding.uploadNewPicture.isEnabled = false
         imageUriToUpload.let { urii ->
-            val uri = imageUtil.getUriDownscaleImages(mutableListOf(urii), 1.0, 1080.0)
+            val uri = imageUtil.getUriDownscaleImages(mutableListOf(urii), 1.0, 480.0)
             
             val storageRef = storageRef.reference.child("$profileId")
             storageRef.putFile(uri[0]).addOnCompleteListener { task ->

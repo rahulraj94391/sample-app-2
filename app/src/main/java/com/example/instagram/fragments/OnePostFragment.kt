@@ -71,6 +71,11 @@ class OnePostFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+        
         binding.apply {
             comment.setOnClickListener { onCommentClicked() }
             commentCount.setOnClickListener { onCommentClicked() }

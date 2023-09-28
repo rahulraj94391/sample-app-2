@@ -61,7 +61,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
-                    android:text="Theme Mode"
+                    android:text="@string/theme_mode"
+                    android:textColor="@color/text_color"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -83,19 +84,22 @@
                         android:id="@+id/rbDeviceSettings"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Device settings" />
+                        android:text="@string/device_settings"
+                        android:textColor="@color/text_color" />
 
                     <com.google.android.material.radiobutton.MaterialRadioButton
                         android:id="@+id/rbLightMode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Light Mode" />
+                        android:text="@string/light_mode"
+                        android:textColor="@color/text_color" />
 
                     <com.google.android.material.radiobutton.MaterialRadioButton
                         android:id="@+id/rbDarkMode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Dark Mode" />
+                        android:text="@string/dark_mode"
+                        android:textColor="@color/text_color" />
 
                 </RadioGroup>
 
@@ -108,7 +112,7 @@
                     android:layout_marginEnd="8dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:text="If you choose Device settings, this app will use the mode that's already selected in this device settings."
+                    android:text="@string/theme_instruction"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -131,12 +135,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Biometric"
+                    android:text="@string/biometric"
+                    android:textColor="@color/text_color"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBaseline_toBaselineOf="@+id/biometricSwitch"
                     app:layout_constraintEnd_toStartOf="@+id/biometricSwitch"
-
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -160,7 +164,7 @@
                     android:layout_marginEnd="8dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:text="System will authenticate the user before opening Instagram on supported devices."
+                    android:text="@string/biometric_instruction"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

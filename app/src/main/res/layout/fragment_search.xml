@@ -9,7 +9,7 @@
         tools:context=".fragments.SearchFragment">
 
         <LinearLayout
-            android:id="@+id/ll"
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorSecondaryContainer"
@@ -38,14 +38,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll">
+            app:layout_constraintTop_toBottomOf="@+id/appbar">
 
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:importantForAccessibility="no"
                 android:src="@drawable/person_outlined"
-                app:tint="@color/logo_tint" />
+                app:tint="@color/text_color" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -53,8 +53,7 @@
                 android:padding="4dp"
                 android:text="@string/search_a_user"
                 android:textColor="@color/logo_tint"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -65,7 +64,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll"
+            app:layout_constraintTop_toBottomOf="@+id/appbar"
             tools:listitem="@layout/row_user_search" />
 
         <LinearLayout
@@ -77,7 +76,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll"
+            app:layout_constraintTop_toBottomOf="@+id/appbar"
             tools:visibility="visible">
 
             <LinearLayout
@@ -89,9 +88,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="@color/text_color"
                     android:gravity="center_vertical"
                     android:padding="8dp"
-                    android:text="Recent Searches"
+                    android:text="@string/recent_searches"
                     android:textStyle="bold" />
 
                 <TextView
@@ -106,7 +106,7 @@
                     android:gravity="center_vertical"
                     android:padding="2dp"
                     android:text="@string/clear_all"
-                    android:textColor="#426AE1" />
+                    android:textColor="@color/hyperlink_texts" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -114,8 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                tools:listitem="@layout/row_user_search"
-                />
+                tools:listitem="@layout/row_user_search" />
         </LinearLayout>
 
         <LinearLayout
@@ -128,8 +127,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll"
-            tools:ignore="UseCompoundDrawables">
+            app:layout_constraintTop_toBottomOf="@+id/appbar"
+            tools:ignore="UseCompoundDrawables"
+            tools:visibility="invisible">
 
             <ImageView
                 android:layout_width="32dp"
@@ -142,6 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/no_user_found"
+                android:textColor="@color/text_color"
                 android:textStyle="bold" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
