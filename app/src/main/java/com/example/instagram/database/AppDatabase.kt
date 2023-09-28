@@ -79,7 +79,7 @@ abstract class AppDatabase : RoomDatabase() {
             if (INSTANCE == null) {
                 synchronized(this) {
                     INSTANCE = Room
-                        .databaseBuilder(applicationContext, AppDatabase::class.java, "instaDB")
+                        .databaseBuilder(applicationContext, AppDatabase::class.java, "instaDB.db")
                         .createFromAsset("database/instaDB.db")
                         .build()
                 }

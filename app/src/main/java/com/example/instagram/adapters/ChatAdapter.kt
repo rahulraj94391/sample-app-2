@@ -320,13 +320,13 @@ class ChatAdapter(
         val isNotMyMessage = chat.senderId == userId || (chat.senderId == myId && chat.messageType == 3)
         
         if (selectedItems.contains(chat)) {
+            
             if (isNotMyMessage) {
                 _otherMessageCount.postValue(_otherMessageCount.value!! - 1)
             }
             
             holder.itemView.setBackgroundColor(mContext.resources.getColor(android.R.color.transparent, mContext.theme))
             selectedItems.remove(chat)
-            
             selectedMessageCount.postValue(selectedMessageCount.value!! - 1)
         } else {
             if (selectedItems.size >= MAX_MSG_SELECTION_IN_SELECT_MODE) {
@@ -340,13 +340,12 @@ class ChatAdapter(
             if (isNotMyMessage) {
                 _otherMessageCount.postValue(_otherMessageCount.value!! + 1)
             }
-            
-            
             holder.itemView.setBackgroundColor(mContext.resources.getColor(R.color.col9, mContext.theme))
             selectedItems.add(chat)
-            
             selectedMessageCount.postValue(selectedMessageCount.value!! + 1)
         }
+    
+        
         
         if (selectedItems.size < 1) {
             isSelectMode = false
