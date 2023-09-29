@@ -94,13 +94,13 @@ class ChatActivity : AppCompatActivity() {
         }
         
         override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-            val maxSwipe = viewHolder.itemView.width / 8.toFloat()
-            val clampedDX = dX.coerceIn(-maxSwipe, maxSwipe)
+            val allowedSwipe = viewHolder.itemView.width / 8.toFloat()
+            val clampedDX = dX.coerceIn(-allowedSwipe, allowedSwipe)
             super.onChildDraw(c, recyclerView, viewHolder, clampedDX, dY, actionState, isCurrentlyActive)
             
             Log.d(
                 TAG, "onChildDraw: \n" +
-                        "maxSwipe = $maxSwipe\n" +
+                        "maxSwipe = $allowedSwipe\n" +
                         "dX = $dX\n" +
                         "clammed = $clampedDX\n" +
                         "dY = $dY\n" +
@@ -168,6 +168,7 @@ class ChatActivity : AppCompatActivity() {
         }
         
         chatViewModel.chatAdapter?.selectedMessageCount?.observe(this) {
+            Log.d(TAG, "Selected message count <LIVE> = $it")
             if (it < 1) {
                 actionMode?.finish()
                 return@observe
@@ -177,6 +178,7 @@ class ChatActivity : AppCompatActivity() {
         }
         
         chatViewModel.chatAdapter?.otherMessageCount?.observe(this) {
+            Log.d(TAG, "Other message count <LIVE> = $it")
             val prev = chatViewModel.chatAdapter?.lastOtherMsgCount!!
             val current = it
             if (prev == current) return@observe

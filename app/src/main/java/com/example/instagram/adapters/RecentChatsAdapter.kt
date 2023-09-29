@@ -12,7 +12,7 @@ import com.example.instagram.DateTime
 import com.example.instagram.ImageUtil
 import com.example.instagram.R
 import com.example.instagram.database.AppDatabase
-import com.example.instagram.database.entity.Chat
+import com.example.instagram.database.model.RecentChats
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 
 class RecentChatsAdapter(private val myId: Long, val openMessageScreen: (Long) -> Unit) : RecyclerView.Adapter<RecentChatsAdapter.RecentChatVH>() {
     private lateinit var imageUtil: ImageUtil
-    private var chats = mutableListOf<Chat>()
+    private var chats = mutableListOf<RecentChats>()
     private lateinit var mContext: Context
     private lateinit var db: AppDatabase
     
@@ -75,12 +75,12 @@ class RecentChatsAdapter(private val myId: Long, val openMessageScreen: (Long) -
             "You: ${chat.message}"
         } else if (sender == myId) {
             holder.lastMsg.setTypeface(null, Typeface.ITALIC)
-            "You deleted the message"
+            mContext.getString(R.string.you_deleted_the_message)
         } else if (chat.messageType != 3) {
-            "${chat.message}"
+            chat.message
         } else {
             holder.lastMsg.setTypeface(null, Typeface.ITALIC)
-            "This message was deleted"
+            mContext.getString(R.string.this_message_was_deleted)
         }
         
         holder.lastMsgDate.text = DateTime.getChatMessageTime(chat.timeStamp)
@@ -91,7 +91,7 @@ class RecentChatsAdapter(private val myId: Long, val openMessageScreen: (Long) -
         return chats.size
     }
     
-    fun setNewList(chats: MutableList<Chat>) {
+    fun setNewList(chats: MutableList<RecentChats>) {
         this.chats = chats
         notifyDataSetChanged()
     }

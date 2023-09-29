@@ -30,7 +30,6 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     
     var replyLive = MutableLiveData<Chat?>()
     
-    
     fun isUserNameInitialized(): Boolean = ::userFullName.isInitialized
     
     fun loadChats(userId: Long, myId: Long, chatsLoaded: Int) {
