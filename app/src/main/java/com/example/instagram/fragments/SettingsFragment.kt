@@ -79,9 +79,9 @@ class SettingsFragment : Fragment() {
     
     private val themeListener = RadioGroup.OnCheckedChangeListener { _, id ->
         when (id) {
-            com.example.instagram.R.id.rbDeviceSettings -> setSystemTheme()
-            com.example.instagram.R.id.rbLightMode -> setLightTheme()
-            com.example.instagram.R.id.rbDarkMode -> setDarkTheme()
+            R.id.rbDeviceSettings -> setSystemTheme()
+            R.id.rbLightMode -> setLightTheme()
+            R.id.rbDarkMode -> setDarkTheme()
         }
     }
     

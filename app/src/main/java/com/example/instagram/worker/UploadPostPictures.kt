@@ -68,7 +68,7 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         }
         
         Log.d(TAG, "CHECK-POINT 6")
-        delay(1000)
+        delay(800)
         return Result.success(Data.Builder().putBoolean(IS_UPLOAD_FINISHED, true).build())
     }
     

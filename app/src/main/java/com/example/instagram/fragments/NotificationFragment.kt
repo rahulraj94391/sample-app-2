@@ -83,8 +83,8 @@ class NotificationFragment : Fragment() {
             
             if (placeHolderReference.size < 1) {
                 binding.apply {
-                    noNotificationInstruction.visibility = View.VISIBLE
                     swipeRefreshNotification.visibility = View.INVISIBLE
+                    noNotificationInstruction.visibility = View.VISIBLE
                 }
             } else {
                 binding.apply {

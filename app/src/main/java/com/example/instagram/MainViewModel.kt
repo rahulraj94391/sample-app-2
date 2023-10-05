@@ -3,6 +3,7 @@ package com.example.instagram
 import android.app.Application
 import android.graphics.Bitmap
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import com.example.instagram.database.entity.Profile
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
@@ -20,4 +21,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     var profilePageId: Long? = null
     
     var profileImageBitmap: Bitmap? = null
+    
+    val startProfileRefresh = MutableLiveData(false)
+    val isProfileRefreshed = MutableLiveData(false)
+    
 }

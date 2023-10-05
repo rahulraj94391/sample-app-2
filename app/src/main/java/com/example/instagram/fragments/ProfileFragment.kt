@@ -1,6 +1,5 @@
 package com.example.instagram.fragments
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -11,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -90,6 +90,7 @@ class ProfileFragment : Fragment() {
         }
     }
     
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         return binding.root
@@ -100,7 +101,7 @@ class ProfileFragment : Fragment() {
         super.onDestroyView()
     }
     
-    @SuppressLint("UseCompatLoadingForDrawables")
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (profileId != mainViewModel.loggedInProfileId!!) {
@@ -119,11 +120,11 @@ class ProfileFragment : Fragment() {
         TabLayoutMediator(binding.tabLayout, binding.viewPagerPostAndTagPhoto) { tab, position ->
             when (position) {
                 0 -> {
-                    tab.icon = requireContext().getDrawable(R.drawable.grid)
+                    tab.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.grid)
                 }
                 
                 1 -> {
-                    tab.icon = requireContext().getDrawable(R.drawable.tag)
+                    tab.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.tag)
                 }
             }
         }.attach()
@@ -159,6 +160,17 @@ class ProfileFragment : Fragment() {
     }
     
     private fun setObservers() {
+        binding.refreshProfile.setOnRefreshListener {
+            mainViewModel.startProfileRefresh.postValue(true)
+        }
+        
+        mainViewModel.isProfileRefreshed.observe(viewLifecycleOwner) {
+            if (it) {
+                mainViewModel.isProfileRefreshed.postValue(false)
+                binding.refreshProfile.isRefreshing = false
+            }
+        }
+        
         viewModel.profileSummary.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
             binding.nestedScroll.visibility = View.VISIBLE
@@ -215,7 +227,9 @@ class ProfileFragment : Fragment() {
         
         CoroutineScope(Dispatchers.IO).launch {
             if (it.profilePicUrl == null) return@launch
-            setProfilePicTransition()
+            withContext(Dispatchers.Main) {
+                setProfilePicTransition()
+            }
             
             mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
             

@@ -17,7 +17,6 @@ import com.example.instagram.R
 import com.example.instagram.adapters.PhotoGridAdapter
 import com.example.instagram.databinding.FragmentPhotoGridBinding
 import com.example.instagram.viewmodels.PhotoGridFragViewModel
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
@@ -35,7 +34,6 @@ class PhotoGridFragment : Fragment() {
     private lateinit var userPostedPhotoAdapter: PhotoGridAdapter
     private var listRef: Int by Delegates.notNull()
     private var userProfId: Long by Delegates.notNull()
-    private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     
     
     companion object {
@@ -73,11 +71,22 @@ class PhotoGridFragment : Fragment() {
         viewModel = ViewModelProvider(this)[PhotoGridFragViewModel::class.java]
         userPostedPhotoAdapter = PhotoGridAdapter(this::onPostClicked)
         
+        mainViewModel.startProfileRefresh.observe(viewLifecycleOwner){
+            if(it){
+                lifecycleScope.launch {
+                    viewModel.getProfilePost(userProfId)
+                }
+            }
+        }
+        
+        
         if (listRef == 0) {
             lifecycleScope.launch {
                 viewModel.getProfilePost(userProfId)
             }
             viewModel.usersPost.observe(viewLifecycleOwner) {
+                mainViewModel.startProfileRefresh.postValue(false)
+                mainViewModel.isProfileRefreshed.postValue(true)
                 binding.loadingProgressBar.visibility = View.GONE
                 if (it.size == 0) {
                     binding.ins1.visibility = View.VISIBLE

@@ -1,5 +1,6 @@
 package com.example.instagram
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Typeface
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -64,6 +66,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var haptics: Haptics
     private var actionMode: ActionMode? = null
     
+    
     // recycler view vars to load more data
     var isScrolling = false
     var currentItems: Int = 0
@@ -71,34 +74,83 @@ class ChatActivity : AppCompatActivity() {
     var scrolledOut: Int = 0
     
     inner class TouchHelper(val adapter: ChatAdapter) : ItemTouchHelper.SimpleCallback(0, 0) {
+        private var replyPreviewFlag = true
+        private var hapticFlag = true
+        
+        
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
             return false
         }
         
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             Log.e(TAG, "onSwiped: called")
-            haptics.light()
-            // val animator = ValueAnimator.ofFloat(viewHolder.itemView.translationX, 0f)
-            // animator.addUpdateListener { animation ->
-            //     viewHolder.itemView.translationX = animation.animatedValue as Float
-            // }
-            // animator.duration = 200
-            // animator.start()
-            itemTouchHelper.attachToRecyclerView(null)
-            chatViewModel.replyToChat = chatViewModel.chatAdapter?.chats?.get((viewHolder.itemView.tag as Pair<Int, Int>).first)
-            bindDataInReplyPreview()
-            showReplyPreview()
-            itemTouchHelper.attachToRecyclerView(binding.chatRV)
+            //            adapter.notifyItemChanged(viewHolder.adapterPosition)
             
-            Log.e(TAG, "onSwiped ENDED")
+            //            haptics.light()
+            /*val animator = ValueAnimator.ofFloat(viewHolder.itemView.translationX, 0f)
+            animator.addUpdateListener { animation ->
+                viewHolder.itemView.translationX = animation.animatedValue as Float
+            }
+            animator.duration = 200
+            animator.start()*/
+            /*itemTouchHelper.attachToRecyclerView(null)
+            itemTouchHelper.attachToRecyclerView(binding.chatRV)*/
+            
+            /*val translationX = ObjectAnimator.ofFloat(viewHolder.itemView, View.TRANSLATION_X, ((viewHolder.itemView.width / 5).toFloat()), 0f)
+            translationX.duration = 120
+            translationX.start()*/
+            /*chatViewModel.replyToChat = chatViewModel.chatAdapter?.chats?.get(viewHolder.adapterPosition)
+            bindDataInReplyPreview()
+            showReplyPreview()*/
+            
+            // Log.e(TAG, "onSwiped ENDED")
         }
         
+        override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
+            return /*.10f*/ Float.MAX_VALUE
+        }
+        
+        override fun getSwipeEscapeVelocity(defaultValue: Float): Float {
+            return Float.MAX_VALUE
+        }
+        
+        override fun getSwipeVelocityThreshold(defaultValue: Float): Float {
+            return 0.001f
+        }
+        
+//        val icon = ContextCompat.getDrawable(this@ChatActivity, R.drawable.round_reply_24)!!
+        
         override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-            val allowedSwipe = viewHolder.itemView.width / 8.toFloat()
+            // Log.d(TAG, "onChildDraw: ")
+            val allowedSwipe = (viewHolder.itemView.width / 5).toFloat()
             val clampedDX = dX.coerceIn(-allowedSwipe, allowedSwipe)
             super.onChildDraw(c, recyclerView, viewHolder, clampedDX, dY, actionState, isCurrentlyActive)
             
-            Log.d(
+            /*val itemView = viewHolder.itemView
+            val iconMargin: Int = (itemView.height - icon.intrinsicHeight) / 2
+            val iconTop: Int = itemView.top + (itemView.height - icon.intrinsicHeight) / 2
+            val iconBottom: Int = iconTop + icon.intrinsicHeight
+            val iconRight = itemView.left + iconMargin
+            val iconLeft = itemView.left + iconMargin + icon.intrinsicWidth
+            icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+            icon.draw(c)*/
+            
+            
+            if (clampedDX >= (viewHolder.itemView.width * .1) && isCurrentlyActive && replyPreviewFlag) {
+                replyPreviewFlag = false
+                if (hapticFlag) {
+                    hapticFlag = false
+                    haptics.heavy()
+                }
+            }
+            if (clampedDX < (viewHolder.itemView.width * .1) && isCurrentlyActive) {
+                replyPreviewFlag = true
+            }
+            if (clampedDX == 0f && !isCurrentlyActive) {
+                hapticFlag = true
+            }
+            
+            /*Log.d(
                 TAG, "onChildDraw: \n" +
                         "maxSwipe = $allowedSwipe\n" +
                         "dX = $dX\n" +
@@ -106,7 +158,19 @@ class ChatActivity : AppCompatActivity() {
                         "dY = $dY\n" +
                         "actionState = $actionState\n" +
                         "isCurrentlyActive = $isCurrentlyActive"
-            )
+            )*/
+        }
+        
+        
+        override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+            super.clearView(recyclerView, viewHolder)
+            if (!replyPreviewFlag) {
+                replyPreviewFlag = true
+                chatViewModel.replyToChat = chatViewModel.chatAdapter?.chats?.get(viewHolder.adapterPosition)
+                bindDataInReplyPreview()
+                showReplyPreview()
+            }
+            
         }
         
         override fun getSwipeDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
@@ -168,7 +232,7 @@ class ChatActivity : AppCompatActivity() {
         }
         
         chatViewModel.chatAdapter?.selectedMessageCount?.observe(this) {
-            Log.d(TAG, "Selected message count <LIVE> = $it")
+            // Log.d(TAG, "Selected message count <LIVE> = $it")
             if (it < 1) {
                 actionMode?.finish()
                 return@observe
@@ -178,7 +242,7 @@ class ChatActivity : AppCompatActivity() {
         }
         
         chatViewModel.chatAdapter?.otherMessageCount?.observe(this) {
-            Log.d(TAG, "Other message count <LIVE> = $it")
+            // Log.d(TAG, "Other message count <LIVE> = $it")
             val prev = chatViewModel.chatAdapter?.lastOtherMsgCount!!
             val current = it
             if (prev == current) return@observe
@@ -295,25 +359,16 @@ class ChatActivity : AppCompatActivity() {
             }*/
     }
     
-    //    private fun onLongClick(chat: Chat) {
-    //        Log.d(TAG, "onLongClick -->\n" + "chat id = ${chat.rowId}\n" + "chat message = ${chat.message}\n")
-    //        chatViewModel.replyToChat = chat
-    //        bindDataInReplyPreview()
-    //        showReplyPreview()
-    //    }
-    
     private fun showReplyPreview() {
         findViewById<TextView>(R.id.replyToTxtPreview).visibility = View.VISIBLE
         findViewById<ImageView>(R.id.discardBtn).visibility = View.VISIBLE
-        // binding.replyToTxtPreview.visibility = View.VISIBLE
-        // binding.discardBtn.visibility = View.VISIBLE
+        (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+        binding.messageBox.requestFocus()
     }
     
     private fun hideReplyPreview() {
         findViewById<TextView>(R.id.replyToTxtPreview).visibility = View.GONE
         findViewById<ImageView>(R.id.discardBtn).visibility = View.GONE
-        // binding.replyToTxtPreview.visibility = View.GONE
-        // binding.discardBtn.visibility = View.GONE
     }
     
     private fun bindDataInReplyPreview() {
@@ -336,19 +391,12 @@ class ChatActivity : AppCompatActivity() {
                 chat.messageType = 3 // "3" represents chat as deleted.
             }
             val rowsAffected = db.chatDao().markChatsAsDeleted(list)
-            Log.d(TAG, "markChatsAsDelete: rows affected = $rowsAffected")
+            //            Log.d(TAG, "markChatsAsDelete: rows affected = $rowsAffected")
             list.clear()
-            Log.d(TAG, "after clearing list size = ${chatViewModel.chatAdapter?.selectedItems?.size}")
+            //            Log.d(TAG, "after clearing list size = ${chatViewModel.chatAdapter?.selectedItems?.size}")
             withContext(Dispatchers.Main) {
                 chatViewModel.chatAdapter!!.notifyDataSetChanged()
             }
-        }
-    }
-    
-    private fun abortMessageDelete() {
-        chatViewModel.chatAdapter?.apply {
-            selectedItems.clear()
-            notifyDataSetChanged()
         }
     }
     
