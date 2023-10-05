@@ -69,11 +69,9 @@ class SearchFragment : Fragment() {
         binding.oldSearches.adapter = recentSearchAdapter
         binding.oldSearches.layoutManager = LinearLayoutManager(requireContext())
         binding.clearAllBtn.setOnClickListener { onClearAllClicked() }
-        
         searchAdapter = SearchUserAdapter(mutableListOf(), ::onClick, R.layout.row_user_search, mutableListOf())
         binding.searchRV.adapter = searchAdapter
         binding.searchRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        
         
         viewModel.searchLiveData.observe(viewLifecycleOwner) {
             searchAdapter.setNewList(it)
@@ -87,7 +85,6 @@ class SearchFragment : Fragment() {
             }
         }
         
-        
         viewModel.imagesLiveData.observe(viewLifecycleOwner) {
             searchAdapter.setImagesList(it)
         }
@@ -100,7 +97,6 @@ class SearchFragment : Fragment() {
             binding.startSearchInstruction.visibility = View.GONE
             binding.oldSearchesGroup.visibility = View.VISIBLE
         }
-        
         
         binding.searchViewBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
@@ -139,7 +135,7 @@ class SearchFragment : Fragment() {
     }
     
     /**
-     * Execute when "query.isBlank == true" and "recentSearchList.size == 0" == false
+     * Execute when "query.isBlank == true" and "recentSearchList.size == 0" is false
      */
     fun visibilityConfig2() {
         binding.noUsersFoundIns.visibility = View.GONE
@@ -149,7 +145,7 @@ class SearchFragment : Fragment() {
     }
     
     /**
-     * Execute when "query.isBlank == true" and "recentSearchList.size == 0" == true
+     * Execute when "query.isBlank == true" and "recentSearchList.size == 0" is true
      */
     fun visibilityConfig3() {
         binding.searchRV.visibility = View.GONE
@@ -158,16 +154,12 @@ class SearchFragment : Fragment() {
     }
     
     private fun onClick(pos: Int) {
-        
-        
         val person = try {
             viewModel.searchLiveData.value?.get(pos)!!
         } catch (e: Exception) {
             Log.e(TAG, "onClick: ${e.printStackTrace()}")
             return
         }
-        
-        
         
         searchAdapter.setNewList(mutableListOf())
         searchAdapter.setImagesList(mutableListOf())
@@ -185,7 +177,13 @@ class SearchFragment : Fragment() {
     private fun gotoProfileScreen(profileId: Long?) {
         val action = profileId?.let { SearchFragmentDirections.actionSearchFragmentToProfileFragment(it) }
         if (action != null) {
-            findNavController().navigate(action)
+            try {
+                findNavController().navigate(action)
+            } catch (e: Exception) {
+                findNavController().navigateUp()
+                findNavController().navigate(action)
+                
+            }
         }
     }
 }

@@ -71,8 +71,8 @@ class PhotoGridFragment : Fragment() {
         viewModel = ViewModelProvider(this)[PhotoGridFragViewModel::class.java]
         userPostedPhotoAdapter = PhotoGridAdapter(this::onPostClicked)
         
-        mainViewModel.startProfileRefresh.observe(viewLifecycleOwner){
-            if(it){
+        mainViewModel.startProfileRefresh.observe(viewLifecycleOwner) {
+            if (it) {
                 lifecycleScope.launch {
                     viewModel.getProfilePost(userProfId)
                 }
@@ -92,6 +92,7 @@ class PhotoGridFragment : Fragment() {
                     binding.ins1.visibility = View.VISIBLE
                     return@observe
                 }
+                binding.ins1.visibility = View.INVISIBLE
                 binding.gridOfPosts.visibility = View.VISIBLE
                 userPostedPhotoAdapter.setNewList(it)
             }
@@ -105,6 +106,7 @@ class PhotoGridFragment : Fragment() {
                     binding.ins2.visibility = View.VISIBLE
                     return@observe
                 }
+                binding.ins2.visibility = View.INVISIBLE
                 binding.gridOfPosts.visibility = View.VISIBLE
                 userPostedPhotoAdapter.setNewList(it)
             }
