@@ -87,6 +87,11 @@ class PhotoGridFragment : Fragment() {
             viewModel.usersPost.observe(viewLifecycleOwner) {
                 mainViewModel.startProfileRefresh.postValue(false)
                 mainViewModel.isProfileRefreshed.postValue(true)
+                
+                if (it.size == userPostedPhotoAdapter.itemCount) {
+                    return@observe
+                }
+                
                 binding.loadingProgressBar.visibility = View.GONE
                 if (it.size == 0) {
                     binding.ins1.visibility = View.VISIBLE

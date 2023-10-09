@@ -17,6 +17,7 @@ import com.example.instagram.HomeActivity
 import com.example.instagram.MSharedPreferences.IS_LOGGED_IN
 import com.example.instagram.MSharedPreferences.LOGGED_IN_PROFILE_ID
 import com.example.instagram.MSharedPreferences.SHARED_PREF_NAME
+import com.example.instagram.PasswordHashing
 import com.example.instagram.R
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.databinding.FragmentLoginBinding
@@ -70,7 +71,14 @@ class LoginFragment : Fragment() {
     
     private suspend fun checkCredentials(username: String, password: String) {
         val db = AppDatabase.getDatabase(requireContext())
-        val id: Long? = db.loginCredDao().loginWithCred(username, password)
+        val hashedPassword = PasswordHashing.generateSHA256Hash(password)
+        if (hashedPassword == null) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(requireContext(), "error occurred while checking credentials.", Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+        val id: Long? = db.loginCredDao().loginWithCred(username, hashedPassword)
         //        Log.d(TAG, "ID after login with cred: $id")
         if (id == null) {
             withContext(Dispatchers.Main) {

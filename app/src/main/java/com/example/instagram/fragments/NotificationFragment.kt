@@ -80,7 +80,6 @@ class NotificationFragment : Fragment() {
         viewModel.placeHolderReference.observe(viewLifecycleOwner) { placeHolderReference ->
             binding.progressBar.visibility = View.INVISIBLE
             binding.notificationRV.visibility = View.VISIBLE
-            
             if (placeHolderReference.size < 1) {
                 binding.apply {
                     swipeRefreshNotification.visibility = View.INVISIBLE
@@ -92,11 +91,12 @@ class NotificationFragment : Fragment() {
                     swipeRefreshNotification.visibility = View.VISIBLE
                 }
             }
-            
-            notificationAdapter.setNewList(viewModel.followLogs, viewModel.likeLogs, viewModel.commentLogs, placeHolderReference)
             if (binding.swipeRefreshNotification.isRefreshing) {
                 binding.swipeRefreshNotification.isRefreshing = false
             }
+//            if (placeHolderReference.size == notificationAdapter.itemCount) return@observe
+            notificationAdapter.setNewList(viewModel.followLogs, viewModel.likeLogs, viewModel.commentLogs, placeHolderReference)
+            
         }
     }
     

@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.instagram.ImageUtil
 import com.example.instagram.MainViewModel
+import com.example.instagram.PasswordHashing
 import com.example.instagram.R
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.LoginCred
@@ -119,8 +120,13 @@ class CreateNewAccountScreenTwoFragment : Fragment() {
                             "\uD83D\uDC68\u200D\uD83D\uDCBC Working at Zoho."
                 }
             }
+            val passwordHash = PasswordHashing.generateSHA256Hash(password)
+            if (passwordHash == null) {
+                Toast.makeText(requireContext(), "Error occurred while hashing password.\nTry again.", Toast.LENGTH_SHORT).show()
+                return
+            }
             profileId = db.profileDao().insertNewProfile(sharedViewModel.newProfileSignup!!)
-            val rowId: Long = db.loginCredDao().insertNewLoginCred(LoginCred(profileId, username, password))
+            val rowId: Long = db.loginCredDao().insertNewLoginCred(LoginCred(profileId, username, passwordHash))
             Log.d(TAG, "Id = $profileId, username_ID = $rowId")
             if (::profilePicUriToUpload.isInitialized) uploadProfileImage()
             else {
