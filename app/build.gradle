@@ -53,6 +53,7 @@ dependencies {
     //work manager
     implementation 'androidx.work:work-runtime-ktx:2.8.1'
     implementation 'androidx.preference:preference-ktx:1.2.1'
+    implementation 'com.google.firebase:firebase-database-ktx:20.2.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 
     // room
@@ -88,4 +89,11 @@ dependencies {
 
     // biometric
     implementation 'androidx.biometric:biometric:1.1.0'
+
+    // chat
+    implementation 'com.google.firebase:firebase-auth:22.1.2'
+    implementation 'com.google.firebase:firebase-database:20.2.2'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+
+
 }

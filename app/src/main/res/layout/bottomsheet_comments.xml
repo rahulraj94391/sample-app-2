@@ -92,7 +92,6 @@
                     android:layout_marginBottom="4dp"
                     android:layout_weight="1"
                     android:background="@drawable/search_view_bg"
-                    android:textColor="@color/text_color"
                     android:hint="@string/add_a_comment"
                     android:importantForAutofill="no"
                     android:inputType="text"
@@ -100,19 +99,21 @@
                     android:maxLines="1"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
+                    android:textColor="@color/text_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/commentButton"
-                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text_color"
                     android:layout_marginStart="8dp"
+
                     android:layout_marginTop="4dp"
-                    android:text="@string/post" />
+                    android:textColor="@color/text_color"
+                    app:icon="@drawable/send_24" />
             </LinearLayout>
         </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -97,7 +97,12 @@ class HomeFragViewModel(private val currentProfile: Long, private val app: Appli
     }
     
     suspend fun getFormattedLikeCount(postId: Long): String {
-        return "${db.likesDao().likeCount(postId)} like"
+        val count = db.likesDao().likeCount(postId)
+        return if (count > 1) {
+            "$count likes"
+        } else {
+            "$count like"
+        }
     }
     
     private suspend fun getPostDesc(postId: Long): String {

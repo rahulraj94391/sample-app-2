@@ -74,7 +74,11 @@ class HomeFragment : Fragment() {
     
     private fun commentCountDelegate(tv: TextView, postId: Long) {
         db.commentDao().commentCount(postId).observe(viewLifecycleOwner) {
-            tv.text = "$it comments"
+            tv.text = if (it > 1) {
+                "$it comments"
+            } else {
+                "$it comment"
+            }
         }
     }
     
