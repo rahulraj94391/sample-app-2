@@ -14,7 +14,11 @@ class SavedPostsFragViewModel(app: Application) : AndroidViewModel(app) {
     
     suspend fun getSavedPosts(profileId: Long) {
         val savedPostIds = db.savedPostDao().getAllSavedPosts(profileId)
-        val oneImageAssociatedWithPostId = imageUtil.getOneImagePerPost(savedPostIds)
+//        val oneImageAssociatedWithPostId = imageUtil.getOneImagePerPost(savedPostIds)
+        val oneImageAssociatedWithPostId = mutableListOf<OnePhotoPerPost>()
+        for(postId in savedPostIds){
+            oneImageAssociatedWithPostId.add(OnePhotoPerPost(postId, db.cacheDao().getFirstImgFromEachPost(postId)?: ""))
+        }
         listOfSavedPosts.postValue(oneImageAssociatedWithPostId)
     }
 }

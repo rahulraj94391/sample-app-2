@@ -93,7 +93,8 @@ class NotificationAdapter(
         holder.itemView.setOnClickListener { openProfile(log.owner_id) }
         
         CoroutineScope(Dispatchers.IO).launch {
-            val imageURL = imageUtil.getProfilePictureUrl(log.owner_id) ?: return@launch
+            // val imageURL = imageUtil.getProfilePictureUrl(log.owner_id) ?: return@launch
+            val imageURL = db.cacheDao().getCachedProfileImage(log.owner_id) ?: (imageUtil.getProfilePictureUrl(log.owner_id) ?: return@launch)
             val imageBitmap = imageUtil.getBitmap(imageURL)
             withContext(Dispatchers.Main) {
                 holder.imageView.setImageBitmap(imageBitmap)
@@ -134,7 +135,8 @@ class NotificationAdapter(
         holder.itemView.setOnClickListener { openPost(log.post_id) }
         holder.log.text = spanBuilder(log.username, log.time, LIKELOG)
         CoroutineScope(Dispatchers.IO).launch {
-            val imageURL = imageUtil.getProfilePictureUrl(log.profile_id) ?: return@launch
+            // val imageURL = imageUtil.getProfilePictureUrl(log.profile_id) ?: return@launch
+            val imageURL = db.cacheDao().getCachedProfileImage(log.profile_id) ?: (imageUtil.getProfilePictureUrl(log.profile_id) ?: return@launch)
             val bitmap = imageUtil.getBitmap(imageURL)
             withContext(Dispatchers.Main) {
                 holder.otherUserImage.setImageBitmap(bitmap)
@@ -142,7 +144,8 @@ class NotificationAdapter(
         }
         
         CoroutineScope(Dispatchers.IO).launch {
-            val imageURL = imageUtil.getOneImagePerPost(mutableListOf(log.post_id))[0].imageURl
+            // val imageURL = imageUtil.getOneImagePerPost(mutableListOf(log.post_id))[0].imageURl
+            val imageURL = db.cacheDao().getFirstImgFromEachPost(log.post_id) ?: ""
             val bitmap = imageUtil.getBitmap(imageURL)
             withContext(Dispatchers.Main) {
                 holder.postImage.setImageBitmap(bitmap)
@@ -157,7 +160,8 @@ class NotificationAdapter(
         holder.log.text = spanBuilder(log.username, log.time, COMMENTLOG)
         holder.itemView.setOnClickListener { openCommentOnPost(log.post_id, log.comment_id) }
         CoroutineScope(Dispatchers.IO).launch {
-            val imageURL = imageUtil.getProfilePictureUrl(log.commenter_id) ?: return@launch
+            // val imageURL = imageUtil.getProfilePictureUrl(log.commenter_id) ?: return@launch
+            val imageURL = db.cacheDao().getCachedProfileImage(log.commenter_id) ?: (imageUtil.getProfilePictureUrl(log.commenter_id) ?: return@launch)
             val bitmap = imageUtil.getBitmap(imageURL)
             withContext(Dispatchers.Main) {
                 holder.otherUserImage.setImageBitmap(bitmap)
@@ -165,7 +169,8 @@ class NotificationAdapter(
         }
         
         CoroutineScope(Dispatchers.IO).launch {
-            val imageURL = imageUtil.getOneImagePerPost(mutableListOf(log.post_id))[0].imageURl
+            // val imageURL = imageUtil.getOneImagePerPost(mutableListOf(log.post_id))[0].imageURl
+            val imageURL = db.cacheDao().getFirstImgFromEachPost(log.post_id) ?: ""
             val bitmap = imageUtil.getBitmap(imageURL)
             withContext(Dispatchers.Main) {
                 holder.postImage.setImageBitmap(bitmap)

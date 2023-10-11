@@ -79,7 +79,7 @@ class LoginFragment : Fragment() {
             return
         }
         val id: Long? = db.loginCredDao().loginWithCred(username, hashedPassword)
-        //        Log.d(TAG, "ID after login with cred: $id")
+        // Log.d(TAG, "ID after login with cred: $id")
         if (id == null) {
             withContext(Dispatchers.Main) {
                 Toast.makeText(requireContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show()

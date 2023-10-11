@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -111,12 +110,12 @@ class CreateNewAccountScreenOneFragment : Fragment() {
             } else {
                 // all ok, proceed forward
                 sharedViewModel.newProfileSignup = Profile(
-                    first_name = etFirstName.text.toString(),
-                    last_name = etLastName.text.toString(),
+                    first_name = etFirstName.text.toString().trim(),
+                    last_name = etLastName.text.toString().trim(),
                     dob = dobDate.timeInMillis,
-                    phone_number = etPhoneNumber.text.toString(),
-                    email_id = etEmail.text.toString(),
-                    gender = autoTVGender.text.toString()
+                    phone_number = etPhoneNumber.text.toString().trim(),
+                    email_id = etEmail.text.toString().trim(),
+                    gender = autoTVGender.text.toString().trim()
                 )
                 findNavController().navigate(R.id.action_createNewAccountScreenOneFragment_to_createNewAccountScreenTwoFragment)
             }
@@ -151,8 +150,6 @@ class CreateNewAccountScreenOneFragment : Fragment() {
         }
         
         override fun afterTextChanged(s: Editable?) {
-            
-            Log.d(TAG, "insidewhen")
             when (inputField.id) {
                 R.id.firstNameField -> {
                     if (requireActivity().findViewById<TextInputEditText>(R.id.firstNameField).hasFocus())

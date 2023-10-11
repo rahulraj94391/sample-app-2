@@ -12,7 +12,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.instagram.ImageUtil
 import com.example.instagram.R
 import com.example.instagram.database.model.Post
-import com.example.instagram.viewmodels.HomeFragViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.tabs.TabLayout
@@ -25,27 +24,21 @@ import kotlinx.coroutines.withContext
 private const val TAG = "CommTag_HomeAdapter"
 
 class HomeAdapter(
+    private var list: MutableList<Post>,
     val commentListener: (Int) -> Unit,
     val profileListener: (Int) -> Unit,
     val likeListener: (Int, View) -> Unit,
     val saveListener: (Int, View) -> Unit,
     val commentCountDelegate: (TextView, Long) -> Unit,
-    private val homeViewModel: HomeFragViewModel,
 ) : RecyclerView.Adapter<HomeAdapter.PostVH>() {
     private lateinit var mContext: Context
     private lateinit var imageUtil: ImageUtil
-    private var list: MutableList<Post> = mutableListOf()
+    
     
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         mContext = recyclerView.context
         imageUtil = ImageUtil(mContext)
-        homeViewModel.listOfPosts?.let { list.addAll(it) }
         super.onAttachedToRecyclerView(recyclerView)
-    }
-    
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        homeViewModel.listOfPosts?.addAll(list)
-        super.onDetachedFromRecyclerView(recyclerView)
     }
     
     inner class PostVH(item: View) : RecyclerView.ViewHolder(item) {
@@ -94,7 +87,7 @@ class HomeAdapter(
             likeCount.text = list[position].likeCount
             postDesc.text = list[position].postDesc
             commentCountDelegate(commentCount, list[position].postId)
-            //            commentCount.text = list[position].commentCount
+            // commentCount.text = list[position].commentCount
             timeOfPost.text = list[position].timeOfPost
             
             list[position].listOfPostPhotos.let {
@@ -158,9 +151,8 @@ class HomeAdapter(
         }
     }
     
-    fun addNewPosts(newList: MutableList<Post>) {
-        list.addAll(newList)
-        notifyItemRangeInserted(itemCount, newList.size)
+    fun notifyNewPostsAdded(count: Int) {
+        notifyItemRangeInserted(itemCount, count)
     }
     
     fun getPostId(position: Int): Long {

@@ -1,5 +1,6 @@
 package com.example.instagram.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,14 +53,20 @@ class PhotoGridAdapter(val listener: (Int) -> Unit) : RecyclerView.Adapter<Photo
         }
     }
     
-    fun setNewList(newList: MutableList<OnePhotoPerPost>) {
-        this.listOfImages = newList
-        notifyDataSetChanged()
+    fun addNewPosts(newList: MutableList<OnePhotoPerPost>) {
+        Log.d(TAG, "new posts added on post screen.\nsize = ${newList.size}")
+        listOfImages.addAll(newList)
+        notifyItemRangeInserted(itemCount, newList.size)
     }
     
     fun deletePostAt(pos: Int) {
         listOfImages.removeAt(pos)
         notifyItemRemoved(pos)
+    }
+    
+    fun clearList() {
+        listOfImages.clear()
+        notifyDataSetChanged()
     }
     
     override fun getItemCount(): Int {

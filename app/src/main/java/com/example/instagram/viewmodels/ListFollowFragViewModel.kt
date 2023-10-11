@@ -26,16 +26,19 @@ class ListFollowFragViewModel(private val app: Application) : AndroidViewModel(a
     private suspend fun getFollowers(profileId: Long) {
         val followerList = db.followDao().getFollowerList(profileId)
         for (i in followerList.indices) {
-            followerList[i].photoUrl = imageUtil.getProfilePictureUrl(followerList[i].profile_id)
+            // followerList[i].photoUrl = imageUtil.getProfilePictureUrl(followerList[i].profile_id)
+            val profileUrl = db.cacheDao().getCachedProfileImage(followerList[i].profile_id) ?: imageUtil.getProfilePictureUrl(followerList[i].profile_id)
+            followerList[i].photoUrl = profileUrl
         }
         users.postValue(followerList)
     }
     
     private suspend fun getFollowing(profileId: Long) {
-        val followerList = db.followDao().getFollowingList(profileId)
-        for (i in followerList.indices) {
-            followerList[i].photoUrl = imageUtil.getProfilePictureUrl(followerList[i].profile_id)
+        val followingList = db.followDao().getFollowingList(profileId)
+        for (i in followingList.indices) {
+//            followerList[i].photoUrl = imageUtil.getProfilePictureUrl(followerList[i].profile_id)
+            followingList[i].photoUrl = db.cacheDao().getCachedProfileImage(followingList[i].profile_id) ?: imageUtil.getProfilePictureUrl(followingList[i].profile_id)
         }
-        users.postValue(followerList)
+        users.postValue(followingList)
     }
 }

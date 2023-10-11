@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.HomeActivity
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
@@ -26,12 +27,17 @@ import kotlinx.coroutines.launch
 private const val TAG = "HomeFragment_CommTag"
 
 class HomeFragment : Fragment() {
-    private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentHomeBinding
     private lateinit var homeAdapter: HomeAdapter
     private lateinit var homeViewModel: HomeFragViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var db: AppDatabase
+    
+    // recycler view vars to load more data
+    var isScrolling = false
+    var currentItems: Int = 0
+    var totalItems: Int = 0
+    var scrolledOut: Int = 0
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,34 +47,55 @@ class HomeFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         return binding.root
-    }
-    
-    override fun onDestroyView() {
-        binding.homeRV.adapter = null
-        _binding = null
-        super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        homeAdapter = HomeAdapter(homeViewModel.listOfPosts, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate)
         if (homeViewModel.isFirstTime) {
             homeViewModel.isFirstTime = false
-            homeViewModel.addNewPostToList(mainViewModel.loggedInProfileId!!)
+            homeViewModel.addNewPostToList(mainViewModel.loggedInProfileId!!, 5, homeAdapter.itemCount)
         }
-        homeAdapter = HomeAdapter(::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate, homeViewModel)
         binding.btnMessages.setOnClickListener { whenMessagesBtnClicked() }
         binding.btnNotifications.setOnClickListener { whenNotificationBtnClicked() }
         
-        binding.homeRV.adapter = homeAdapter
-        binding.homeRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.homeRV.apply {
+            adapter = homeAdapter
+            val llManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            layoutManager = llManager
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        isScrolling = true
+                    }
+                }
+                
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    currentItems = llManager.childCount
+                    totalItems = llManager.itemCount
+                    scrolledOut = llManager.findFirstVisibleItemPosition()
+                    if (isScrolling && (currentItems + scrolledOut == totalItems)) {
+                        isScrolling = false
+                        homeViewModel.addNewPostToList(mainViewModel.loggedInProfileId!!, 5, homeAdapter.itemCount)
+                    }
+                }
+            }
+            )
+        }
         
-        homeViewModel.postsToShow.observe(viewLifecycleOwner) {
+        
+        
+        homeViewModel.newPostsLoaded.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
             binding.homeRV.visibility = View.VISIBLE
-            if (it.size == 0) binding.followToSeeFeed.visibility = View.VISIBLE
-            homeAdapter.addNewPosts(it)
+            /*if (it.size == 0) binding.followToSeeFeed.visibility = View.VISIBLE*/
+            if (it > 0) {
+                homeAdapter.notifyNewPostsAdded(it)
+            }
         }
     }
     
@@ -116,7 +143,8 @@ class HomeFragment : Fragment() {
             homeViewModel.savePost(mainViewModel.loggedInProfileId!!, postId)
             MaterialCheckBox.STATE_CHECKED
         } else {
-            homeViewModel.removeSavedPost(mainViewModel.loggedInProfileId!!, postId) //            view.setButtonIconTintList()
+            homeViewModel.removeSavedPost(mainViewModel.loggedInProfileId!!, postId)
+            //            view.setButtonIconTintList()
             MaterialCheckBox.STATE_UNCHECKED
         }
         
@@ -140,9 +168,15 @@ class HomeFragment : Fragment() {
         findNavController().navigate(action)
     }
     
+    override fun onDestroyView() {
+        binding.homeRV.layoutManager = null
+        super.onDestroyView()
+        
+    }
     private fun whenNotificationBtnClicked() {
         if (findNavController().currentDestination?.id != R.id.homeFragment) return
         val action = HomeFragmentDirections.actionHomeFragmentToNotificationFragment()
         findNavController().navigate(action)
     }
+    
 }

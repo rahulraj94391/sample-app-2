@@ -1,6 +1,7 @@
 package com.example.instagram.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.instagram.ImageUtil
@@ -38,7 +39,17 @@ class OnePostFragViewModel(app: Application) : AndroidViewModel(app) {
     }
     
     suspend fun deletePost(postId: Long) = db.postDao().deletePost(postId)
-    suspend fun getPostImages(postId: Long) = postImagesUrl.postValue(imageUtil.getPostImages(postId))
+    suspend fun getPostImages(postId: Long) {
+        // val urls = imageUtil.getPostImages(postId)
+        val urls = db.cacheDao().getCachedPostImages(postId)
+        Log.d(TAG, "for post id $postId\nimage urls are ---\n$urls")
+        postImagesUrl.postValue(urls)
+    }
+    
     suspend fun getLikeCount(postId: Long) = likeCount.postValue(db.likesDao().likeCount(postId))
-    suspend fun getProfilePictureByPostId(postId: Long) = profileImageUrl.postValue(imageUtil.getProfilePictureByPostId(postId))
+    suspend fun getProfilePictureByPostId(postId: Long) {
+        val profileId = db.postDao().getProfileId(postId)
+        val profilePicture = db.cacheDao().getCachedProfileImage(profileId) ?: imageUtil.getProfilePictureUrl(profileId) ?: ""
+        profileImageUrl.postValue(profilePicture)
+    }
 }

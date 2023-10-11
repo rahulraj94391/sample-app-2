@@ -8,12 +8,16 @@ import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.example.instagram.ImageUtil
 import com.example.instagram.database.AppDatabase
+import com.example.instagram.database.entity.ImageCache
 import com.example.instagram.database.entity.Post
 import com.example.instagram.database.entity.PostText
 import com.example.instagram.database.entity.Tag
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 const val UPLOAD_IMAGE_PATH_KEY = "photo_uri"
 const val PROFILE_ID_KEY = "profile_id"
@@ -89,7 +93,7 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         return list
     }
     
-    private suspend fun uploadPostImages(postId: Long, listOfImageUris: List<Uri>) {
+    private fun uploadPostImages(postId: Long, listOfImageUris: List<Uri>) {
         for (i in listOfImageUris.indices) {
             val storageRef = storageRef.reference.child("${postId}_$i")
             val imageUri = listOfImageUris[i]
@@ -98,6 +102,14 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
                     if (task.isSuccessful) {
                         Log.d(TAG, "upload to storage complete.")
                         storageRef.downloadUrl.addOnSuccessListener { uri2 ->
+                            Log.d(TAG, "download Url = $uri2")
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val cache = ImageCache(uri2.toString(), System.currentTimeMillis())
+                                val rowsEntered = db.cacheDao().insertCacheUrl(cache)
+                                Log.d(TAG, "cache image = $cache")
+                                Log.d(TAG, "rowsEntered = $rowsEntered")
+                            }
+                            
                             val map = HashMap<String, Any>()
                             map[postId.toString()] = uri2.toString()
                             map["serial"] = "${postId}_${i}"

@@ -79,14 +79,17 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
             .putLongArray(POST_TAGS_KEY, tagsToUpload.toLongArray())
             .build()
         
-        val mConstraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val mConstraints = Constraints
+            .Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
         
         val oneTimeWorkRequest = OneTimeWorkRequest
             .Builder(UploadPostPictures::class.java)
             .setConstraints(mConstraints)
             .setInputData(data)
             .build()
-    
+        
         Log.d(TAG, "uploadPostWork: ${oneTimeWorkRequest.id}")
         
         WorkManager.getInstance(app).enqueue(oneTimeWorkRequest)

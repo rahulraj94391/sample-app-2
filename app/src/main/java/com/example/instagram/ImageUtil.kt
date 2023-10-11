@@ -12,7 +12,6 @@ import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.ImageCache
 import com.example.instagram.database.model.OnePhotoPerPost
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -24,27 +23,29 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 
-private const val TAG = "ImageUtil_CommTag"
+private const val TAG = "ImageUtil"
 
 class ImageUtil(val context: Context) {
     private val db = AppDatabase.getDatabase(context)
-    private var storageRef: FirebaseStorage = FirebaseStorage.getInstance()
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val errorBitmap: Bitmap = ContextCompat.getDrawable(context, R.drawable.person_24)!!.toBitmap()
     
     suspend fun getBitmap(url: String): Bitmap {
+        Log.d(TAG, "getBitmap:")
         val fileName = db.cacheDao().getCachedImageFileNameIfPresent(url)
         return if (fileName == null) newURLFound(url)
         else getImageFromCache("$fileName") ?: onEntryPresentAndFileMissing(url, fileName)
     }
     
     private suspend fun onEntryPresentAndFileMissing(url: String, fileName: Long): Bitmap {
+        Log.d(TAG, "onEntryPresentAndFileMissing")
         val downloadedBitmap = downloadBitmap(url) ?: return errorBitmap
         putImageInCache("$fileName", downloadedBitmap)
         return downloadedBitmap
     }
     
     private suspend fun newURLFound(url: String): Bitmap {
+        Log.d(TAG, "newURLFound:")
         val downloadedBitmap = downloadBitmap(url) ?: return errorBitmap
         val newRec = db.cacheDao().insertCacheUrl(ImageCache(url, System.currentTimeMillis()))
         val newFileName: String = newRec.toString()
@@ -53,6 +54,7 @@ class ImageUtil(val context: Context) {
     }
     
     private fun getImageFromCache(fileName: String): Bitmap? {
+        Log.d(TAG, "getImageFromCache: ")
         val file = File(context.cacheDir, fileName)
         var bitmap: Bitmap? = null
         try {
@@ -64,6 +66,7 @@ class ImageUtil(val context: Context) {
     }
     
     private suspend fun putImageInCache(fileName: String, image: Bitmap) {
+        Log.d(TAG, "putImageInCache:")
         val file = File(context.cacheDir, fileName)
         try {
             val outputStream = withContext(Dispatchers.IO) {
@@ -80,6 +83,7 @@ class ImageUtil(val context: Context) {
     }
     
     private suspend fun downloadBitmap(imageUrl: String): Bitmap? {
+        Log.d(TAG, "downloadBitmap:")
         val photo = CoroutineScope(Dispatchers.IO).async {
             try {
                 val conn = URL(imageUrl).openConnection()
@@ -97,6 +101,7 @@ class ImageUtil(val context: Context) {
     }
     
     suspend fun getBitmapFromUri(uri: Uri, desiredRatio: Double = 0.8, desiredHeight: Double = 1080.0): Bitmap? {
+        Log.d(TAG, "getBitmapFromUri:")
         return try {
             val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
             downScale(bitmap, desiredRatio, desiredHeight)
@@ -106,7 +111,8 @@ class ImageUtil(val context: Context) {
         }
     }
     
-    private suspend fun downScale(bitmap: Bitmap?, desiredRatio: Double, desiredHeight: Double): Bitmap? {
+    private fun downScale(bitmap: Bitmap?, desiredRatio: Double, desiredHeight: Double): Bitmap? {
+        Log.d(TAG, "downScale:")
         if (bitmap == null) return null
         val imageViewRatio = 4.toDouble() / 5.toDouble()
         var w: Double
@@ -130,6 +136,7 @@ class ImageUtil(val context: Context) {
     }
     
     suspend fun getUriDownscaleImages(postImagesUri: MutableList<Uri>, desiredRatio: Double = 0.8, desiredHeight: Double = 1080.0): MutableList<Uri> {
+        Log.d(TAG, "getUriDownscaleImages:")
         val finalList = mutableListOf<Uri>()
         postImagesUri.forEach {
             val downscaledBitmap = getBitmapFromUri(it, desiredRatio, desiredHeight)!!
@@ -152,6 +159,7 @@ class ImageUtil(val context: Context) {
     
     
     suspend fun getProfilePictureUrl(profileId: Long, docId: MutableList<String> = mutableListOf()): String? {
+        Log.d(TAG, "getProfilePictureUrl:")
         var profileImageUrl: String? = null
         val snapShot = firebaseFireStore
             .collection("profileImages")
@@ -167,6 +175,7 @@ class ImageUtil(val context: Context) {
     }
     
     suspend fun getPostImages(postId: Long): MutableList<String> {
+        Log.d(TAG, "getPostImages:")
         val imgURLList = mutableListOf<String>()
         val snapShot = firebaseFireStore
             .collection("postImages")
@@ -180,6 +189,7 @@ class ImageUtil(val context: Context) {
     }
     
     suspend fun getProfilePictureByPostId(postId: Long): String? {
+        Log.d(TAG, "getProfilePictureByPostId:")
         val profileId = db.postDao().getProfileId(postId)
         var profPic: String? = null
         val snapShot = firebaseFireStore
@@ -195,6 +205,7 @@ class ImageUtil(val context: Context) {
     }
     
     suspend fun getOneImagePerPost(postIds: MutableList<Long>): MutableList<OnePhotoPerPost> {
+        Log.d(TAG, "getOneImagePerPost:")
         val imgURLList = mutableListOf<OnePhotoPerPost>()
         for (postId in postIds) {
             val snapShots = firebaseFireStore

@@ -175,7 +175,7 @@ class ProfileFragment : Fragment() {
             binding.loadingProgressBar.visibility = View.GONE
             binding.nestedScroll.visibility = View.VISIBLE
             if (::lastStatusProfSummary.isInitialized) bindFollowDetails(it)
-            else bindAllDetails(it)
+            else bindAllDetails(it!!)
             this.lastStatusProfSummary = it
         }
         
@@ -203,7 +203,6 @@ class ProfileFragment : Fragment() {
             override fun onGlobalLayout() {
                 viewToMeasure.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 val height: Int = viewToMeasure.height - heightToMinus - tabLayoutHeight
-                
                 val layoutParams = binding.viewPagerPostAndTagPhoto.layoutParams
                 layoutParams.height = height
                 binding.viewPagerPostAndTagPhoto.layoutParams = layoutParams
@@ -218,23 +217,31 @@ class ProfileFragment : Fragment() {
     }
     
     private fun bindAllDetails(it: ProfileSummary) {
+        Log.d(TAG, "bindAllDetails:")
+        
         binding.toolbarProfileUsername.text = it.username
         binding.profileFullName.text = requireContext().getString(R.string.full_name, it.first_name, it.last_name)
         binding.profileBio.text = it.bio
         binding.followersCount.text = it.followerCount.toString()
         binding.followingCount.text = it.followingCount.toString()
         btn(binding.btnStart, binding.btnEnd, it.isFollowing)
+        Log.d(TAG, "bindAllDetails: before coroutine")
         
         CoroutineScope(Dispatchers.IO).launch {
-            if (it.profilePicUrl == null) return@launch
+            if (it.profilePicUrl == null) {
+                return@launch
+            }
             withContext(Dispatchers.Main) {
                 setProfilePicTransition()
             }
             
-            mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
+            // mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
+            val url = db.cacheDao().getCachedProfileImage(profileId) ?: it.profilePicUrl
+            Log.d(TAG, "bindAllDetails: $url")
+            mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(url)
             
             withContext(Dispatchers.Main) {
-                binding.profilePic.setImageBitmap(ImageUtil(requireContext()).getBitmap(it.profilePicUrl))
+                binding.profilePic.setImageBitmap(mainViewModel.profileImageBitmap)
             }
         }
     }

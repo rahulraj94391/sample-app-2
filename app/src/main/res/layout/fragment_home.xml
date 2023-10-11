@@ -25,6 +25,7 @@
                 app:layout_scrollFlags="scroll|enterAlways">
 
                 <ImageView
+                    android:id="@+id/homeIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="4dp"
@@ -72,7 +73,7 @@
             android:visibility="visible"
             tools:indeterminate="true" />
 
-        <TextView
+        <!--<TextView
             android:id="@+id/followToSeeFeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,7 +85,7 @@
             android:textColor="@color/logo_tint"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:visibility="gone" />
+            android:visibility="gone" />-->
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

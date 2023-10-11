@@ -2,6 +2,7 @@ package com.example.instagram.fragments
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.example.instagram.ImageUtil
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.database.AppDatabase
+import com.example.instagram.database.entity.ImageCache
 import com.example.instagram.databinding.FragmentEditProfileBinding
 import com.example.instagram.viewmodels.ProfileFragViewModel
 import com.google.firebase.firestore.FirebaseFirestore
@@ -93,8 +95,7 @@ class EditProfileFragment : Fragment() {
         
         isUploadComplete.observe(viewLifecycleOwner) {
             if (it) {
-                if (findNavController().currentDestination?.id == R.id.editProfileFragment)
-                    findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
+                if (findNavController().currentDestination?.id == R.id.editProfileFragment) findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
             }
         }
     }
@@ -115,13 +116,9 @@ class EditProfileFragment : Fragment() {
     
     private suspend fun saveData() {
         db.profileDao().editProfile(
-            binding.firstNameField.text.toString(),
-            binding.lastNameField.text.toString(),
-            binding.bio.text.toString().trim(),
-            mainViewModel.loggedInProfileId!!
+            binding.firstNameField.text.toString(), binding.lastNameField.text.toString(), binding.bio.text.toString().trim(), mainViewModel.loggedInProfileId!!
         )
-        viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, mainViewModel.loggedInProfileId!!)
-        //findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
+        viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, mainViewModel.loggedInProfileId!!) //findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
         if (::imageUriToUpload.isInitialized) uploadProfileImage(mainViewModel.loggedInProfileId!!)
         else isUploadComplete.postValue(true)
         
@@ -156,9 +153,13 @@ class EditProfileFragment : Fragment() {
                             firebaseFireStore.collection("profileImages").document(docId).set(map).addOnCompleteListener {
                                 if (it.isSuccessful) {
                                     lifecycleScope.launch {
-                                        val profilePicUrl = getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return@launch
+                                        // val updateRowCount = db.cacheDao().updateProfilePicImageCacheUrl(uri2.toString(), profileId)
+                                        // Log.d(TAG, "profile picture is updated in DB\nrows affected = $updateRowCount")
+                                        
+                                        val delete = db.cacheDao().deleteProfilePicImageCacheUrl(profileId)
+                                        Log.d(TAG, "delete row old image cache record = $delete")
                                         withContext(Dispatchers.Main) {
-                                            binding.profileImage.setImageBitmap(imageUtil.getBitmap(profilePicUrl))
+                                            binding.profileImage.setImageBitmap(imageUtil.getBitmap(uri2.toString()))
                                             binding.profileImage.alpha = 1F
                                             binding.indicator.visibility = View.GONE
                                             binding.uploadNewPicture.isEnabled = true
@@ -172,9 +173,10 @@ class EditProfileFragment : Fragment() {
                             firebaseFireStore.collection("profileImages").add(map).addOnCompleteListener { firestoreTask ->
                                 if (firestoreTask.isSuccessful) {
                                     lifecycleScope.launch {
-                                        val profilePicUrl = getProfilePicture(mainViewModel.loggedInProfileId!!) ?: return@launch
+                                        val insertNewProfilePicCache = db.cacheDao().insertCacheUrl(ImageCache(uri2.toString(), System.currentTimeMillis()))
+                                        Log.d(TAG, "new profile picture cache row id = $insertNewProfilePicCache")
                                         withContext(Dispatchers.Main) {
-                                            binding.profileImage.setImageBitmap(imageUtil.getBitmap(profilePicUrl))
+                                            binding.profileImage.setImageBitmap(imageUtil.getBitmap(uri2.toString()))
                                             binding.profileImage.alpha = 1F
                                             binding.indicator.visibility = View.GONE
                                             binding.uploadNewPicture.isEnabled = true

@@ -25,6 +25,7 @@ object PasswordHashing {
     }
     
     fun generateSHA256Hash(input: String): String? {
+//        849f1575ccfbf3a4d6cf00e6c5641b7fd4da2ed3e212c2d79ba9161a5a432ff0
         return try {
             // Create a MessageDigest instance for SHA-256
             val digest = MessageDigest.getInstance("SHA-256")

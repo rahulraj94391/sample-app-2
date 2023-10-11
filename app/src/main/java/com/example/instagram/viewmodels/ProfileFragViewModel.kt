@@ -17,7 +17,9 @@ class ProfileFragViewModel(app: Application) : AndroidViewModel(app) {
     var profileSummary = MutableLiveData<ProfileSummary>()
     
     suspend fun getProfileSummary(ownProfileId: Long, userProfileId: Long) {
-        val profilePic = viewModelScope.async { imageUtil.getProfilePictureUrl(userProfileId) }
+        val profilePic = viewModelScope.async {
+            db.cacheDao().getCachedProfileImage(userProfileId) ?: imageUtil.getProfilePictureUrl(userProfileId) ?: ""
+        }
         val fullNameBio = viewModelScope.async { db.profileDao().getFullNameBio(userProfileId) }
         val postCount = viewModelScope.async { db.postDao().getPostCount(userProfileId) }
         val followerCount = viewModelScope.async { db.followDao().getFollowerCount(userProfileId) }

@@ -1,6 +1,7 @@
 package com.example.instagram.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,7 @@ import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Likes
 import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.database.model.Post
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -20,30 +22,37 @@ class HomeFragViewModel(private val currentProfile: Long, private val app: Appli
     var isFirstTime = true
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     private val imageUtil = ImageUtil(app)
-    val postsToShow = MutableLiveData<MutableList<Post>>()
-    private val postIdsAlreadyShown = mutableSetOf<Long>()
-    val listOfPosts: MutableList<Post>? = null
+    val newPostsLoaded = MutableLiveData<Int>()
+    private var getImagesJob: Job? = null
+    val listOfPosts: MutableList<Post> = mutableListOf()
     
-    fun addNewPostToList(loggedInProfileId: Long) {
-        postIdsAlreadyShown.clear()
-        viewModelScope.launch {
+    fun addNewPostToList(loggedInProfileId: Long, limit: Int, itemCount: Int) {
+        if (getImagesJob != null) return
+        getImagesJob = viewModelScope.launch {
             val tempList: MutableList<Post> = mutableListOf()
-            val postsToShowOnHome = db.postDao().getPostOfFollowers(loggedInProfileId)
+            val postsToShowOnHome = db.postDao().getPostOfFollowers(loggedInProfileId, limit, itemCount)
             for (i in postsToShowOnHome) {
-                if (!postIdsAlreadyShown.contains(i)) {
-                    postIdsAlreadyShown.add(i)
-                    tempList.add(getPost(i))
-                }
+                tempList.add(getPost(i))
             }
-            postsToShow.postValue(tempList)
+            listOfPosts.addAll(tempList)
+            newPostsLoaded.postValue(tempList.size)
+            getImagesJob = null
         }
     }
     
     private suspend fun getPost(postId: Long): Post {
         val profileId = viewModelScope.async { getProfileId(postId) }
-        val profImageUrl = viewModelScope.async { imageUtil.getProfilePictureUrl(profileId.await()) }
+        val profImageUrl = viewModelScope.async {
+            // imageUtil.getProfilePictureUrl(profileId.await())
+            val url = db.cacheDao().getCachedProfileImage(profileId.await()) ?: imageUtil.getProfilePictureUrl(profileId.await()) ?: ""
+            Log.d(TAG, "prifile image = $url")
+            
+            url
+        }
         val profileUsername = viewModelScope.async { getProfileUserName(postId) }
-        val listOfPostPhotos = viewModelScope.async { imageUtil.getPostImages(postId) }
+        val listOfPostPhotos = viewModelScope.async {
+            db.cacheDao().getCachedPostImages(postId)
+        }
         val isPostAlreadyLiked = viewModelScope.async { getPostLikeStat(postId, currentProfile) }
         val isPostAlreadySaved = viewModelScope.async { getPostSaveStat(postId, currentProfile) }
         val likeCount = viewModelScope.async { getFormattedLikeCount(postId) }
@@ -63,7 +72,7 @@ class HomeFragViewModel(private val currentProfile: Long, private val app: Appli
             timeOfPost = postTime.await()
         )
         
-        //        Log.d(TAG, "Post generated = $post")
+        // Log.d(TAG, "Post generated = $post")
         return post
     }
     
