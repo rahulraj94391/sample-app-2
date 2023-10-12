@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.FollowAdapter
 import com.example.instagram.databinding.FragmentListFollowBinding
@@ -31,11 +32,13 @@ class ListFollowFragment : Fragment() {
     private var profileId: Long by Delegates.notNull()
     private val args: ListFollowFragmentArgs by navArgs()
     private lateinit var viewModel: ListFollowFragViewModel
+    private lateinit var mainViewModel: MainViewModel
     private lateinit var adapter: FollowAdapter
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         profileId = args.profileId
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         viewModel = ViewModelProvider(this)[ListFollowFragViewModel::class.java]
         viewModel.getUsers(args.type, profileId)
     }
@@ -54,9 +57,7 @@ class ListFollowFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.type.text = args.type
-        adapter = FollowAdapter()
-        
-        
+        adapter = FollowAdapter(::openProfile)
         binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
@@ -64,7 +65,6 @@ class ListFollowFragment : Fragment() {
         
         val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         divider.dividerInsetStart = dpToPx(84)
-        
         binding.usersRV.addItemDecoration(divider)
         binding.usersRV.adapter = adapter
         binding.usersRV.layoutManager = LinearLayoutManager(requireContext())
@@ -80,6 +80,18 @@ class ListFollowFragment : Fragment() {
             binding.usersRV.visibility = View.VISIBLE
             adapter.updateList(it)
         }
+    }
+    
+    private fun openProfile(profileId: Long) {
+        val action = if (mainViewModel.profileOpenCount == 1) { // popInclusive = true
+            ListFollowFragmentDirections.actionListFollowFragmentToProfileFragmentPopInclusiveTrue(profileId, true)
+        } else { // popInclusive = false
+            ListFollowFragmentDirections.actionListFollowFragmentToProfileFragment(profileId, true)
+        }
+        findNavController().navigate(action)
+        
+        if (mainViewModel.profileOpenCount == 0)
+            mainViewModel.profileOpenCount = 1
     }
     
     private fun dpToPx(dpValue: Int): Int {

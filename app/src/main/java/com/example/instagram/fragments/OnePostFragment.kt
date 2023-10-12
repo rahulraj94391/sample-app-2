@@ -170,7 +170,7 @@ class OnePostFragment : Fragment() {
     }
     
     private fun openProfile() {
-        val a = OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId.value!!)
+        val a = OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId.value!!, false)
         findNavController().navigate(a)
     }
     

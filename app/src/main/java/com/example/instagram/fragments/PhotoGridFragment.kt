@@ -18,6 +18,7 @@ import com.example.instagram.R
 import com.example.instagram.adapters.PhotoGridAdapter
 import com.example.instagram.databinding.FragmentPhotoGridBinding
 import com.example.instagram.viewmodels.PhotoGridFragViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
@@ -89,6 +90,7 @@ class PhotoGridFragment : Fragment() {
         
         if (listRef == 0) {
             lifecycleScope.launch {
+                delay(50)
                 viewModel.getProfilePost(userProfId, userPostedPhotoAdapter.itemCount)
             }
             viewModel.usersPost.observe(viewLifecycleOwner) {
@@ -116,6 +118,7 @@ class PhotoGridFragment : Fragment() {
             }
         } else {
             lifecycleScope.launch {
+                delay(50)
                 viewModel.getAllPostWhereProfileIsTagged(userProfId, userPostedPhotoAdapter.itemCount)
             }
             viewModel.usersTaggedPost.observe(viewLifecycleOwner) {

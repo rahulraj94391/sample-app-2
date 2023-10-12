@@ -145,6 +145,13 @@ class HomeActivity : AppCompatActivity() {
         unregisterReceiver(broadcastReceiver)
     }
     
+    override fun onBackPressed() {
+        if (navController.currentDestination?.id == R.id.profileFragment) {
+            if (mainViewModel.profileOpenCount == 1) mainViewModel.profileOpenCount = 0
+        }
+        super.onBackPressed()
+    }
+    
     private fun showHideInternetLabel(status: Boolean) {
         internetConnectivityJob?.cancel()
         internetConnectivityJob = lifecycleScope.launch {

@@ -1,7 +1,6 @@
 package com.example.instagram.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -12,13 +11,14 @@ import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Likes
 import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.database.model.Post
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 private const val TAG = "HomeFragViewModel_CommTag"
 
-class HomeFragViewModel(private val currentProfile: Long, private val app: Application) : AndroidViewModel(app) {
+class HomeFragViewModel(private val currentProfile: Long, app: Application) : AndroidViewModel(app) {
     var isFirstTime = true
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     private val imageUtil = ImageUtil(app)
@@ -28,7 +28,7 @@ class HomeFragViewModel(private val currentProfile: Long, private val app: Appli
     
     fun addNewPostToList(loggedInProfileId: Long, limit: Int, itemCount: Int) {
         if (getImagesJob != null) return
-        getImagesJob = viewModelScope.launch {
+        getImagesJob = viewModelScope.launch(Dispatchers.IO) {
             val tempList: MutableList<Post> = mutableListOf()
             val postsToShowOnHome = db.postDao().getPostOfFollowers(loggedInProfileId, limit, itemCount)
             for (i in postsToShowOnHome) {
@@ -41,23 +41,20 @@ class HomeFragViewModel(private val currentProfile: Long, private val app: Appli
     }
     
     private suspend fun getPost(postId: Long): Post {
-        val profileId = viewModelScope.async { getProfileId(postId) }
-        val profImageUrl = viewModelScope.async {
+        val profileId = viewModelScope.async(Dispatchers.IO) { getProfileId(postId) }
+        val profImageUrl = viewModelScope.async(Dispatchers.IO) {
             // imageUtil.getProfilePictureUrl(profileId.await())
-            val url = db.cacheDao().getCachedProfileImage(profileId.await()) ?: imageUtil.getProfilePictureUrl(profileId.await()) ?: ""
-            Log.d(TAG, "prifile image = $url")
-            
-            url
+            db.cacheDao().getCachedProfileImage(profileId.await()) ?: imageUtil.getProfilePictureUrl(profileId.await()) ?: ""
         }
-        val profileUsername = viewModelScope.async { getProfileUserName(postId) }
-        val listOfPostPhotos = viewModelScope.async {
+        val profileUsername = viewModelScope.async(Dispatchers.IO) { getProfileUserName(postId) }
+        val listOfPostPhotos = viewModelScope.async(Dispatchers.IO) {
             db.cacheDao().getCachedPostImages(postId)
         }
-        val isPostAlreadyLiked = viewModelScope.async { getPostLikeStat(postId, currentProfile) }
-        val isPostAlreadySaved = viewModelScope.async { getPostSaveStat(postId, currentProfile) }
-        val likeCount = viewModelScope.async { getFormattedLikeCount(postId) }
-        val postDesc = viewModelScope.async { getPostDesc(postId) }
-        val postTime = viewModelScope.async { getFormattedTimeOfPost(postId) }
+        val isPostAlreadyLiked = viewModelScope.async(Dispatchers.IO) { getPostLikeStat(postId, currentProfile) }
+        val isPostAlreadySaved = viewModelScope.async(Dispatchers.IO) { getPostSaveStat(postId, currentProfile) }
+        val likeCount = viewModelScope.async(Dispatchers.IO) { getFormattedLikeCount(postId) }
+        val postDesc = viewModelScope.async(Dispatchers.IO) { getPostDesc(postId) }
+        val postTime = viewModelScope.async(Dispatchers.IO) { getFormattedTimeOfPost(postId) }
         
         val post = Post(
             postId = postId,
@@ -71,8 +68,6 @@ class HomeFragViewModel(private val currentProfile: Long, private val app: Appli
             postDesc = postDesc.await(),
             timeOfPost = postTime.await()
         )
-        
-        // Log.d(TAG, "Post generated = $post")
         return post
     }
     

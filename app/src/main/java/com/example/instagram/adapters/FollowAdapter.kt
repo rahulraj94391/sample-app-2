@@ -14,7 +14,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class FollowAdapter() : RecyclerView.Adapter<FollowAdapter.ViewHolder>() {
+class FollowAdapter(
+    private val openProfile: (Long) -> Unit,
+) : RecyclerView.Adapter<FollowAdapter.ViewHolder>() {
     private var users: MutableList<FollowList> = mutableListOf()
     private lateinit var imageUtil: ImageUtil
     
@@ -27,6 +29,13 @@ class FollowAdapter() : RecyclerView.Adapter<FollowAdapter.ViewHolder>() {
         val profileImage: ImageView = view.findViewById(R.id.profileImage)
         val username: TextView = view.findViewById(R.id.username)
         val fullName: TextView = view.findViewById(R.id.fullName)
+        
+        init {
+            view.setOnClickListener {
+                val id = users[adapterPosition].profile_id
+                openProfile(id)
+            }
+        }
     }
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

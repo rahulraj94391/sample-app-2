@@ -1,6 +1,7 @@
 package com.example.instagram.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,7 @@ class HomeAdapter(
     inner class PostVH(item: View) : RecyclerView.ViewHolder(item) {
         val profileImage: ImageView = item.findViewById(R.id.profileImage)
         val username: TextView = item.findViewById(R.id.username)
+        
         val postImages: ViewPager2 = item.findViewById(R.id.allImagesInAPostVP2)
         val likeBtn: MaterialCheckBox = item.findViewById(R.id.likeBtn)
         val commentButton: MaterialButton = item.findViewById(R.id.comment)
@@ -73,7 +75,9 @@ class HomeAdapter(
         }
     }
     
+    var viewHolderCount = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAdapter.PostVH {
+        Log.d(TAG, "create viewHolderCount = ${viewHolderCount++}")
         val view = LayoutInflater.from(parent.context).inflate(R.layout.row_home_screen, parent, false)
         return PostVH(view)
     }

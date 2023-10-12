@@ -85,16 +85,12 @@
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/likeBtn"
-                style="?attr/materialIconButtonStyle"
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:button="@drawable/selector_like_icon"
                 app:buttonTint="@color/material_checkbox_tint"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2"
-
-                />
+                app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/comment"
@@ -106,7 +102,6 @@
                 app:iconTint="@color/icon_tint"
                 app:layout_constraintStart_toEndOf="@+id/likeBtn"
                 app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2" />
-
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/btnSavePost"
                 android:layout_width="wrap_content"
@@ -121,8 +116,7 @@
                 android:id="@+id/likeCount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
+
                 android:text="50 likes"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -137,8 +131,7 @@
                 android:ellipsize="end"
                 android:justificationMode="inter_word"
                 android:maxLines="2"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
+
                 android:text="loading ..."
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -149,8 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
+
                 android:text="View all 50 comments"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -162,8 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

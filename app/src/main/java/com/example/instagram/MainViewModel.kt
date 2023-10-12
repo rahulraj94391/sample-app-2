@@ -25,4 +25,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val startProfileRefresh = MutableLiveData(false)
     val isProfileRefreshed = MutableLiveData(false)
     
+    var profileOpenCount = 0
+    
 }

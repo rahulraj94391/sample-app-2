@@ -8,7 +8,6 @@ import com.example.instagram.database.entity.Post
 
 @Dao
 interface PostDao {
-    
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertPost(post: Post): Long
     

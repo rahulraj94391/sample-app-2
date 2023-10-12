@@ -43,6 +43,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -65,6 +66,7 @@ class ProfileFragment : Fragment() {
     private lateinit var db: AppDatabase
     private var profileId: Long by Delegates.notNull()
     private val args: ProfileFragmentArgs? by navArgs()
+    private var showUpBtb = false
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +80,12 @@ class ProfileFragment : Fragment() {
             mainViewModel.loggedInProfileId!!
         }
         
+        showUpBtb = try {
+            args!!.upBtn
+        } catch (e: Exception) {
+            false
+        }
+        
         requireActivity().supportFragmentManager.setFragmentResultListener(POST_OPEN_REQ_KEY, requireActivity()) { _, bundle ->
             val postId = bundle.getLong(POST_ID)
             val pos = bundle.getInt(POST_POS)
@@ -86,6 +94,7 @@ class ProfileFragment : Fragment() {
         }
         
         lifecycleScope.launch {
+            delay(50)
             viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
         }
     }
@@ -108,7 +117,7 @@ class ProfileFragment : Fragment() {
             binding.btnProfileBottomSheet.visibility = View.INVISIBLE
         }
         
-        if (mainViewModel.loggedInProfileId!! != profileId) {
+        if (mainViewModel.loggedInProfileId!! != profileId || showUpBtb) {
             binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
             binding.toolbar.setNavigationOnClickListener {
                 findNavController().navigateUp()
@@ -145,9 +154,9 @@ class ProfileFragment : Fragment() {
     }
     
     private fun setOnClickListener() {
-        binding.btnProfileBottomSheet.setOnClickListener {
+        binding.btnProfileBottomSheet.setOnClickListener abc@{
             // check below condition to avoid crash when 'btnProfileBottomSheet' is tapped quickly.
-            if (findNavController().currentDestination?.id == R.id.profileMenu2) return@setOnClickListener
+            if (findNavController().currentDestination?.id == R.id.profileMenu2) return@abc
             findNavController().navigate(R.id.action_profileFragment_to_profileMenu2)
         }
         if (::lastStatusProfSummary.isInitialized) {

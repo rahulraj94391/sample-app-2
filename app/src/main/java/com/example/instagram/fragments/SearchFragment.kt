@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.instagram.Haptics
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.RecentSearchAdapter
@@ -19,6 +20,7 @@ import com.example.instagram.adapters.SearchUserAdapter
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.databinding.FragmentSearchBinding
 import com.example.instagram.viewmodels.SearchFragViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -53,7 +55,7 @@ class SearchFragment : Fragment() {
         super.onDestroyView()
     }
     
-    private fun onClearAllClicked() {
+    private fun clearAllSearchHistory() {
         viewModel.deleteAllFromRecent()
         recentSearchAdapter.clearList()
         binding.oldSearchesGroup.visibility = View.GONE
@@ -62,13 +64,26 @@ class SearchFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+        val haptics by lazy { Haptics(requireContext()) }
         recentSearchAdapter = RecentSearchAdapter { pos ->
             gotoProfileScreen(recentSearchAdapter.getProfileId(pos))
         }
         binding.oldSearches.adapter = recentSearchAdapter
         binding.oldSearches.layoutManager = LinearLayoutManager(requireContext())
-        binding.clearAllBtn.setOnClickListener { onClearAllClicked() }
+        binding.clearAllBtn.setOnClickListener {
+            haptics.light()
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Clear All")
+                .setMessage("Delete all search history ?")
+                .setCancelable(true)
+                .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
+                    clearAllSearchHistory()
+                }
+                .setNegativeButton(resources.getString(R.string.no)) { dialogInterface, _ ->
+                    dialogInterface.cancel()
+                }
+                .show()
+        }
         searchAdapter = SearchUserAdapter(mutableListOf(), ::onClick, R.layout.row_user_search, mutableListOf())
         binding.searchRV.adapter = searchAdapter
         binding.searchRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -116,7 +131,7 @@ class SearchFragment : Fragment() {
                     searchJob?.cancel()
                     visibilityConfig1()
                     searchJob = lifecycleScope.launch {
-                        delay(800)
+                        delay(1)
                         viewModel.getSearchResults(newText)
                     }
                 }
@@ -148,6 +163,7 @@ class SearchFragment : Fragment() {
      * Execute when "query.isBlank == true" and "recentSearchList.size == 0" is true
      */
     fun visibilityConfig3() {
+        binding.noUsersFoundIns.visibility = View.GONE
         binding.searchRV.visibility = View.GONE
         binding.startSearchInstruction.visibility = View.VISIBLE
         binding.oldSearchesGroup.visibility = View.GONE
@@ -175,7 +191,7 @@ class SearchFragment : Fragment() {
     
     
     private fun gotoProfileScreen(profileId: Long?) {
-        val action = profileId?.let { SearchFragmentDirections.actionSearchFragmentToProfileFragment(it) }
+        val action = profileId?.let { SearchFragmentDirections.actionSearchFragmentToProfileFragment(it, false) }
         if (action != null) {
             try {
                 findNavController().navigate(action)

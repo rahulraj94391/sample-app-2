@@ -29,8 +29,7 @@
             app:enterAnim="@anim/enter_from_right"
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
-            app:popExitAnim="@anim/exit_to_right"
-            />
+            app:popExitAnim="@anim/exit_to_right" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
@@ -95,6 +94,9 @@
         <action
             android:id="@+id/action_profileFragment_to_profilePictureFragment"
             app:destination="@id/profilePictureFragment" />
+        <argument
+            android:name="upBtn"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/onePostFragment"
@@ -195,9 +197,19 @@
             app:enterAnim="@anim/enter_from_right"
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_listFollowFragment_to_profileFragment_PopInclusive_True"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right"
             app:popUpTo="@id/profileFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+
+
+            />
     </fragment>
     <fragment
         android:id="@+id/profilePictureFragment"

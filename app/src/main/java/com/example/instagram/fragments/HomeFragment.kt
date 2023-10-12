@@ -111,7 +111,7 @@ class HomeFragment : Fragment() {
     
     private fun openProfile(pos: Int) {
         val profileId: Long = homeAdapter.getProfileId(pos)
-        val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment(profileId)
+        val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment(profileId, false)
         findNavController().navigate(action)
     }
     
@@ -173,6 +173,7 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         
     }
+    
     private fun whenNotificationBtnClicked() {
         if (findNavController().currentDestination?.id != R.id.homeFragment) return
         val action = HomeFragmentDirections.actionHomeFragmentToNotificationFragment()

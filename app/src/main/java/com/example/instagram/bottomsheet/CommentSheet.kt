@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.instagram.Haptics
 import com.example.instagram.HomeActivity
 import com.example.instagram.ImageUtil
 import com.example.instagram.MainViewModel
@@ -44,6 +45,7 @@ class CommentSheet : BottomSheetDialogFragment() {
     private lateinit var viewModel: CommentDialogViewModel
     private lateinit var commentAdapter: CommentAdapter
     private lateinit var imageUtil: ImageUtil
+    private lateinit var haptics: Haptics
     
     
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -66,6 +68,7 @@ class CommentSheet : BottomSheetDialogFragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        haptics = Haptics(requireContext())
         lifecycleScope.launch {
             viewModel.getComments(postId, mainViewModel.loggedInProfileId!!)
         }
@@ -156,9 +159,11 @@ class CommentSheet : BottomSheetDialogFragment() {
     private fun postComment() {
         val commentText = binding.commentBox.text.toString()
         if (isCommentQualified(commentText)) {
+            haptics.doubleClick()
             return
         }
-        
+    
+        haptics.light()
         lifecycleScope.launch {
             viewModel.insertComment(commentText, mainViewModel.loggedInProfileId!!, postId)
             addProfilePicUrlWithOnNewComment()

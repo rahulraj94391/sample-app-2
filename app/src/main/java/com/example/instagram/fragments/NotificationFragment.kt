@@ -94,7 +94,7 @@ class NotificationFragment : Fragment() {
             if (binding.swipeRefreshNotification.isRefreshing) {
                 binding.swipeRefreshNotification.isRefreshing = false
             }
-//            if (placeHolderReference.size == notificationAdapter.itemCount) return@observe
+            //            if (placeHolderReference.size == notificationAdapter.itemCount) return@observe
             notificationAdapter.setNewList(viewModel.followLogs, viewModel.likeLogs, viewModel.commentLogs, placeHolderReference)
             
         }
@@ -130,7 +130,7 @@ class NotificationFragment : Fragment() {
     }
     
     private fun openProfile(profileId: Long) {
-        val action = NotificationFragmentDirections.actionNotificationFragmentToProfileFragment(profileId)
+        val action = NotificationFragmentDirections.actionNotificationFragmentToProfileFragment(profileId, false)
         findNavController().navigate(action)
     }
     
