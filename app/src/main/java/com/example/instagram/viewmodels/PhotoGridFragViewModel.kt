@@ -5,21 +5,20 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.instagram.ImageUtil
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.model.OnePhotoPerPost
 import kotlinx.coroutines.async
 
-private const val TAG = "CommTag_PhotoGridFragViewModel"
+//private const val TAG = "CommTag_PhotoGridFragViewModel"
+private const val TAG = "MEM_LEAK"
 
 class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
-    private val imageUtil = ImageUtil(app)
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     val usersPost = MutableLiveData<MutableList<OnePhotoPerPost>>()
     val usersTaggedPost = MutableLiveData<MutableList<OnePhotoPerPost>>()
     
     suspend fun getProfilePost(profileId: Long, itemCount: Int) {
-        Log.d(TAG, "getProfilePost: called in photo-grid-viewmodel")
+        Log.e(TAG, "getProfilePost: called in photo-grid-viewmodel")
         val postIdsAsync = viewModelScope.async {
             db.postDao().getAllPostOfProfile(profileId = profileId, offset = itemCount)
         }
@@ -50,4 +49,10 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
         }
         usersTaggedPost.postValue(onePhotoPerPost.asReversed())
     }
+    
+    override fun onCleared() {
+        Log.e(TAG, "Photo Grid Frag Cleared")
+        super.onCleared()
+    }
+    
 }

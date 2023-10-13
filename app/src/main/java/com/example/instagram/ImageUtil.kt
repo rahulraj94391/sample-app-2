@@ -86,11 +86,19 @@ class ImageUtil(val context: Context) {
         Log.d(TAG, "downloadBitmap:")
         val photo = CoroutineScope(Dispatchers.IO).async {
             try {
-                val conn = URL(imageUrl).openConnection()
-                conn.connect()
-                val inputStream = conn.getInputStream()
+                val conn = withContext(Dispatchers.IO) {
+                    URL(imageUrl).openConnection()
+                }
+                withContext(Dispatchers.IO) {
+                    conn.connect()
+                }
+                val inputStream = withContext(Dispatchers.IO) {
+                    conn.getInputStream()
+                }
                 val bitmap = BitmapFactory.decodeStream(inputStream)
-                inputStream.close()
+                withContext(Dispatchers.IO) {
+                    inputStream.close()
+                }
                 bitmap
             } catch (e: Exception) {
                 e.printStackTrace()

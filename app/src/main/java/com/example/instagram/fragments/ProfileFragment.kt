@@ -51,7 +51,8 @@ import java.io.FileOutputStream
 import java.util.Objects
 import kotlin.properties.Delegates
 
-private const val TAG = "ProfileFragment_CommTag"
+//private const val TAG = "ProfileFragment_CommTag"
+private const val TAG = "MEM_LEAK"
 
 const val POST_OPEN_REQ_KEY = "postId"
 const val POST_ID = "postIdToOpen"
@@ -68,7 +69,9 @@ class ProfileFragment : Fragment() {
     private val args: ProfileFragmentArgs? by navArgs()
     private var showUpBtb = false
     
+    
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.i(TAG, "onCreate: Profile_Fragment")
         super.onCreate(savedInstanceState)
         db = AppDatabase.getDatabase(requireContext())
         viewModel = ViewModelProvider(this)[ProfileFragViewModel::class.java]
@@ -124,7 +127,6 @@ class ProfileFragment : Fragment() {
             }
         }
         
-        
         binding.viewPagerPostAndTagPhoto.adapter = ScreenSlidePagerAdapter(requireActivity())
         TabLayoutMediator(binding.tabLayout, binding.viewPagerPostAndTagPhoto) { tab, position ->
             when (position) {
@@ -144,6 +146,30 @@ class ProfileFragment : Fragment() {
         setOnClickListener()
         setViewPagerHeight()
         setObservers()
+    }
+    
+    
+    override fun onPause() {
+        super.onPause()
+        Log.i(TAG, "onPause: Profile_Fragment")
+        /*binding.viewPagerPostAndTagPhoto.adapter = null*/
+        
+    }
+    
+    
+    override fun onResume() {
+        super.onResume()
+        Log.i(TAG, "onResume: Profile_Fragment")
+    }
+    
+    override fun onStop() {
+        super.onStop()
+        Log.i(TAG, "onStop: Profile_Fragment")
+    }
+    
+    override fun onStart() {
+        super.onStart()
+        Log.i(TAG, "onStart: Profile_Fragment")
     }
     
     private fun setProfilePicTransition() {
@@ -226,15 +252,12 @@ class ProfileFragment : Fragment() {
     }
     
     private fun bindAllDetails(it: ProfileSummary) {
-        Log.d(TAG, "bindAllDetails:")
-        
         binding.toolbarProfileUsername.text = it.username
         binding.profileFullName.text = requireContext().getString(R.string.full_name, it.first_name, it.last_name)
         binding.profileBio.text = it.bio
         binding.followersCount.text = it.followerCount.toString()
         binding.followingCount.text = it.followingCount.toString()
         btn(binding.btnStart, binding.btnEnd, it.isFollowing)
-        Log.d(TAG, "bindAllDetails: before coroutine")
         
         CoroutineScope(Dispatchers.IO).launch {
             if (it.profilePicUrl == null) {
@@ -246,7 +269,6 @@ class ProfileFragment : Fragment() {
             
             // mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
             val url = db.cacheDao().getCachedProfileImage(profileId) ?: it.profilePicUrl
-            Log.d(TAG, "bindAllDetails: $url")
             mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(url)
             
             withContext(Dispatchers.Main) {
@@ -319,7 +341,7 @@ class ProfileFragment : Fragment() {
             val bitmapDrawable = binding.profilePic.drawable as BitmapDrawable
             bitmap = bitmapDrawable.bitmap
         } catch (e: Exception) {
-            Log.d(TAG, "shareAction: ${e.message}")
+            Log.i(TAG, "shareAction: ${e.message}")
         }
         val share = Intent(Intent.ACTION_SEND)
         val textToShare = "Look at my profile on Instagram\n\nhttps://instagram.com/uid=${mainViewModel.loggedInProfileId!!}"
@@ -349,7 +371,7 @@ class ProfileFragment : Fragment() {
             stream.close()
             uri = FileProvider.getUriForFile(Objects.requireNonNull(requireActivity().applicationContext), "com.example.instagram" + ".provider", file)
         } catch (e: Exception) {
-            Log.d(TAG, "Exception: + ${e.message}")
+            Log.i(TAG, "Exception: + ${e.message}")
         }
         return uri
     }

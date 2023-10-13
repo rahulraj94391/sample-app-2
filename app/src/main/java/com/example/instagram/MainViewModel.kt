@@ -27,4 +27,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     
     var profileOpenCount = 0
     
+    
+    
 }

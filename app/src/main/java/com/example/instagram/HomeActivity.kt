@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import androidx.databinding.DataBindingUtil
@@ -15,11 +17,16 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.instagram.databinding.ActivityHomeBinding
+import com.example.instagram.fragments.HomeFragment
+import com.example.instagram.fragments.PostFragment
+import com.example.instagram.fragments.ProfileFragment
+import com.example.instagram.fragments.SearchFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
 
 const val HIDDEN = true
 const val NOT_HIDDEN = false
@@ -87,7 +94,7 @@ class HomeActivity : AppCompatActivity() {
         //        Log.d(TAG, "onCreate: before backstackChangeListener")
         navHostFragment.childFragmentManager.addOnBackStackChangedListener {
             val fm = navHostFragment.childFragmentManager
-            /*val state = when (fm.findFragmentById(R.id.fragContainerView)) {
+            val state = when (fm.findFragmentById(R.id.fragContainerView)) {
                 is HomeFragment, is PostFragment, is SearchFragment, is ProfileFragment -> NOT_HIDDEN
                 else -> HIDDEN
             }
@@ -97,16 +104,27 @@ class HomeActivity : AppCompatActivity() {
                 } else {
                     showBottomNavigationView()
                 }
-            }*/
+            }
             
         }
         
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             //            Log.e(TAG, "destination = ${destination.label}")
+            
+            /*when (destination.id) {
+            
+            }*/
+            
         }
     }
     
-    private fun hideBottomNavigationView() {
+    fun openKeyboard() {
+        Log.d(TAG, "openKeyboard: on search fragment")
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    }
+    
+    fun hideBottomNavigationView() {
         BOTTOM_NAV_CURRENT_STATE = HIDDEN
         val bnv = binding.bottomNavView
         bnv.clearAnimation()
@@ -117,7 +135,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
     
-    private fun showBottomNavigationView() {
+    fun showBottomNavigationView() {
         BOTTOM_NAV_CURRENT_STATE = NOT_HIDDEN
         val bnv = binding.bottomNavView
         bnv.visibility = View.VISIBLE

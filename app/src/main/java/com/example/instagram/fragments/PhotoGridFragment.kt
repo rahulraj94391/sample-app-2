@@ -26,7 +26,8 @@ const val LIST_REF_KEY: String = "list_ref"
 const val USER_PROF_KEY = "userProf"
 const val DEL_POST_REQ_KEY = "deletePostReqKey"
 
-private const val TAG = "CommTag_PhotoGridFragment"
+//private const val TAG = "CommTag_PhotoGridFragment"
+private const val TAG = "MEM_LEAK"
 
 class PhotoGridFragment : Fragment() {
     private var _binding: FragmentPhotoGridBinding? = null
@@ -55,6 +56,7 @@ class PhotoGridFragment : Fragment() {
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate: Photo_Grid_Fragment")
         super.onCreate(savedInstanceState)
         requireArguments().let {
             listRef = it.getInt(LIST_REF_KEY)
@@ -63,6 +65,7 @@ class PhotoGridFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        Log.d(TAG, "onCreateView: Photo_Grid_Fragment")
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_photo_grid, container, false)
         return binding.root
     }
@@ -72,7 +75,18 @@ class PhotoGridFragment : Fragment() {
         requireActivity().supportFragmentManager.setFragmentResult(POST_OPEN_REQ_KEY, bundleOf(POST_ID to postId, POST_POS to pos))
     }
     
+    override fun onPause() {
+        Log.d(TAG, "onPause: Photo_Grid_Fragment")
+        super.onPause()
+    }
+    
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: Photo_Grid_Fragment")
+    }
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(TAG, "onViewCreated: Photo_Grid_Fragment")
         super.onViewCreated(view, savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         viewModel = ViewModelProvider(this)[PhotoGridFragViewModel::class.java]
@@ -123,7 +137,7 @@ class PhotoGridFragment : Fragment() {
             }
             viewModel.usersTaggedPost.observe(viewLifecycleOwner) {
                 binding.loadingProgressBar.visibility = View.GONE
-                if (it.size == 0) {
+                if (it.size == 0 && userPostedPhotoAdapter.itemCount == 0) {
                     binding.ins2.visibility = View.VISIBLE
                     return@observe
                 }
@@ -136,8 +150,8 @@ class PhotoGridFragment : Fragment() {
         
         val spanCount = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 5 else 3
         binding.gridOfPosts.adapter = userPostedPhotoAdapter
-        val glm = GridLayoutManager(requireContext(), spanCount)
-        binding.gridOfPosts.layoutManager = glm
+        val gridLayoutManager = GridLayoutManager(requireContext(), spanCount)
+        binding.gridOfPosts.layoutManager = gridLayoutManager
         binding.gridOfPosts.setHasFixedSize(false)
         binding.gridOfPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -149,20 +163,17 @@ class PhotoGridFragment : Fragment() {
             
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                currentItems = glm.childCount
-                totalItems = glm.itemCount
-                scrolledOut = glm.findFirstVisibleItemPosition()
+                currentItems = gridLayoutManager.childCount
+                totalItems = gridLayoutManager.itemCount
+                scrolledOut = gridLayoutManager.findFirstVisibleItemPosition()
                 if (isScrolling && (currentItems + scrolledOut == totalItems)) {
                     isScrolling = false
                     if (listRef == 0) {
-                        Log.d(TAG, "inside if-block")
                         lifecycleScope.launch {
-                            Log.d(TAG, "itemcount = ${userPostedPhotoAdapter.itemCount}")
                             viewModel.getProfilePost(userProfId, userPostedPhotoAdapter.itemCount)
                         }
                         
                     } else {
-                        Log.d(TAG, "inside else-block")
                         lifecycleScope.launch {
                             viewModel.getAllPostWhereProfileIsTagged(userProfId, userPostedPhotoAdapter.itemCount)
                         }
@@ -174,6 +185,7 @@ class PhotoGridFragment : Fragment() {
     }
     
     override fun onStart() {
+        Log.d(TAG, "onStart: Photo_Grid_Fragment")
         super.onStart()
         requireActivity().supportFragmentManager.setFragmentResultListener(DEL_POST_REQ_KEY, requireActivity()) { _, bundle ->
             val pos = bundle.getInt(POST_POS)
@@ -182,6 +194,7 @@ class PhotoGridFragment : Fragment() {
     }
     
     override fun onResume() {
+        Log.d(TAG, "onResume: Photo_Grid_Fragment")
         super.onResume()
         /*firebaseFireStore.collection("postImages").addSnapshotListener { value, error ->
             if (error != null) {
@@ -193,9 +206,14 @@ class PhotoGridFragment : Fragment() {
     }
     
     override fun onDestroyView() {
-        Log.d(TAG, "onDestroyView: ")
+        Log.d(TAG, "onDestroyView: Photo_Grid_Fragment")
         binding.gridOfPosts.adapter = null
         _binding = null
         super.onDestroyView()
+    }
+    
+    override fun onDestroy() {
+        Log.d(TAG, "onDestroy: Photo_Grid_Fragment")
+        super.onDestroy()
     }
 }

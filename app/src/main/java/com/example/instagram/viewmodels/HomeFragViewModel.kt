@@ -32,12 +32,39 @@ class HomeFragViewModel(private val currentProfile: Long, app: Application) : An
             val tempList: MutableList<Post> = mutableListOf()
             val postsToShowOnHome = db.postDao().getPostOfFollowers(loggedInProfileId, limit, itemCount)
             for (i in postsToShowOnHome) {
-                tempList.add(getPost(i))
+                tempList.add(getPost2(i))
             }
             listOfPosts.addAll(tempList)
             newPostsLoaded.postValue(tempList.size)
             getImagesJob = null
         }
+    }
+    
+    private suspend fun getPost2(postId: Long): Post {
+        val profileId = getProfileId(postId)
+        val profImageUrl = db.cacheDao().getCachedProfileImage(profileId) ?: imageUtil.getProfilePictureUrl(profileId) ?: ""
+        
+        val profileUsername = getProfileUserName(postId)
+        val listOfPostPhotos = db.cacheDao().getCachedPostImages(postId)
+        val isPostAlreadyLiked = getPostLikeStat(postId, currentProfile)
+        val isPostAlreadySaved = getPostSaveStat(postId, currentProfile)
+        val likeCount = getFormattedLikeCount(postId)
+        val postDesc = getPostDesc(postId)
+        val postTime = getFormattedTimeOfPost(postId)
+        
+        val post = Post(
+            postId = postId,
+            profileId = profileId,
+            profileImageUrl = profImageUrl,
+            profileUsername = profileUsername,
+            listOfPostPhotos = listOfPostPhotos,
+            isPostAlreadyLiked = isPostAlreadyLiked,
+            isPostAlreadySaved = isPostAlreadySaved,
+            likeCount = likeCount,
+            postDesc = postDesc,
+            timeOfPost = postTime
+        )
+        return post
     }
     
     private suspend fun getPost(postId: Long): Post {
@@ -70,6 +97,7 @@ class HomeFragViewModel(private val currentProfile: Long, app: Application) : An
         )
         return post
     }
+    
     
     fun likePost(postId: Long, profileId: Long) {
         viewModelScope.launch {

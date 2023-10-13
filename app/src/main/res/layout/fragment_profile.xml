@@ -67,6 +67,7 @@
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/nestedScroll"
                 android:layout_width="match_parent"
+                android:scrollbars="vertical"
                 android:layout_height="0dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -127,7 +128,7 @@
                             android:layout_marginEnd="24dp"
                             android:layout_marginBottom="24dp"
                             android:ellipsize="end"
-                            android:fontFamily="@font/fs_me_bold"
+
                             android:gravity="start"
                             android:lineHeight="22dp"
                             android:maxLines="7"
@@ -199,7 +200,6 @@
                             app:layout_constraintStart_toStartOf="@+id/followersCount"
                             app:layout_constraintTop_toBottomOf="@id/followersCount" />
 
-
                         <TextView
                             android:id="@+id/followingCount"
                             android:layout_width="0dp"
@@ -228,8 +228,6 @@
                             app:layout_constraintEnd_toEndOf="@id/followingCount"
                             app:layout_constraintStart_toStartOf="@+id/followingCount"
                             app:layout_constraintTop_toBottomOf="@id/followingCount" />
-
-
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -295,7 +293,5 @@
 
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

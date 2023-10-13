@@ -102,6 +102,7 @@
                 app:iconTint="@color/icon_tint"
                 app:layout_constraintStart_toEndOf="@+id/likeBtn"
                 app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2" />
+
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/btnSavePost"
                 android:layout_width="wrap_content"
@@ -131,22 +132,20 @@
                 android:ellipsize="end"
                 android:justificationMode="inter_word"
                 android:maxLines="2"
-
-                android:text="loading ..."
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/likeCount" />
+                app:layout_constraintTop_toBottomOf="@+id/likeCount"
+                tools:text="loading ..." />
 
             <TextView
                 android:id="@+id/commentCount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-
-                android:text="View all 50 comments"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/postDesc" />
+                app:layout_constraintTop_toBottomOf="@+id/postDesc"
+                tools:text="View all 50 comments" />
 
             <TextView
                 android:id="@+id/timeOfPost"

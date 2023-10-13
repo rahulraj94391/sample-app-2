@@ -95,7 +95,8 @@ class EditProfileFragment : Fragment() {
         
         isUploadComplete.observe(viewLifecycleOwner) {
             if (it) {
-                if (findNavController().currentDestination?.id == R.id.editProfileFragment) findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
+                if (findNavController().currentDestination?.id == R.id.editProfileFragment)
+                    findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
             }
         }
     }

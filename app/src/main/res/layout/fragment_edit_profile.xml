@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context = "com.example.instagram.fragments.EditProfileFragment"
-        >
+        tools:context="com.example.instagram.fragments.EditProfileFragment">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -151,7 +150,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/bio"
-                        android:maxLength="100" />
+                        android:maxLength="60"
+                        android:maxLines="5"
+                        />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton

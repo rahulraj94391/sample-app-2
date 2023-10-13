@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
@@ -13,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instagram.Haptics
+import com.example.instagram.HomeActivity
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.adapters.RecentSearchAdapter
@@ -25,9 +27,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+
 private const val TAG = "CommTag_SearchFragment"
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(), OnFocusChangeListener {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: SearchFragViewModel
@@ -138,6 +141,31 @@ class SearchFragment : Fragment() {
                 return true
             }
         })
+    }
+    
+    
+    override fun onResume() {
+        Log.d(TAG, "onResume: ")
+        super.onResume()
+        binding.searchViewBar.requestFocus()
+        (requireActivity() as HomeActivity).openKeyboard()
+        (requireActivity() as HomeActivity).hideBottomNavigationView()
+        requireActivity().findViewById<SearchView>(R.id.searchViewBar).setOnQueryTextFocusChangeListener(this)
+        
+    }
+    
+    override fun onFocusChange(v: View?, hasFocus: Boolean) {
+        if (hasFocus) {
+            (requireActivity() as HomeActivity).hideBottomNavigationView()
+        } else
+            (requireActivity() as HomeActivity).showBottomNavigationView()
+
+    }
+    
+    override fun onPause() {
+        super.onPause()
+        binding.searchViewBar.clearFocus()
+        
     }
     
     /**

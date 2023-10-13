@@ -1,6 +1,7 @@
 package com.example.instagram.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +25,8 @@ const val TYPE_FOLLOWING = "Following"
 const val NO_FOLLOWINGS = "No Following"
 const val NO_FOLLOWERS = "No Follower"
 
-private const val TAG = "CommTag_ListFollowFragment"
+//private const val TAG = "CommTag_ListFollowFragment"
+private const val TAG = "MEM_LEAK"
 
 class ListFollowFragment : Fragment() {
     private var _binding: FragmentListFollowBinding? = null
@@ -48,7 +50,13 @@ class ListFollowFragment : Fragment() {
         return binding.root
     }
     
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: ")
+    }
+    
     override fun onDestroyView() {
+        Log.d(TAG, "onDestroyView: ")
         binding.usersRV.adapter = null
         _binding = null
         super.onDestroyView()
