@@ -39,7 +39,6 @@
     <color name="hyperlink_texts">#426AE1</color>
 
 
-
     <color name="msg_bubble_received">#EBF2FF</color>
     <color name="msg_txt_received">#212121</color>
     <color name="msg_txt_reply_received">#D1DDF3</color>
@@ -49,7 +48,7 @@
     <color name="msg_read">#08C200</color>
     <color name="msg_edit_text">#DDE6ED</color>
     <color name="date_rect">#E4E4E4</color>
-
+    <color name="divider">#E6E6E6</color>
 
 
 </resources>

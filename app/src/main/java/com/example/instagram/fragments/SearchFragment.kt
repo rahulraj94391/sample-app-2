@@ -125,7 +125,6 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
                 }
                 if (newText!!.isBlank()) {
                     if (recentSearchAdapter.isEmpty()) {
-                        
                         visibilityConfig3()
                     } else {
                         visibilityConfig2()
@@ -151,7 +150,6 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
         (requireActivity() as HomeActivity).openKeyboard()
         (requireActivity() as HomeActivity).hideBottomNavigationView()
         requireActivity().findViewById<SearchView>(R.id.searchViewBar).setOnQueryTextFocusChangeListener(this)
-        
     }
     
     override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -165,7 +163,9 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
     override fun onPause() {
         super.onPause()
         binding.searchViewBar.clearFocus()
-        
+        (requireActivity() as HomeActivity).showBottomNavigationView()
+    
+        Log.d(TAG, "onPause: ")
     }
     
     /**
@@ -198,6 +198,8 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
     }
     
     private fun onClick(pos: Int) {
+        Log.d(TAG, "onClick: ")
+        
         val person = try {
             viewModel.searchLiveData.value?.get(pos)!!
         } catch (e: Exception) {
@@ -210,6 +212,7 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
         gotoProfileScreen(person.profile_id)
         viewModel.addNameToRecentSearch(person.profile_id, person.first_name, mainViewModel.loggedInProfileId!!)
         binding.searchViewBar.setQuery("", false)
+        
         viewModel.apply {
             searchLiveData.value?.clear()
             imagesLiveData.value?.clear()

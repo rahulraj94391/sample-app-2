@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.instagram.HomeActivity
 import com.example.instagram.R
 import com.example.instagram.adapters.TagSearchResultAdapter
 import com.example.instagram.adapters.TagsAdapter
@@ -33,7 +34,7 @@ class TagFragment : Fragment() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(requireActivity())[PostFragViewModel::class.java]
-        tagsAdapter = TagsAdapter(viewModel.finalTags) {
+        tagsAdapter = TagsAdapter(viewModel.finalTags, ::setPeopleCount) {
             binding.yourTagsWillAppearHere.visibility = View.VISIBLE
         }
         tagSearchResultAdapter = TagSearchResultAdapter(::insertFromResultToSet)
@@ -63,10 +64,7 @@ class TagFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean = false
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText!!.isEmpty()) {
-                    binding.tagResults.visibility = View.INVISIBLE
-                    binding.tags.visibility = View.VISIBLE
-                    binding.textView2.visibility = View.VISIBLE
-                    binding.noUsersFoundIns.visibility = View.INVISIBLE
+                    visibilityWhenQueryIsEmpty()
                     if (viewModel.finalTags.isEmpty()) {
                         binding.yourTagsWillAppearHere.visibility = View.VISIBLE
                     } else {
@@ -74,14 +72,11 @@ class TagFragment : Fragment() {
                     }
                     return true
                 } else {
-                    binding.yourTagsWillAppearHere.visibility = View.INVISIBLE
-                    binding.tagResults.visibility = View.VISIBLE
-                    binding.tags.visibility = View.INVISIBLE
-                    binding.textView2.visibility = View.INVISIBLE
+                    visibilityWhenQueryIsNotEmpty()
                     searchJob?.cancel()
                     searchJob = lifecycleScope.launch {
                         tagSearchResultAdapter.clearList()
-                        delay(500)
+                        delay(1)
                         if (newText == "") return@launch
                         viewModel.getSearchResults(newText)
                     }
@@ -90,11 +85,41 @@ class TagFragment : Fragment() {
             }
         })
         
-        binding.tagResults.adapter = tagSearchResultAdapter
-        binding.tagResults.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        
-        binding.tags.adapter = tagsAdapter
-        binding.tags.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.btnDone.setOnClickListener {
+            findNavController().navigateUp()
+        }
+        binding.tagResults.apply {
+            adapter = tagSearchResultAdapter
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        }
+        binding.tags.apply {
+            adapter = tagsAdapter
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        }
+    }
+    
+    private fun visibilityWhenQueryIsNotEmpty() {
+        binding.apply {
+            yourTagsWillAppearHere.visibility = View.INVISIBLE
+            tagResults.visibility = View.VISIBLE
+            tags.visibility = View.INVISIBLE
+            textView2.visibility = View.INVISIBLE
+        }
+    }
+    
+    private fun visibilityWhenQueryIsEmpty() {
+        binding.apply {
+            tagResults.visibility = View.INVISIBLE
+            tags.visibility = View.VISIBLE
+            textView2.visibility = View.VISIBLE
+            noUsersFoundIns.visibility = View.INVISIBLE
+        }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        binding.searchViewBar.requestFocus()
+        (requireActivity() as HomeActivity).openKeyboard()
     }
     
     private fun insertFromResultToSet(tag: TagSearchResult) {
@@ -104,6 +129,11 @@ class TagFragment : Fragment() {
         tagSearchResultAdapter.clearList()
         tagsAdapter.addTag(tag)
         binding.searchViewBar.setQuery(null, false)
+    }
+    
+    private fun setPeopleCount() {
+        val count = tagsAdapter.itemCount
+        binding.textView2.text = "$count people tagged."
     }
     
     override fun onStart() {

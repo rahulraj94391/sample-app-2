@@ -1,9 +1,15 @@
 package com.example.instagram.fragments
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -27,16 +33,18 @@ import com.example.instagram.databinding.FragmentOnePostBinding
 import com.example.instagram.viewmodels.OnePostFragViewModel
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
+
 private const val TAG = "CommTag_OnePostFragment"
 const val HIDE_DELETE_BTN = -22
 const val OPEN_AND_LOCATE_COMMENT_KEY = "open_and_locate_comment_key"
+const val DELETE = "Delete"
+
 
 class OnePostFragment : Fragment() {
     private lateinit var binding: FragmentOnePostBinding
@@ -81,15 +89,25 @@ class OnePostFragment : Fragment() {
             commentCount.setOnClickListener { onCommentClicked() }
             btnSavePost.setOnClickListener { onSavePostClicked(it as MaterialCheckBox) }
             likeBtn.setOnClickListener { onLikeClicked(it as MaterialCheckBox) }
+            likeCount.setOnClickListener { likeBtn.performClick() }
         }
         
         profileId.observe(viewLifecycleOwner) {
             if (it == mainViewModel.loggedInProfileId!! && postPos != HIDE_DELETE_BTN) {
-                binding.btnDeletePost.visibility = View.VISIBLE
-                binding.btnDeletePost.setOnClickListener { deleteBtn ->
-                    deleteBtn.isEnabled = false
-                    deletePostDialog()
-                    (requireActivity() as HomeActivity).haptics.heavy()
+                binding.btnMore.visibility = View.VISIBLE
+                binding.btnMore.setOnClickListener { moreBtn ->
+                    PopupMenu(requireContext(), moreBtn).apply {
+                        inflate(R.menu.one_post_menu)
+                        setForceShowIcon(true)
+                        menu.getItem(0).title = SpannableString(DELETE).apply {
+                            setSpan(ForegroundColorSpan(Color.RED), 0, DELETE.length, 0)
+                        }
+                        setOnMenuItemClickListener {
+                            deletePostDialog()
+                            true
+                        }
+                        show()
+                    }
                 }
             }
         }
@@ -97,7 +115,14 @@ class OnePostFragment : Fragment() {
         imageUtil = ImageUtil(requireContext())
         postPhotoAdapter = PostAdapter()
         binding.allImagesInAPostVP2.adapter = postPhotoAdapter
-        TabLayoutMediator(binding.indicatorVP, binding.allImagesInAPostVP2) { _, _ -> }.attach()
+        binding.counter.text = "${1}/${postPhotoAdapter.itemCount}"
+        binding.allImagesInAPostVP2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Log.d(TAG, "onPageSelected: $position")
+                binding.counter.text = "${position + 1}/${postPhotoAdapter.itemCount}"
+            }
+        })
         
         lifecycleScope.launch {
             with(viewModel) {
@@ -140,19 +165,21 @@ class OnePostFragment : Fragment() {
         }
         
         viewModel.postImagesUrl.observe(viewLifecycleOwner) {
-            if (it.size < 2) binding.indicatorVP.visibility = View.INVISIBLE
+            if (it.size < 2) binding.counter.visibility = View.INVISIBLE
             postPhotoAdapter.setNewList(it)
         }
         
         viewModel.likeCount.observe(viewLifecycleOwner) {
-            binding.likeCount.text = "$it likes"
+            binding.likeCount.text = when (it) {
+                0, 1 -> "$it like"
+                else -> "$it likes"
+            }
         }
         
         db.commentDao().commentCount(postId).observe(viewLifecycleOwner) {
             binding.commentCount.text = when (it) {
-                0 -> "0 comment"
-                1 -> "View 1 comment"
-                else -> "View all $it comments"
+                0, 1 -> "$it comment"
+                else -> "$it comments"
             }
         }
     }
@@ -165,8 +192,11 @@ class OnePostFragment : Fragment() {
                 onCommentClicked()
                 // prepare here FR API B
                 
-            }, 200)
+            }, 100)
         }
+        
+        registerForContextMenu(binding.btnMore)
+        
     }
     
     private fun openProfile() {
@@ -174,8 +204,26 @@ class OnePostFragment : Fragment() {
         findNavController().navigate(a)
     }
     
-    private fun viewPagerDoubleClicked(viewPager2: ViewPager2) { // Todo: double tap on viewpage to like post
+    private var lastTap = 0L
     
+    @SuppressLint("ClickableViewAccessibility")
+    private fun viewPagerDoubleClicked(viewPager2: ViewPager2) {
+        // Todo: double tap on viewpage to like post
+        /*viewPager2.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                Log.d(TAG, "onTouch: ")
+                if (event?.action == MotionEvent.ACTION_DOWN) {
+                    val curTime = System.currentTimeMillis()
+                    if (curTime - lastTap < 700) {
+                        lastTap = curTime
+                        Log.d(TAG, "double tap")
+                        return true
+                    }
+                }
+                return false
+            }
+        })*/
+        
     }
     
     private fun onSavePostClicked(it: MaterialCheckBox) {
@@ -215,10 +263,10 @@ class OnePostFragment : Fragment() {
             }
         }.setNegativeButton("No") { dialogInterface, _ ->
             dialogInterface.cancel()
-            binding.btnDeletePost.isEnabled = true
+            binding.btnMore.isEnabled = true
         }.show()
         dialog.setOnCancelListener {
-            binding.btnDeletePost.isEnabled = true
+            binding.btnMore.isEnabled = true
         }
     }
     

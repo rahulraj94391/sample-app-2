@@ -51,8 +51,7 @@ import java.io.FileOutputStream
 import java.util.Objects
 import kotlin.properties.Delegates
 
-//private const val TAG = "ProfileFragment_CommTag"
-private const val TAG = "MEM_LEAK"
+private const val TAG = "ProfileFragment_CommTag"
 
 const val POST_OPEN_REQ_KEY = "postId"
 const val POST_ID = "postIdToOpen"
@@ -109,10 +108,12 @@ class ProfileFragment : Fragment() {
     }
     
     override fun onDestroyView() {
+        /*if (mainViewModel.loggedInProfileId!! != profileId || showUpBtb) {
+            (requireActivity() as HomeActivity).showBottomNavigationView()
+        }*/
         _binding = null
         super.onDestroyView()
     }
-    
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -121,6 +122,8 @@ class ProfileFragment : Fragment() {
         }
         
         if (mainViewModel.loggedInProfileId!! != profileId || showUpBtb) {
+            /*(requireActivity() as HomeActivity).hideBottomNavigationView()*/
+            
             binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
             binding.toolbar.setNavigationOnClickListener {
                 findNavController().navigateUp()
@@ -144,32 +147,15 @@ class ProfileFragment : Fragment() {
         binding.viewPagerPostAndTagPhoto.isSaveEnabled = true
         
         setOnClickListener()
-        setViewPagerHeight()
+        //setViewPagerHeight()
         setObservers()
     }
     
     
     override fun onPause() {
         super.onPause()
-        Log.i(TAG, "onPause: Profile_Fragment")
         /*binding.viewPagerPostAndTagPhoto.adapter = null*/
         
-    }
-    
-    
-    override fun onResume() {
-        super.onResume()
-        Log.i(TAG, "onResume: Profile_Fragment")
-    }
-    
-    override fun onStop() {
-        super.onStop()
-        Log.i(TAG, "onStop: Profile_Fragment")
-    }
-    
-    override fun onStart() {
-        super.onStart()
-        Log.i(TAG, "onStart: Profile_Fragment")
     }
     
     private fun setProfilePicTransition() {
@@ -220,6 +206,7 @@ class ProfileFragment : Fragment() {
     }
     
     private fun setViewPagerHeight() {
+        Log.d(TAG, "setViewPagerHeight: ")
         var heightToMinus = 0
         val viewToMeasure0 = binding.toolbar
         val vto0 = viewToMeasure0.viewTreeObserver

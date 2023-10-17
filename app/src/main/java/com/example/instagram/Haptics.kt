@@ -10,6 +10,10 @@ class Haptics(private val context: Context) {
         vibrator.vibrate(VibrationEffect.createOneShot(10, 120))
     }
     
+    fun soft() {
+        vibrator.vibrate(VibrationEffect.createOneShot(10, 50))
+    }
+    
     fun doubleClick() {
         vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_DOUBLE_CLICK))
     }

@@ -38,8 +38,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/circleImageView"
-                app:strokeColor="@color/line_border"
-                app:strokeWidth="1dp" />
+
+                />
 
             <TextView
                 android:id="@+id/username"
@@ -117,18 +117,21 @@
                 android:id="@+id/likeCount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                android:text="50 likes"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/indicatorVP" />
+                app:layout_constraintTop_toBottomOf="@+id/indicatorVP"
+                tools:text="50 likes" />
 
             <TextView
                 android:id="@+id/postDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
                 android:layout_marginTop="4dp"
+                android:layout_marginEnd="14dp"
                 android:ellipsize="end"
                 android:justificationMode="inter_word"
                 android:maxLines="2"
@@ -142,6 +145,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/postDesc"
@@ -151,9 +156,10 @@
                 android:id="@+id/timeOfPost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
                 android:layout_marginTop="4dp"
+                android:layout_marginEnd="14dp"
                 android:layout_marginBottom="8dp"
-
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

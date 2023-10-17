@@ -10,13 +10,12 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.example.instagram.Haptics
 import com.example.instagram.ImageUtil
 import com.example.instagram.R
 import com.example.instagram.database.model.Post
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,18 +33,18 @@ class HomeAdapter(
 ) : RecyclerView.Adapter<HomeAdapter.PostVH>() {
     private lateinit var mContext: Context
     private lateinit var imageUtil: ImageUtil
-    
+    private lateinit var haptics: Haptics
     
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         mContext = recyclerView.context
         imageUtil = ImageUtil(mContext)
+        haptics = Haptics(mContext)
         super.onAttachedToRecyclerView(recyclerView)
     }
     
     inner class PostVH(item: View) : RecyclerView.ViewHolder(item) {
         val profileImage: ImageView = item.findViewById(R.id.profileImage)
         val username: TextView = item.findViewById(R.id.username)
-        
         val postImages: ViewPager2 = item.findViewById(R.id.allImagesInAPostVP2)
         val likeBtn: MaterialCheckBox = item.findViewById(R.id.likeBtn)
         val commentButton: MaterialButton = item.findViewById(R.id.comment)
@@ -55,7 +54,8 @@ class HomeAdapter(
         val commentCount: TextView = item.findViewById(R.id.commentCount)
         val timeOfPost: TextView = item.findViewById(R.id.timeOfPost)
         val adapter = PostAdapter()
-        val indicator: TabLayout = item.findViewById(R.id.indicatorVP)
+        val counter: TextView = item.findViewById(R.id.counter)
+        
         
         init {
             profileImage.setOnClickListener { profileListener(adapterPosition) }
@@ -71,14 +71,12 @@ class HomeAdapter(
             commentButton.setOnClickListener { commentListener(adapterPosition) }
             commentCount.setOnClickListener { commentListener(adapterPosition) }
             postImages.adapter = adapter
-            TabLayoutMediator(indicator, postImages) { _, _ -> }.attach()
+            
         }
     }
     
-    var viewHolderCount = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAdapter.PostVH {
-        Log.d(TAG, "create viewHolderCount = ${viewHolderCount++}")
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_home_screen, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_home_screen_v2, parent, false)
         return PostVH(view)
     }
     
@@ -91,17 +89,29 @@ class HomeAdapter(
             likeCount.text = list[position].likeCount
             postDesc.text = list[position].postDesc
             commentCountDelegate(commentCount, list[position].postId)
-            // commentCount.text = list[position].commentCount
             timeOfPost.text = list[position].timeOfPost
             
             list[position].listOfPostPhotos.let {
                 adapter.setNewList(it)
-                if (it.size < 2) {
-                    indicator.visibility = View.INVISIBLE
-                } else {
-                    indicator.visibility = View.VISIBLE
-                }
             }
+            
+            
+            if (adapter.itemCount > 1) {
+                counter.visibility = View.VISIBLE
+            } else {
+                counter.visibility = View.INVISIBLE
+            }
+            
+            postImages.setCurrentItem(0, false)
+            counter.text = "1/${adapter.itemCount}"
+            
+            postImages.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    Log.d(TAG, "onPageSelected: $position")
+                    counter.text = "${position + 1}/${adapter.itemCount}"
+                }
+            })
         }
     }
     

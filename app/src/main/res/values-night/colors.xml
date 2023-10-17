@@ -19,5 +19,7 @@
     <color name="date_rect">#4D4D4D</color>
     <color name="hyperlink_texts">#6088FF</color>
 
+    <color name="divider">#474747</color>
+
 
 </resources>

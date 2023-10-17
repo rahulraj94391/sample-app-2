@@ -14,6 +14,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.instagram.HomeActivity
 import com.example.instagram.ImageUtil
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
@@ -62,8 +63,15 @@ class EditProfileFragment : Fragment() {
         }
     }
     
+    override fun onDestroyView() {
+        (requireActivity() as HomeActivity).showBottomNavigationView()
+        super.onDestroyView()
+        
+    }
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (requireActivity() as HomeActivity).hideBottomNavigationView()
         binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()

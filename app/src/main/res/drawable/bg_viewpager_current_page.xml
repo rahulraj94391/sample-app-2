@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background shape (translucent) -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#802B2B2E" /> <!-- 80% opacity blue background (#0000FF) -->
+            <corners android:radius="50dp" /> <!-- Make it a pill shape by setting a large radius -->
+        </shape>
+    </item>
+    <!-- Foreground shape (white pill) -->
+
+</layer-list>

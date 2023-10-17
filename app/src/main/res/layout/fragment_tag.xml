@@ -29,30 +29,57 @@
                 android:minHeight="?attr/actionBarSize"
                 app:layout_scrollFlags="scroll|enterAlways">
 
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/searchViewBar"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/toolbarProfileUsername"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/search_view_bg"
-                    app:iconifiedByDefault="false"
-                    app:queryBackground="@android:color/transparent"
-                    app:queryHint="Search a user" />
+                    android:paddingTop="4dp"
+                    android:text="Tags"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="8dp"
+                    android:text="Done"
+
+                    />
+
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <TextView
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchViewBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/search_view_bg"
+            android:visibility="visible"
+            app:iconifiedByDefault="false"
+            app:layout_constraintTop_toBottomOf="@id/appbar"
+            app:queryBackground="@android:color/transparent"
+            app:queryHint="Search a user"
+
+
+            />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="@string/tags"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:visibility="visible"
+            android:layout_marginEnd="8dp"
+            android:text="0 people tagged."
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appbar" />
+            app:layout_constraintTop_toBottomOf="@+id/searchViewBar"
+
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tags"
@@ -84,7 +111,7 @@
                 android:layout_height="32dp"
                 android:layout_marginBottom="8dp"
                 android:importantForAccessibility="no"
-                android:src="@drawable/subtract_color_icon" />
+                android:src="@drawable/person_cancel" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -126,12 +153,13 @@
             android:id="@+id/tagResults"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appbar" />
+            app:layout_constraintTop_toBottomOf="@+id/searchViewBar" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package com.example.instagram.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ private const val TAG = "TagsAdapter_CommTag"
 
 class TagsAdapter(
     private val listOfTags: MutableList<TagSearchResult>,
+    private val setPeopleCount: () -> Unit,
     private val showInstruction: () -> Unit,
 ) : RecyclerView.Adapter<TagsAdapter.TagViewHolder>() {
     private lateinit var imageUtil: ImageUtil
@@ -72,12 +72,13 @@ class TagsAdapter(
         if (listOfTags.size < 1) {
             showInstruction.invoke()
         }
+        setPeopleCount.invoke()
     }
     
     fun addTag(tag: TagSearchResult) {
         if (listOfTags.contains(tag)) return
         listOfTags.add(tag)
         notifyDataSetChanged()
-        Log.d(TAG, "${listOfTags.size}")
+        setPeopleCount.invoke()
     }
 }

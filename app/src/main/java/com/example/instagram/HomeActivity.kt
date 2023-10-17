@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -17,10 +16,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.instagram.databinding.ActivityHomeBinding
-import com.example.instagram.fragments.HomeFragment
-import com.example.instagram.fragments.PostFragment
-import com.example.instagram.fragments.ProfileFragment
-import com.example.instagram.fragments.SearchFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,7 +40,8 @@ class HomeActivity : AppCompatActivity() {
     private var internetConnectivityJob: Job? = null
     
     
-    override fun onCreate(savedInstanceState: Bundle?) {/*IMPORTANT    ----    START */ // first put the current user id in the Main ViewModel as the Home fragment starts creating once the Activity
+    override fun onCreate(savedInstanceState: Bundle?) {
+        /*IMPORTANT    ----    START */ // first put the current user id in the Main ViewModel as the Home fragment starts creating once the Activity
         // reaches the {DataBindingUtil.setContentView(this, R.layout.activity_home)} line as the home fragment is the
         // first screen that shows up to the user.
         // without this the app crashes as the view model factory uses logged in id from main view model to create the home fragment.
@@ -92,12 +88,15 @@ class HomeActivity : AppCompatActivity() {
         }*/
         
         //        Log.d(TAG, "onCreate: before backstackChangeListener")
-        navHostFragment.childFragmentManager.addOnBackStackChangedListener {
+        /*navHostFragment.childFragmentManager.addOnBackStackChangedListener {
             val fm = navHostFragment.childFragmentManager
             val state = when (fm.findFragmentById(R.id.fragContainerView)) {
                 is HomeFragment, is PostFragment, is SearchFragment, is ProfileFragment -> NOT_HIDDEN
                 else -> HIDDEN
             }
+    
+            Log.d(TAG, "current BNV state: $state")
+            
             if (BOTTOM_NAV_CURRENT_STATE != state) {
                 if (state == HIDDEN) {
                     hideBottomNavigationView()
@@ -106,7 +105,7 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
             
-        }
+        }*/
         
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             //            Log.e(TAG, "destination = ${destination.label}")
@@ -119,7 +118,6 @@ class HomeActivity : AppCompatActivity() {
     }
     
     fun openKeyboard() {
-        Log.d(TAG, "openKeyboard: on search fragment")
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
