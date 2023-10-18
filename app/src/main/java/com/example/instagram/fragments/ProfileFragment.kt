@@ -58,7 +58,6 @@ const val POST_ID = "postIdToOpen"
 const val POST_POS = "postIdPosition"
 
 class ProfileFragment : Fragment() {
-    private lateinit var lastStatusProfSummary: ProfileSummary
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var mainViewModel: MainViewModel
@@ -67,7 +66,7 @@ class ProfileFragment : Fragment() {
     private var profileId: Long by Delegates.notNull()
     private val args: ProfileFragmentArgs? by navArgs()
     private var showUpBtb = false
-    
+    private var profilePosInFollowingList: Int = -1
     
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate: Profile_Fragment")
@@ -88,6 +87,13 @@ class ProfileFragment : Fragment() {
             false
         }
         
+        profilePosInFollowingList = try {
+            args!!.profilePosInFollowingList
+        } catch (e: Exception) {
+            -1
+        }
+        
+        
         requireActivity().supportFragmentManager.setFragmentResultListener(POST_OPEN_REQ_KEY, requireActivity()) { _, bundle ->
             val postId = bundle.getLong(POST_ID)
             val pos = bundle.getInt(POST_POS)
@@ -95,10 +101,7 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(action)
         }
         
-        lifecycleScope.launch {
-            delay(50)
-            viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
-        }
+        
     }
     
     
@@ -152,6 +155,14 @@ class ProfileFragment : Fragment() {
     }
     
     
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            delay(50)
+            viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
+        }
+    }
+    
     override fun onPause() {
         super.onPause()
         /*binding.viewPagerPostAndTagPhoto.adapter = null*/
@@ -171,9 +182,7 @@ class ProfileFragment : Fragment() {
             if (findNavController().currentDestination?.id == R.id.profileMenu2) return@abc
             findNavController().navigate(R.id.action_profileFragment_to_profileMenu2)
         }
-        if (::lastStatusProfSummary.isInitialized) {
-            bindAllDetails(lastStatusProfSummary)
-        }
+        
         binding.followersCount.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId)) }
         binding.followerLabel.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId)) }
         binding.followingCount.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId)) }
@@ -195,9 +204,9 @@ class ProfileFragment : Fragment() {
         viewModel.profileSummary.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
             binding.nestedScroll.visibility = View.VISIBLE
-            if (::lastStatusProfSummary.isInitialized) bindFollowDetails(it)
-            else bindAllDetails(it!!)
-            this.lastStatusProfSummary = it
+            it?.let {
+                bindAllDetails(it)
+            }
         }
         
         db.profileDao().getPostCount(profileId).observe(viewLifecycleOwner) {
@@ -255,8 +264,7 @@ class ProfileFragment : Fragment() {
             }
             
             // mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
-            val url = db.cacheDao().getCachedProfileImage(profileId) ?: it.profilePicUrl
-            mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(url)
+            mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
             
             withContext(Dispatchers.Main) {
                 binding.profilePic.setImageBitmap(mainViewModel.profileImageBitmap)
@@ -320,6 +328,8 @@ class ProfileFragment : Fragment() {
             db.followDao().deleteFollow(mainViewModel.loggedInProfileId!!, profileId)
             viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
         }
+        
+        mainViewModel.removeProfileFromFollowingList.postValue(profilePosInFollowingList)
     }
     
     private fun shareAction() {

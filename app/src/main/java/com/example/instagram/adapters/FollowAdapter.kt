@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FollowAdapter(
-    private val openProfile: (Long) -> Unit,
+    private val openProfile: (Long, Int) -> Unit,
 ) : RecyclerView.Adapter<FollowAdapter.ViewHolder>() {
     private var users: MutableList<FollowList> = mutableListOf()
     private lateinit var imageUtil: ImageUtil
@@ -33,7 +33,7 @@ class FollowAdapter(
         init {
             view.setOnClickListener {
                 val id = users[adapterPosition].profile_id
-                openProfile(id)
+                openProfile(id, adapterPosition)
             }
         }
     }
@@ -63,4 +63,10 @@ class FollowAdapter(
         this.users = newList
         notifyDataSetChanged()
     }
+    
+    fun removeUserAt(pos: Int) {
+        users.removeAt(pos)
+        notifyItemRemoved(pos)
+    }
+    
 }

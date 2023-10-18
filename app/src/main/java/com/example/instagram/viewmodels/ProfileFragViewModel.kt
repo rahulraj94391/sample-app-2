@@ -1,6 +1,7 @@
 package com.example.instagram.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -18,7 +19,7 @@ class ProfileFragViewModel(app: Application) : AndroidViewModel(app) {
     
     suspend fun getProfileSummary(ownProfileId: Long, userProfileId: Long) {
         val profilePic = viewModelScope.async {
-            db.cacheDao().getCachedProfileImage(userProfileId) ?: imageUtil.getProfilePictureUrl(userProfileId) ?: ""
+            imageUtil.getProfilePictureUrl(userProfileId)
         }
         val fullNameBio = viewModelScope.async { db.profileDao().getFullNameBio(userProfileId) }
         val postCount = viewModelScope.async { db.postDao().getPostCount(userProfileId) }
@@ -29,7 +30,9 @@ class ProfileFragViewModel(app: Application) : AndroidViewModel(app) {
         
         val profSummary = ProfileSummary(
             username.await(),
-            profilePic.await(),
+            profilePic.await().also {
+                Log.d(TAG, "$it")
+            },
             fullNameBio.await().first_name,
             fullNameBio.await().last_name,
             fullNameBio.await().bio,

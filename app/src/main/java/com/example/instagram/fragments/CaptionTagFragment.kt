@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -53,15 +54,17 @@ class CaptionTagFragment : Fragment() {
         }
         
         binding.btnPost.setOnClickListener {
-            onPostClicked()
+            onPostBtnClicked()
         }
     }
     
-    private fun onPostClicked() {
-        val action = CaptionTagFragmentDirections.actionCaptionTagFragmentToUploadDialog()
-        findNavController().navigate(action)
+    private fun onPostBtnClicked() {
+        /*val action = CaptionTagFragmentDirections.actionCaptionTagFragmentToUploadDialog()
+        findNavController().navigate(action)*/
         viewModel.finalTextToUpload = binding.postDesc.text.toString()
         viewModel.insertPost()
+        Toast.makeText(requireContext(), "Post is being uploaded.", Toast.LENGTH_LONG).show()
+        findNavController().popBackStack(R.id.postFragment, true)
     }
     
     inner class CustomTextWatcher : TextWatcher {

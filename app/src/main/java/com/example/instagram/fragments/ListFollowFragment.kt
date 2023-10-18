@@ -1,7 +1,6 @@
 package com.example.instagram.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,8 +24,7 @@ const val TYPE_FOLLOWING = "Following"
 const val NO_FOLLOWINGS = "No Following"
 const val NO_FOLLOWERS = "No Follower"
 
-//private const val TAG = "CommTag_ListFollowFragment"
-private const val TAG = "MEM_LEAK"
+private const val TAG = "CommTag_ListFollowFragment"
 
 class ListFollowFragment : Fragment() {
     private var _binding: FragmentListFollowBinding? = null
@@ -50,16 +48,20 @@ class ListFollowFragment : Fragment() {
         return binding.root
     }
     
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause: ")
-    }
-    
     override fun onDestroyView() {
-        Log.d(TAG, "onDestroyView: ")
         binding.usersRV.adapter = null
         _binding = null
         super.onDestroyView()
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.removeProfileFromFollowingList.observe(viewLifecycleOwner) removeNotRequired@{
+            if (it == -1) return@removeNotRequired
+            adapter.removeUserAt(it)
+            showInst()
+            mainViewModel.removeProfileFromFollowingList.postValue(-1)
+        }
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,6 +72,7 @@ class ListFollowFragment : Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
+        
         
         val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         divider.dividerInsetStart = dpToPx(84)
@@ -90,11 +93,19 @@ class ListFollowFragment : Fragment() {
         }
     }
     
-    private fun openProfile(profileId: Long) {
+    private fun showInst() {
+        if (adapter.itemCount < 1) {
+            val ins = if (args.type == TYPE_FOLLOWER) NO_FOLLOWERS else NO_FOLLOWINGS
+            binding.ins.text = ins
+            binding.ins.visibility = View.VISIBLE
+        }
+    }
+    
+    private fun openProfile(profileId: Long, pos: Int) {
         val action = if (mainViewModel.profileOpenCount == 1) { // popInclusive = true
-            ListFollowFragmentDirections.actionListFollowFragmentToProfileFragmentPopInclusiveTrue(profileId, true)
+            ListFollowFragmentDirections.actionListFollowFragmentToProfileFragmentPopInclusiveTrue(profileId, true, -1)
         } else { // popInclusive = false
-            ListFollowFragmentDirections.actionListFollowFragmentToProfileFragment(profileId, true)
+            ListFollowFragmentDirections.actionListFollowFragmentToProfileFragment(profileId, true, pos)
         }
         findNavController().navigate(action)
         

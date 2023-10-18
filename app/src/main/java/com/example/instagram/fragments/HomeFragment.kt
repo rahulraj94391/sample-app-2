@@ -111,7 +111,7 @@ class HomeFragment : Fragment() {
     
     private fun openProfile(pos: Int) {
         val profileId: Long = homeAdapter.getProfileId(pos)
-        val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment(profileId, false)
+        val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment(profileId, false, -1)
         findNavController().navigate(action)
     }
     

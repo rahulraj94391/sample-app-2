@@ -41,15 +41,15 @@ class HomeActivity : AppCompatActivity() {
     
     
     override fun onCreate(savedInstanceState: Bundle?) {
-        /*IMPORTANT    ----    START */ // first put the current user id in the Main ViewModel as the Home fragment starts creating once the Activity
+        /*IMPORTANT    ----    START */
+        // first put the current user id in the Main ViewModel as the Home fragment starts creating once the Activity
         // reaches the {DataBindingUtil.setContentView(this, R.layout.activity_home)} line as the home fragment is the
         // first screen that shows up to the user.
         // without this the app crashes as the view model factory uses logged in id from main view model to create the home fragment.
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         val sharedPreferences = getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
-        mainViewModel.loggedInProfileId = sharedPreferences.getLong(
-            MSharedPreferences.LOGGED_IN_PROFILE_ID, -1
-        )/*IMPORTANT    ----    END */
+        mainViewModel.loggedInProfileId = sharedPreferences.getLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
+        /*IMPORTANT    ----    END */
         
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)

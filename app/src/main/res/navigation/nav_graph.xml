@@ -97,6 +97,9 @@
         <argument
             android:name="upBtn"
             app:argType="boolean" />
+        <argument
+            android:name="profilePosInFollowingList"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/onePostFragment"

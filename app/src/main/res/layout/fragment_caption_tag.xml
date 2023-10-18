@@ -51,6 +51,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+
         <EditText
             android:id="@+id/postDesc"
             android:layout_width="0dp"
@@ -60,15 +61,14 @@
             android:gravity="top"
             android:hint="@string/what_s_on_your_mind"
             android:importantForAutofill="no"
-
             android:maxLength="1000"
             android:padding="4dp"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/tagPeopleCard"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBar" />
-
+            app:layout_constraintTop_toBottomOf="@+id/appBar"
+            app:layout_constraintVertical_bias="0.125" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/tagPeopleCard"

@@ -12,6 +12,7 @@
         android:layout_margin="8dp"
         android:gravity="center"
         android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

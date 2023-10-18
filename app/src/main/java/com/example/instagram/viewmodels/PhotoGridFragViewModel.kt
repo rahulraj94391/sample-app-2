@@ -9,8 +9,7 @@ import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.model.OnePhotoPerPost
 import kotlinx.coroutines.async
 
-//private const val TAG = "CommTag_PhotoGridFragViewModel"
-private const val TAG = "MEM_LEAK"
+private const val TAG = "CommTag_PhotoGridFragViewModel"
 
 class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
     private val db: AppDatabase = AppDatabase.getDatabase(app)
@@ -41,10 +40,10 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
         }
         val postIds = postIdsAsync.await()
         
-//        val urlsOfOnePhotoPerPost = imageUtil.getOneImagePerPost(defList.await())
-        val onePhotoPerPost =  mutableListOf<OnePhotoPerPost>()
+        // val urlsOfOnePhotoPerPost = imageUtil.getOneImagePerPost(defList.await())
+        val onePhotoPerPost = mutableListOf<OnePhotoPerPost>()
         for (postId in postIds) {
-            val photoLink = db.cacheDao().getFirstImgFromEachPost(postId)?: ""
+            val photoLink = db.cacheDao().getFirstImgFromEachPost(postId) ?: ""
             onePhotoPerPost.add(OnePhotoPerPost(postId, photoLink))
         }
         usersTaggedPost.postValue(onePhotoPerPost.asReversed())

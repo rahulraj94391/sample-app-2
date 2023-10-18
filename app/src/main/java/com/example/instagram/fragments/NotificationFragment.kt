@@ -130,7 +130,7 @@ class NotificationFragment : Fragment() {
     }
     
     private fun openProfile(profileId: Long) {
-        val action = NotificationFragmentDirections.actionNotificationFragmentToProfileFragment(profileId, false)
+        val action = NotificationFragmentDirections.actionNotificationFragmentToProfileFragment(profileId, false, -1)
         findNavController().navigate(action)
     }
     

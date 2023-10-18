@@ -222,7 +222,7 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
     
     
     private fun gotoProfileScreen(profileId: Long?) {
-        val action = profileId?.let { SearchFragmentDirections.actionSearchFragmentToProfileFragment(it, false) }
+        val action = profileId?.let { SearchFragmentDirections.actionSearchFragmentToProfileFragment(it, false, -1) }
         if (action != null) {
             try {
                 findNavController().navigate(action)

@@ -54,15 +54,15 @@ class OnePostFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var postPhotoAdapter: PostAdapter
     private lateinit var db: AppDatabase
-    private val args: OnePostFragmentArgs? by navArgs()
+    private val args: OnePostFragmentArgs by navArgs()
     private var profileId = MutableLiveData<Long>()
     private lateinit var imageUtil: ImageUtil
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = AppDatabase.getDatabase(requireContext())
-        postId = args!!.postId
-        postPos = args!!.pos
+        postId = args.postId
+        postPos = args.pos
         lifecycleScope.launch {
             val profileId = db.postDao().getProfileId(postId)
             this@OnePostFragment.profileId.postValue(profileId)
@@ -200,7 +200,7 @@ class OnePostFragment : Fragment() {
     }
     
     private fun openProfile() {
-        val a = OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId.value!!, false)
+        val a = OnePostFragmentDirections.actionOnePostFragmentToProfileFragment(profileId.value!!, false, -1)
         findNavController().navigate(a)
     }
     
