@@ -12,7 +12,10 @@ interface PostDao {
     suspend fun insertPost(post: Post): Long
     
     @Query("SELECT post_id FROM post WHERE profile_id = :profileId ORDER BY post_time DESC LIMIT 15 OFFSET :offset")
-    suspend fun getAllPostOfProfile(profileId: Long, offset: Int): MutableList<Long>
+    suspend fun getPostOfProfile(profileId: Long, offset: Int): MutableList<Long>
+    
+    @Query("SELECT post_id FROM post WHERE profile_id = :profileId ORDER BY post_time DESC")
+    suspend fun getAllPostOfProfile(profileId: Long): MutableList<Long>
     
     @Query("SELECT COUNT(profile_id) FROM post WHERE profile_id = :profileId")
     suspend fun getPostCount(profileId: Long): Int

@@ -23,9 +23,10 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 
-private const val TAG = "ImageUtil"
+private const val TAG = "ImageUtil_CommTag"
 
 class ImageUtil(val context: Context) {
+    private val tempImageFiles = mutableListOf<String>()
     private val db = AppDatabase.getDatabase(context)
     private var firebaseFireStore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val errorBitmap: Bitmap = ContextCompat.getDrawable(context, R.drawable.person_24)!!.toBitmap()
@@ -33,9 +34,17 @@ class ImageUtil(val context: Context) {
     suspend fun getBitmap(url: String): Bitmap {
         Log.d(TAG, "getBitmap:")
         val fileName = db.cacheDao().getCachedImageFileNameIfPresent(url)
+        Log.d(TAG, "filename = $fileName")
         return if (fileName == null) newURLFound(url)
         else getImageFromCache("$fileName") ?: onEntryPresentAndFileMissing(url, fileName)
     }
+    
+    suspend fun getBitmapPath() {
+        // val fileName = db.cacheDao().getCachedImageFileNameIfPresent(url)
+        
+    }
+    
+    fun addTempFileNameToList(fileName: String) = tempImageFiles.add(fileName)
     
     private suspend fun onEntryPresentAndFileMissing(url: String, fileName: Long): Bitmap {
         Log.d(TAG, "onEntryPresentAndFileMissing")
@@ -55,7 +64,7 @@ class ImageUtil(val context: Context) {
     
     private fun getImageFromCache(fileName: String): Bitmap? {
         Log.d(TAG, "getImageFromCache: ")
-        val file = File(context.cacheDir, fileName)
+        val file = File(context.cacheDir, "$fileName.jpeg")
         var bitmap: Bitmap? = null
         try {
             bitmap = BitmapFactory.decodeStream(FileInputStream(file))
@@ -67,11 +76,9 @@ class ImageUtil(val context: Context) {
     
     private suspend fun putImageInCache(fileName: String, image: Bitmap) {
         Log.d(TAG, "putImageInCache:")
-        val file = File(context.cacheDir, fileName)
+        val file = File(context.cacheDir, "$fileName.jpeg")
         try {
-            val outputStream = withContext(Dispatchers.IO) {
-                FileOutputStream(file)
-            }
+            val outputStream = FileOutputStream(file)
             image.compress(Bitmap.CompressFormat.JPEG, 20, outputStream)
             withContext(Dispatchers.IO) {
                 outputStream.flush()
@@ -82,7 +89,7 @@ class ImageUtil(val context: Context) {
         }
     }
     
-    private suspend fun downloadBitmap(imageUrl: String): Bitmap? {
+    suspend fun downloadBitmap(imageUrl: String): Bitmap? {
         Log.d(TAG, "downloadBitmap:")
         val photo = CoroutineScope(Dispatchers.IO).async {
             try {
@@ -148,7 +155,10 @@ class ImageUtil(val context: Context) {
         val finalList = mutableListOf<Uri>()
         postImagesUri.forEach {
             val downscaledBitmap = getBitmapFromUri(it, desiredRatio, desiredHeight)!!
-            val tempFile = File(context.cacheDir, "${System.currentTimeMillis()}.jpeg")
+            val tempFileName = "${System.currentTimeMillis()}.jpeg"
+            tempImageFiles.add(tempFileName)
+            Log.d(TAG, "temp file names in getUriDownscaleImages method = $tempFileName")
+            val tempFile = File(context.cacheDir, tempFileName)
             try {
                 val fos = FileOutputStream(tempFile)
                 downscaledBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fos)
@@ -229,6 +239,15 @@ class ImageUtil(val context: Context) {
         return imgURLList
     }
     
+    
+    fun clearTempFiles() {
+        for (fileName in tempImageFiles) {
+            val fileToDelete = File(context.cacheDir, fileName)
+            val deleted = fileToDelete.delete()
+            Log.d(TAG, "is temp file($fileName) deleted? = $deleted")
+        }
+        tempImageFiles.clear()
+    }
     
     /*fun uploadProfileImage(imageUriToUpload: Uri, docId: String = "", loggedInProfileId: Long) {
         imageUriToUpload.let { uri ->

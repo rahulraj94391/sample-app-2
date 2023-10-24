@@ -215,6 +215,12 @@ class CreateNewAccountScreenTwoFragment : Fragment() {
         return profileImageUrl
     }
     
+    
+    override fun onDestroy() {
+        imageUtil.clearTempFiles()
+        super.onDestroy()
+    }
+    
     private suspend fun uploadProfileImage() {
         profilePicUriToUpload.let { urii ->
             val uri = imageUtil.getUriDownscaleImages(mutableListOf(urii))

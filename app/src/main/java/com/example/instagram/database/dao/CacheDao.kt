@@ -28,4 +28,8 @@ interface CacheDao {
     
     @Query("select imageUrl from ImageCache where imageUrl like '%'|| :postId || '_0' || '%'")
     suspend fun getFirstImgFromEachPost(postId: Long): String?
+    
+    @Query("SELECT fileName from ImageCache where imageUrl like '%'|| :profileId || '%'")
+    suspend fun getFileNameForProfilePictureIfPresent(profileId: Long): Long?
+    
 }

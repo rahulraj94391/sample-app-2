@@ -102,15 +102,8 @@ class ListFollowFragment : Fragment() {
     }
     
     private fun openProfile(profileId: Long, pos: Int) {
-        val action = if (mainViewModel.profileOpenCount == 1) { // popInclusive = true
-            ListFollowFragmentDirections.actionListFollowFragmentToProfileFragmentPopInclusiveTrue(profileId, true, -1)
-        } else { // popInclusive = false
-            ListFollowFragmentDirections.actionListFollowFragmentToProfileFragment(profileId, true, pos)
-        }
+        val action = ListFollowFragmentDirections.actionListFollowFragmentToProfileFragment(profileId, true, -1)
         findNavController().navigate(action)
-        
-        if (mainViewModel.profileOpenCount == 0)
-            mainViewModel.profileOpenCount = 1
     }
     
     private fun dpToPx(dpValue: Int): Int {

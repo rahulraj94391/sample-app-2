@@ -200,19 +200,10 @@
             app:enterAnim="@anim/enter_from_right"
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
-            app:popExitAnim="@anim/exit_to_right" />
-        <action
-            android:id="@+id/action_listFollowFragment_to_profileFragment_PopInclusive_True"
-            app:destination="@id/profileFragment"
-            app:enterAnim="@anim/enter_from_right"
-            app:exitAnim="@anim/exit_to_left"
-            app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right"
             app:popUpTo="@id/profileFragment"
-            app:popUpToInclusive="true"
+            app:popUpToInclusive="true" />
 
-
-            />
     </fragment>
     <fragment
         android:id="@+id/profilePictureFragment"
@@ -223,7 +214,17 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.instagram.fragments.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_deleteAccountFragment"
+            app:destination="@id/deleteAccountFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right"
+
+            />
+    </fragment>
     <fragment
         android:id="@+id/captionTagFragment"
         android:name="com.example.instagram.fragments.CaptionTagFragment"
@@ -251,6 +252,14 @@
         android:id="@+id/uploadDialog"
         android:name="com.example.instagram.dialog.UploadDialog"
         android:label="UploadDialog" />
+
+    <dialog
+        android:id="@+id/downloadDialog"
+        android:name="com.example.instagram.dialog.UploadDialog"
+        android:label="UploadDialog"
+        tools:layout="@layout/dialog_download_progress"
+        />
+
     <fragment
         android:id="@+id/notificationFragment"
         android:name="com.example.instagram.fragments.NotificationFragment"
@@ -275,7 +284,14 @@
         android:id="@+id/latestChatsFragment"
         android:name="com.example.instagram.fragments.LatestChatsFragment"
         android:label="LatestChatsFragment"
-        tools:layout="@layout/fragment_latest_chats"
-
-        />
+        tools:layout="@layout/fragment_latest_chats" />
+    <fragment
+        android:id="@+id/deleteAccountFragment"
+        android:name="com.example.instagram.fragments.DeleteAccountFragment"
+        android:label="fragment_delete_account"
+        tools:layout="@layout/fragment_delete_account" >
+        <action
+            android:id="@+id/action_deleteAccountFragment_to_downloadDialog"
+            app:destination="@id/downloadDialog" />
+    </fragment>
 </navigation>

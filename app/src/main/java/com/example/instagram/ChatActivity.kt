@@ -12,6 +12,7 @@ import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
@@ -216,6 +217,7 @@ class ChatActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE)
         haptics = Haptics(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat)
         chatViewModel = ViewModelProvider(this)[ChatViewModel::class.java]

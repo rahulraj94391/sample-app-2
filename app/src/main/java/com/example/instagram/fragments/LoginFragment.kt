@@ -47,14 +47,14 @@ class LoginFragment : Fragment() {
         binding.createNewAccountBtn.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_createNewAccountScreenOneFragment)
         }
-        binding.loginBtn.setOnClickListener { performLogin() }
+        binding.loginBtn.setOnClickListener { onLogin() }
         binding.passwordField.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_GO) performLogin()
+            if (actionId == EditorInfo.IME_ACTION_GO) onLogin()
             true
         }
     }
     
-    private fun performLogin() {
+    private fun onLogin() {
         val username = binding.usernameField.text.toString().trim()
         val password = binding.passwordField.text.toString()
         if (username.isBlank() || password.isBlank()) {

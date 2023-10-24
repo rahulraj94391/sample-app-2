@@ -26,8 +26,8 @@ const val LIST_REF_KEY: String = "list_ref"
 const val USER_PROF_KEY = "userProf"
 const val DEL_POST_REQ_KEY = "deletePostReqKey"
 
-//private const val TAG = "CommTag_PhotoGridFragment"
-private const val TAG = "MEM_LEAK"
+private const val TAG = "PhotoGridFragment_CommTag"
+//private const val TAG = "MEM_LEAK"
 
 class PhotoGridFragment : Fragment() {
     private var _binding: FragmentPhotoGridBinding? = null
@@ -56,7 +56,6 @@ class PhotoGridFragment : Fragment() {
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate: Photo_Grid_Fragment")
         super.onCreate(savedInstanceState)
         requireArguments().let {
             listRef = it.getInt(LIST_REF_KEY)
@@ -65,7 +64,6 @@ class PhotoGridFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        Log.d(TAG, "onCreateView: Photo_Grid_Fragment")
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_photo_grid, container, false)
         return binding.root
     }
@@ -75,18 +73,7 @@ class PhotoGridFragment : Fragment() {
         requireActivity().supportFragmentManager.setFragmentResult(POST_OPEN_REQ_KEY, bundleOf(POST_ID to postId, POST_POS to pos))
     }
     
-    override fun onPause() {
-        Log.d(TAG, "onPause: Photo_Grid_Fragment")
-        super.onPause()
-    }
-    
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop: Photo_Grid_Fragment")
-    }
-    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(TAG, "onViewCreated: Photo_Grid_Fragment")
         super.onViewCreated(view, savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         viewModel = ViewModelProvider(this)[PhotoGridFragViewModel::class.java]
@@ -105,7 +92,9 @@ class PhotoGridFragment : Fragment() {
         if (listRef == 0) {
             lifecycleScope.launch {
                 delay(50)
-                viewModel.getProfilePost(userProfId, userPostedPhotoAdapter.itemCount)
+                Log.d(TAG, "List Type 0: userId = $userProfId, itemCount = ${userPostedPhotoAdapter.itemCount}")
+                userPostedPhotoAdapter.clearList()
+                viewModel.getProfilePost(userProfId, 0)
             }
             viewModel.usersPost.observe(viewLifecycleOwner) {
                 mainViewModel.startProfileRefresh.postValue(false)
@@ -128,12 +117,16 @@ class PhotoGridFragment : Fragment() {
                 
                 binding.ins1.visibility = View.INVISIBLE
                 binding.gridOfPosts.visibility = View.VISIBLE
-                userPostedPhotoAdapter.addNewPosts(it)
+                
+                if (it.size != 0)
+                    userPostedPhotoAdapter.addNewPosts(it)
             }
         } else {
             lifecycleScope.launch {
                 delay(50)
-                viewModel.getAllPostWhereProfileIsTagged(userProfId, userPostedPhotoAdapter.itemCount)
+                Log.d(TAG, "List Type 0: userId = $userProfId, itemCount = ${userPostedPhotoAdapter.itemCount}")
+                userPostedPhotoAdapter.clearList()
+                viewModel.getAllPostWhereProfileIsTagged(userProfId, 0)
             }
             viewModel.usersTaggedPost.observe(viewLifecycleOwner) {
                 binding.loadingProgressBar.visibility = View.GONE
@@ -143,7 +136,8 @@ class PhotoGridFragment : Fragment() {
                 }
                 binding.ins2.visibility = View.INVISIBLE
                 binding.gridOfPosts.visibility = View.VISIBLE
-                userPostedPhotoAdapter.addNewPosts(it)
+                if (it.size != 0)
+                    userPostedPhotoAdapter.addNewPosts(it)
             }
         }
         
@@ -170,11 +164,13 @@ class PhotoGridFragment : Fragment() {
                     isScrolling = false
                     if (listRef == 0) {
                         lifecycleScope.launch {
+                            Log.d(TAG, "List Type 0: userId = $userProfId, itemCount = ${userPostedPhotoAdapter.itemCount} :: From scroll Listener")
                             viewModel.getProfilePost(userProfId, userPostedPhotoAdapter.itemCount)
                         }
                         
                     } else {
                         lifecycleScope.launch {
+                            Log.d(TAG, "List Type 1: userId = $userProfId, itemCount = ${userPostedPhotoAdapter.itemCount} :: From scroll Listener")
                             viewModel.getAllPostWhereProfileIsTagged(userProfId, userPostedPhotoAdapter.itemCount)
                         }
                     }

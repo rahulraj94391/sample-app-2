@@ -149,6 +149,30 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="deleteAccountFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1476" />
+                            <option name="y" value="767" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="downloadDialog">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1732" />
+                            <option name="y" value="792" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="editProfileFragment">
                     <value>
                       <LayoutPositions>
@@ -182,6 +206,11 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_homeFragment_to_commentSheet">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_homeFragment_to_latestChatsFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -265,8 +294,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="679" />
-                            <option name="y" value="388" />
+                            <option name="x" value="962" />
+                            <option name="y" value="323" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -379,8 +408,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="952" />
-                            <option name="y" value="390" />
+                            <option name="x" value="1131" />
+                            <option name="y" value="17" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -436,6 +465,15 @@
                             <option name="x" value="1202" />
                             <option name="y" value="771" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_settingsFragment_to_deleteAccountFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>

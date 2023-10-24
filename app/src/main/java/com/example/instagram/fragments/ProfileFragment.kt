@@ -14,7 +14,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -101,12 +102,12 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(action)
         }
         
-        
     }
     
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
+        binding.viewPagerPostAndTagPhoto.adapter = ScreenSlidePagerAdapter(childFragmentManager, lifecycle)
         return binding.root
     }
     
@@ -133,18 +134,6 @@ class ProfileFragment : Fragment() {
             }
         }
         
-        binding.viewPagerPostAndTagPhoto.adapter = ScreenSlidePagerAdapter(requireActivity())
-        TabLayoutMediator(binding.tabLayout, binding.viewPagerPostAndTagPhoto) { tab, position ->
-            when (position) {
-                0 -> {
-                    tab.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.grid)
-                }
-                
-                1 -> {
-                    tab.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.tag)
-                }
-            }
-        }.attach()
         
         // todo: IF App crashed due to viewpager in profile fragment
         binding.viewPagerPostAndTagPhoto.isSaveEnabled = true
@@ -157,16 +146,16 @@ class ProfileFragment : Fragment() {
     
     override fun onResume() {
         super.onResume()
+        TabLayoutMediator(binding.tabLayout, binding.viewPagerPostAndTagPhoto) { tab, position ->
+            when (position) {
+                0 -> tab.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.grid)
+                1 -> tab.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.tag)
+            }
+        }.attach()
         lifecycleScope.launch {
             delay(50)
             viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
         }
-    }
-    
-    override fun onPause() {
-        super.onPause()
-        /*binding.viewPagerPostAndTagPhoto.adapter = null*/
-        
     }
     
     private fun setProfilePicTransition() {
@@ -259,6 +248,7 @@ class ProfileFragment : Fragment() {
             if (it.profilePicUrl == null) {
                 return@launch
             }
+            
             withContext(Dispatchers.Main) {
                 setProfilePicTransition()
             }
@@ -373,7 +363,7 @@ class ProfileFragment : Fragment() {
         return uri
     }
     
-    private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
+    private inner class ScreenSlidePagerAdapter(fm: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fm, lifecycle) {
         override fun getItemCount(): Int {
             return 2
         }

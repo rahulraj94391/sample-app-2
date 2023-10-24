@@ -14,6 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val TAG = "FollowAdapter_CommTag"
+
 class FollowAdapter(
     private val openProfile: (Long, Int) -> Unit,
 ) : RecyclerView.Adapter<FollowAdapter.ViewHolder>() {
@@ -62,6 +64,7 @@ class FollowAdapter(
     fun updateList(newList: MutableList<FollowList>) {
         this.users = newList
         notifyDataSetChanged()
+        
     }
     
     fun removeUserAt(pos: Int) {

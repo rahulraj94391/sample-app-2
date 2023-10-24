@@ -1,10 +1,27 @@
 package com.example.instagram.database.entity
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "chat")
+@Entity(
+    tableName = "chat",
+    foreignKeys = [
+        ForeignKey(
+            entity = Profile::class,
+            parentColumns = arrayOf("profile_id"),
+            childColumns = arrayOf("senderId"),
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = Profile::class,
+            parentColumns = arrayOf("profile_id"),
+            childColumns = arrayOf("receiverId"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class Chat(
     var senderId: Long,
     var receiverId: Long,

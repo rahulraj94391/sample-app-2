@@ -180,6 +180,40 @@
                     app:layout_constraintTop_toBottomOf="@+id/biometricDesc"
                     app:layout_constraintVertical_bias="0" />
 
+                <LinearLayout
+                    android:id="@+id/deleteAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/divider2">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:paddingStart="8dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp"
+                        android:text="Delete Account Permanently"
+                        android:textColor="@color/red"
+                        android:textSize="16sp"
+                         />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/arrow_right_24"
+                        app:tint="@color/red" />
+
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

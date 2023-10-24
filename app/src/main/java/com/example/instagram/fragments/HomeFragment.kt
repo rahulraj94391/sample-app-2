@@ -144,7 +144,7 @@ class HomeFragment : Fragment() {
             MaterialCheckBox.STATE_CHECKED
         } else {
             homeViewModel.removeSavedPost(mainViewModel.loggedInProfileId!!, postId)
-            //            view.setButtonIconTintList()
+            // view.setButtonIconTintList()
             MaterialCheckBox.STATE_UNCHECKED
         }
         

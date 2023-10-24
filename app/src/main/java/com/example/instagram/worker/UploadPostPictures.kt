@@ -63,7 +63,7 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         Log.d(TAG, "CHECK-POINT 3")
         val downscaleImageUris = imageUtil.getUriDownscaleImages(stringToUri(originalUri))
         Log.d(TAG, "CHECK-POINT 4")
-        uploadPostImages(postId, downscaleImageUris)
+        uploadPostImages(postId, downscaleImageUris, imageUtil)
         Log.d(TAG, "CHECK-POINT 5")
         
         tags!!.let {
@@ -93,12 +93,13 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         return list
     }
     
-    private fun uploadPostImages(postId: Long, listOfImageUris: List<Uri>) {
+    private fun uploadPostImages(postId: Long, listOfImageUris: List<Uri>, imageUtil: ImageUtil) {
         for (i in listOfImageUris.indices) {
             val storageRef = storageRef.reference.child("${postId}_$i")
             val imageUri = listOfImageUris[i]
             imageUri.let { uri ->
                 storageRef.putFile(uri).addOnCompleteListener { task ->
+                    
                     if (task.isSuccessful) {
                         Log.d(TAG, "upload to storage complete.")
                         storageRef.downloadUrl.addOnSuccessListener { uri2 ->
@@ -128,5 +129,6 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
                 }
             }
         }
+        imageUtil.clearTempFiles()
     }
 }

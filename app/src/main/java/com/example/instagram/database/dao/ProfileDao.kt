@@ -2,6 +2,7 @@ package com.example.instagram.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -28,4 +29,10 @@ interface ProfileDao {
     
     @Query("SELECT COUNT(post_id) FROM post WHERE profile_id = :profileId")
     fun getPostCount(profileId: Long): LiveData<Int>
+    
+    @Query("SELECT * FROM profile where profile_id = :profileId")
+    suspend fun getProfile(profileId: Long): Profile
+    
+    @Delete
+    suspend fun deleteProfile(profile: Profile)
 }

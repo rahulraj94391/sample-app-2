@@ -27,6 +27,7 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 
 private const val TAG = "CommTag_EditProfileFragment"
@@ -142,6 +143,11 @@ class EditProfileFragment : Fragment() {
         return image
     }
     
+    override fun onDestroy() {
+        super.onDestroy()
+        imageUtil.clearTempFiles()
+    }
+    
     private suspend fun uploadProfileImage(profileId: Long) {
         mainViewModel.profileImageBitmap = null
         binding.profileImage.alpha = 0.3F
@@ -164,6 +170,16 @@ class EditProfileFragment : Fragment() {
                                     lifecycleScope.launch {
                                         // val updateRowCount = db.cacheDao().updateProfilePicImageCacheUrl(uri2.toString(), profileId)
                                         // Log.d(TAG, "profile picture is updated in DB\nrows affected = $updateRowCount")
+                                        val prevProfilePicFileName = db.cacheDao().getFileNameForProfilePictureIfPresent(profileId)
+                                        prevProfilePicFileName?.let {
+                                            val fileToDelete = File(context?.cacheDir, "$prevProfilePicFileName.jpeg")
+                                            val deleted = fileToDelete.delete()
+                                            Log.d(TAG, "is temp file($prevProfilePicFileName.jpeg) deleted? = $deleted")
+                                        }
+                                        
+                                        val isPrevProfileCacheDeleted = db.cacheDao().deleteProfilePicImageCacheUrl(profileId)
+                                        Log.d(TAG, "prev PP Cache deleted? = $isPrevProfileCacheDeleted")
+                                        
                                         
                                         val delete = db.cacheDao().deleteProfilePicImageCacheUrl(profileId)
                                         Log.d(TAG, "delete row old image cache record = $delete")
@@ -195,6 +211,8 @@ class EditProfileFragment : Fragment() {
                                 }
                             }
                         }
+                        
+                        imageUtil.clearTempFiles() // clear if any temp file has been created.
                     }
                 }
             }

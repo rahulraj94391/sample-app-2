@@ -19,7 +19,7 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
     suspend fun getProfilePost(profileId: Long, itemCount: Int) {
         Log.e(TAG, "getProfilePost: called in photo-grid-viewmodel")
         val postIdsAsync = viewModelScope.async {
-            db.postDao().getAllPostOfProfile(profileId = profileId, offset = itemCount)
+            db.postDao().getPostOfProfile(profileId = profileId, offset = itemCount)
         }
         val postIds = postIdsAsync.await()
         // val onePhotoPerPost = imageUtil.getOneImagePerPost(postIds.await())

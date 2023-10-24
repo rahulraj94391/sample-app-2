@@ -16,26 +16,25 @@ import androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
 import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.instagram.MainViewModel
 import com.example.instagram.R
 import com.example.instagram.databinding.FragmentSettingsBinding
 
-
 private const val TAG = "SettingsFragment_CommTag"
-
 const val SETTINGS_PREF_NAME = "settings_pref"
-
 const val DARK_MODE = 11
 const val LIGHT_MODE = 22
 const val AUTO = 33
 const val THEME_KEY = "theme_key"
-
 const val BIOMETRIC_KEY = "biometric"
 
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private lateinit var sharedPref: SharedPreferences
+    private lateinit var mainViewModel: MainViewModel
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +42,7 @@ class SettingsFragment : Fragment() {
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = DataBindingUtil.inflate(inflater, com.example.instagram.R.layout.fragment_settings, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false)
         return binding.root
     }
     
@@ -53,6 +52,7 @@ class SettingsFragment : Fragment() {
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
@@ -67,6 +67,20 @@ class SettingsFragment : Fragment() {
         }
         binding.biometricSwitch.isChecked = sharedPref.getBoolean(BIOMETRIC_KEY, false)
         binding.biometricSwitch.isEnabled = checkSupport() // enable switch when device supports biometric
+        
+        binding.deleteAccount.setOnClickListener {
+            /*it.isEnabled = false
+            
+            lifecycleScope.launch {
+                saveData(mainViewModel.loggedInProfileId!!)
+            }*/
+            
+            if (findNavController().currentDestination?.id != R.id.settingsFragment) return@setOnClickListener
+            
+            val action = SettingsFragmentDirections.actionSettingsFragmentToDeleteAccountFragment()
+            findNavController().navigate(action)
+            
+        }
     }
     
     private val biometricListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
@@ -108,4 +122,7 @@ class SettingsFragment : Fragment() {
         sharedPref.edit().putInt(THEME_KEY, LIGHT_MODE).apply()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
+    
+    
+    
 }
