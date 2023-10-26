@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.HomeActivity
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
-import com.example.instagram.adapters.HomeAdapter
+import com.example.instagram.adapters.PostListAdapter
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.databinding.FragmentHomeBinding
 import com.example.instagram.viewModelFactory.ViewModelFactory
@@ -28,7 +28,7 @@ private const val TAG = "HomeFragment_CommTag"
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var homeAdapter: HomeAdapter
+    private lateinit var homeAdapter: PostListAdapter
     private lateinit var homeViewModel: HomeFragViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var db: AppDatabase
@@ -53,7 +53,10 @@ class HomeFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeAdapter = HomeAdapter(homeViewModel.listOfPosts, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate)
+        
+        homeAdapter = PostListAdapter(homeViewModel.listOfPosts, false, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate) {
+            // do nothing here, we are not showing "option" btn on home screen, so no delete functionality is here.
+        }
         if (homeViewModel.isFirstTime) {
             homeViewModel.isFirstTime = false
             homeViewModel.addNewPostToList(mainViewModel.loggedInProfileId!!, 5, homeAdapter.itemCount)
@@ -86,8 +89,6 @@ class HomeFragment : Fragment() {
             }
             )
         }
-        
-        
         
         homeViewModel.newPostsLoaded.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
@@ -130,7 +131,7 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             delay(100)
             val likeString = homeViewModel.getFormattedLikeCount(postId)
-            val likePayload = HomeAdapter.LikePayload(likeString, postId, newState)
+            val likePayload = PostListAdapter.LikePayload(likeString, postId, newState)
             homeAdapter.notifyItemChanged(pos, likePayload)
         }
     }
@@ -150,7 +151,7 @@ class HomeFragment : Fragment() {
         
         lifecycleScope.launch {
             delay(100)
-            val savePayload = HomeAdapter.SavePayload(postId, newState)
+            val savePayload = PostListAdapter.SavePayload(postId, newState)
             homeAdapter.notifyItemChanged(pos, savePayload)
         }
     }

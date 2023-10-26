@@ -118,11 +118,6 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_captionTagFragment_to_uploadDialog">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -158,6 +153,15 @@
                             <option name="y" value="767" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_deleteAccountFragment_to_downloadDialog">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -166,8 +170,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="1732" />
-                            <option name="y" value="792" />
+                            <option name="x" value="1742" />
+                            <option name="y" value="768" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -294,8 +298,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="962" />
-                            <option name="y" value="323" />
+                            <option name="x" value="1234" />
+                            <option name="y" value="379" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -372,6 +376,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_profileFragment_to_profilePostFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -410,6 +419,18 @@
                           <Point>
                             <option name="x" value="1131" />
                             <option name="y" value="17" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="profilePostFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1504" />
+                            <option name="y" value="144" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -485,18 +506,6 @@
                           <Point>
                             <option name="x" value="-4" />
                             <option name="y" value="-796" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="uploadDialog">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="375" />
-                            <option name="y" value="-767" />
                           </Point>
                         </option>
                       </LayoutPositions>

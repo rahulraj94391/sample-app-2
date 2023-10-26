@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -35,6 +34,13 @@ class PhotoGridFragment : Fragment() {
     private lateinit var viewModel: PhotoGridFragViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var userPostedPhotoAdapter: PhotoGridAdapter
+    
+    /**
+     * If listRef == 0 it means the fragment is a myPost fragment.
+     * If listRef == 1 it means the fragment is taggedPost fragment.
+     * This reference is used to choose the correct query and get
+     * the data in the List<Post> to show to user.
+     */
     private var listRef: Int by Delegates.notNull()
     private var userProfId: Long by Delegates.notNull()
     
@@ -69,8 +75,12 @@ class PhotoGridFragment : Fragment() {
     }
     
     private fun onPostClicked(pos: Int) {
-        val postId = userPostedPhotoAdapter.getPostId(pos)
-        requireActivity().supportFragmentManager.setFragmentResult(POST_OPEN_REQ_KEY, bundleOf(POST_ID to postId, POST_POS to pos))
+        // val postId = userPostedPhotoAdapter.getPostId(pos)
+        // mainViewModel.openPost.postValue(Pair(postId, pos))
+        mainViewModel.openPost2.postValue(Pair(listRef, pos))
+        
+        // old method - results in crash.
+        /*(requireActivity() as HomeActivity).navHostFragment.childFragmentManager.setFragmentResult(POST_OPEN_REQ_KEY, bundleOf(POST_ID to postId, POST_POS to pos))*/
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

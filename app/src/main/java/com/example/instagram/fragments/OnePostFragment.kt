@@ -204,6 +204,11 @@ class OnePostFragment : Fragment() {
         findNavController().navigate(a)
     }
     
+    override fun onPause() {
+        super.onPause()
+        unregisterForContextMenu(binding.btnMore)
+    }
+    
     private var lastTap = 0L
     
     @SuppressLint("ClickableViewAccessibility")

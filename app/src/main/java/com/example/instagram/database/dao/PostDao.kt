@@ -32,6 +32,9 @@ interface PostDao {
     @Query("Select post_id FROM post WHERE profile_id IN (SELECT follower_id FROM follow WHERE owner_id = :loggedInId) ORDER BY post_time DESC LIMIT :limit OFFSET :offset")
     suspend fun getPostOfFollowers(loggedInId: Long, limit: Int, offset: Int): MutableList<Long>
     
+    @Query("select post_id from post where profile_id = :profileId order by post_time DESC Limit :limit Offset :offset")
+    suspend fun getAllPosts(profileId: Long, limit: Int, offset: Int): MutableList<Long>
+    
     @Query("DELETE FROM post WHERE post.post_id = :postId")
     suspend fun deletePost(postId: Long)
 }

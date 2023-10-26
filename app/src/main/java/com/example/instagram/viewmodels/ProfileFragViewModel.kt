@@ -20,7 +20,7 @@ class ProfileFragViewModel(app: Application) : AndroidViewModel(app) {
     suspend fun getProfileSummary(ownProfileId: Long, userProfileId: Long) {
         val profilePic = viewModelScope.async {
             /*imageUtil.getProfilePictureUrl(userProfileId)*/
-            db.cacheDao().getCachedProfileImage(userProfileId)
+            db.cacheDao().getCachedProfileImage(userProfileId) ?: imageUtil.getProfilePictureUrl(userProfileId) ?: ""
         }
         val fullNameBio = viewModelScope.async { db.profileDao().getFullNameBio(userProfileId) }
         val postCount = viewModelScope.async { db.postDao().getPostCount(userProfileId) }

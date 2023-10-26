@@ -46,7 +46,7 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
             val photoLink = db.cacheDao().getFirstImgFromEachPost(postId) ?: ""
             onePhotoPerPost.add(OnePhotoPerPost(postId, photoLink))
         }
-        usersTaggedPost.postValue(onePhotoPerPost.asReversed())
+        usersTaggedPost.postValue(onePhotoPerPost)
     }
     
     override fun onCleared() {

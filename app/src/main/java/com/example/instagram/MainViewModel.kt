@@ -16,8 +16,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
      * if this is null then opening 'loggedInUserId' profile page.
      */
     var profilePageId: Long? = null
+    
     var profileImageBitmap: Bitmap? = null
-    var profileOpenCount = 0
+    
+    /*var profileOpenCount = 0*/
     
     /**
      * When we swipe down to refresh on ProfileFragment, PhotoGridFragment is observing this live data,
@@ -40,5 +42,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
      */
     val removeProfileFromFollowingList = MutableLiveData(-1)
     
+    
+    /**
+     * PhotoGridFragment post value about the Post tapped by the user as Pair<Long, Int> [postId, pos(in adapter)].
+     * Profile fragment is observing this and opens post based on the info provided in the Pair<Long, Int>.
+     */
+    val openPost = MutableLiveData(Pair(-1L, -1))
+    
+    val openPost2 = MutableLiveData(Pair(-1, -1)) // pair(type, pos)
     
 }

@@ -123,14 +123,14 @@ class HomeActivity : AppCompatActivity() {
     }
     
     fun hideBottomNavigationView() {
-        BOTTOM_NAV_CURRENT_STATE = HIDDEN
         val bnv = binding.bottomNavView
+        CoroutineScope(Dispatchers.Main).launch {
+            bnv.visibility = View.GONE
+            delay(DURATION)
+        }
+        BOTTOM_NAV_CURRENT_STATE = HIDDEN
         bnv.clearAnimation()
         bnv.animate().alpha(0.0f).translationY(bnv.height.toFloat()).duration = DURATION
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(DURATION)
-            bnv.visibility = View.GONE
-        }
     }
     
     fun showBottomNavigationView() {
@@ -162,9 +162,9 @@ class HomeActivity : AppCompatActivity() {
     }
     
     override fun onBackPressed() {
-        if (navController.currentDestination?.id == R.id.profileFragment) {
+        /*if (navController.currentDestination?.id == R.id.profileFragment) {
             if (mainViewModel.profileOpenCount == 1) mainViewModel.profileOpenCount = 0
-        }
+        }*/
         super.onBackPressed()
     }
     

@@ -13,7 +13,6 @@ import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.database.model.Post
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 private const val TAG = "HomeFragViewModel_CommTag"
@@ -32,7 +31,7 @@ class HomeFragViewModel(private val currentProfile: Long, app: Application) : An
             val tempList: MutableList<Post> = mutableListOf()
             val postsToShowOnHome = db.postDao().getPostOfFollowers(loggedInProfileId, limit, itemCount)
             for (i in postsToShowOnHome) {
-                tempList.add(getPost2(i))
+                tempList.add(getPost(i))
             }
             listOfPosts.addAll(tempList)
             newPostsLoaded.postValue(tempList.size)
@@ -40,7 +39,7 @@ class HomeFragViewModel(private val currentProfile: Long, app: Application) : An
         }
     }
     
-    private suspend fun getPost2(postId: Long): Post {
+    private suspend fun getPost(postId: Long): Post {
         val profileId = getProfileId(postId)
         val profImageUrl = db.cacheDao().getCachedProfileImage(profileId) ?: imageUtil.getProfilePictureUrl(profileId) ?: ""
         
@@ -66,38 +65,6 @@ class HomeFragViewModel(private val currentProfile: Long, app: Application) : An
         )
         return post
     }
-    
-    private suspend fun getPost(postId: Long): Post {
-        val profileId = viewModelScope.async(Dispatchers.IO) { getProfileId(postId) }
-        val profImageUrl = viewModelScope.async(Dispatchers.IO) {
-            // imageUtil.getProfilePictureUrl(profileId.await())
-            db.cacheDao().getCachedProfileImage(profileId.await()) ?: imageUtil.getProfilePictureUrl(profileId.await()) ?: ""
-        }
-        val profileUsername = viewModelScope.async(Dispatchers.IO) { getProfileUserName(postId) }
-        val listOfPostPhotos = viewModelScope.async(Dispatchers.IO) {
-            db.cacheDao().getCachedPostImages(postId)
-        }
-        val isPostAlreadyLiked = viewModelScope.async(Dispatchers.IO) { getPostLikeStat(postId, currentProfile) }
-        val isPostAlreadySaved = viewModelScope.async(Dispatchers.IO) { getPostSaveStat(postId, currentProfile) }
-        val likeCount = viewModelScope.async(Dispatchers.IO) { getFormattedLikeCount(postId) }
-        val postDesc = viewModelScope.async(Dispatchers.IO) { getPostDesc(postId) }
-        val postTime = viewModelScope.async(Dispatchers.IO) { getFormattedTimeOfPost(postId) }
-        
-        val post = Post(
-            postId = postId,
-            profileId = profileId.await(),
-            profileImageUrl = profImageUrl.await(),
-            profileUsername = profileUsername.await(),
-            listOfPostPhotos = listOfPostPhotos.await(),
-            isPostAlreadyLiked = isPostAlreadyLiked.await(),
-            isPostAlreadySaved = isPostAlreadySaved.await(),
-            likeCount = likeCount.await(),
-            postDesc = postDesc.await(),
-            timeOfPost = postTime.await()
-        )
-        return post
-    }
-    
     
     fun likePost(postId: Long, profileId: Long) {
         viewModelScope.launch {

@@ -100,6 +100,13 @@
         <argument
             android:name="profilePosInFollowingList"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_profileFragment_to_profilePostFragment"
+            app:destination="@id/profilePostFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
     </fragment>
     <fragment
         android:id="@+id/onePostFragment"
@@ -202,9 +209,20 @@
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right"
             app:popUpTo="@id/profileFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="false" />
 
     </fragment>
+
+    <!--<action
+        android:id="@+id/action_listFollowFragment_to_profileFragment"
+        app:destination="@id/profileFragment"
+        app:enterAnim="@anim/enter_from_right"
+        app:exitAnim="@anim/exit_to_left"
+        app:popEnterAnim="@anim/enter_from_left"
+        app:popExitAnim="@anim/exit_to_right"
+        app:popUpTo="@id/profileFragment"
+        app:popUpToInclusive="true" />-->
+
     <fragment
         android:id="@+id/profilePictureFragment"
         android:name="com.example.instagram.fragments.ProfilePictureFragment"
@@ -214,7 +232,7 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.instagram.fragments.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings" >
+        tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_settingsFragment_to_deleteAccountFragment"
             app:destination="@id/deleteAccountFragment"
@@ -239,26 +257,18 @@
             app:popExitAnim="@anim/exit_to_right"
 
             />
-        <action
-            android:id="@+id/action_captionTagFragment_to_uploadDialog"
-            app:destination="@id/uploadDialog" />
     </fragment>
     <fragment
         android:id="@+id/tagFragment"
         android:name="com.example.instagram.fragments.TagFragment"
         android:label="TagFragment"
         tools:layout="@layout/fragment_tag" />
-    <dialog
-        android:id="@+id/uploadDialog"
-        android:name="com.example.instagram.dialog.UploadDialog"
-        android:label="UploadDialog" />
 
     <dialog
         android:id="@+id/downloadDialog"
         android:name="com.example.instagram.dialog.UploadDialog"
         android:label="UploadDialog"
-        tools:layout="@layout/dialog_download_progress"
-        />
+        tools:layout="@layout/dialog_download_progress" />
 
     <fragment
         android:id="@+id/notificationFragment"
@@ -289,9 +299,38 @@
         android:id="@+id/deleteAccountFragment"
         android:name="com.example.instagram.fragments.DeleteAccountFragment"
         android:label="fragment_delete_account"
-        tools:layout="@layout/fragment_delete_account" >
+        tools:layout="@layout/fragment_delete_account">
         <action
             android:id="@+id/action_deleteAccountFragment_to_downloadDialog"
             app:destination="@id/downloadDialog" />
+    </fragment>
+    <fragment
+        android:id="@+id/profilePostFragment"
+        android:name="com.example.instagram.fragments.ProfilePostFragment"
+        android:label="fragment_profile_post"
+        tools:layout="@layout/fragment_profile_post">
+        <argument
+            android:name="profileId"
+            app:argType="long" />
+        <argument
+            android:name="type"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_profilePostFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_profilePostFragment_to_commentSheet"
+            app:destination="@id/commentSheet"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <argument
+            android:name="pos"
+            app:argType="integer" />
     </fragment>
 </navigation>

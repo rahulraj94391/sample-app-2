@@ -94,13 +94,13 @@ class ProfileFragment : Fragment() {
             -1
         }
         
-        
-        requireActivity().supportFragmentManager.setFragmentResultListener(POST_OPEN_REQ_KEY, requireActivity()) { _, bundle ->
+        /*(requireActivity() as HomeActivity).navHostFragment.childFragmentManager.setFragmentResultListener(POST_OPEN_REQ_KEY, requireActivity()) { _, bundle ->
             val postId = bundle.getLong(POST_ID)
             val pos = bundle.getInt(POST_POS)
             val action = ProfileFragmentDirections.actionProfileFragmentToOnePostFragment(postId, pos)
             findNavController().navigate(action)
-        }
+        }*/
+        
         
     }
     
@@ -134,10 +134,25 @@ class ProfileFragment : Fragment() {
             }
         }
         
+        /*mainViewModel.openPost.observe(viewLifecycleOwner) openPost@{
+            if (it == Pair(-1L, -1)) return@openPost
+            val postId = it.first
+            val pos = it.second
+            val action = ProfileFragmentDirections.actionProfileFragmentToOnePostFragment(postId, pos)
+            findNavController().navigate(action)
+            mainViewModel.openPost.postValue(Pair(-1L, -1))
+            
+        }*/
         
-        // todo: IF App crashed due to viewpager in profile fragment
+        mainViewModel.openPost2.observe(viewLifecycleOwner) {
+            if (it == Pair(-1, -1)) return@observe
+            val action = ProfileFragmentDirections.actionProfileFragmentToProfilePostFragment(profileId, it.first, it.second)
+            findNavController().navigate(action)
+            mainViewModel.openPost2.postValue(Pair(-1, -1))
+        }
+        
+        
         binding.viewPagerPostAndTagPhoto.isSaveEnabled = true
-        
         setOnClickListener()
         //setViewPagerHeight()
         setObservers()
@@ -230,12 +245,6 @@ class ProfileFragment : Fragment() {
         })
     }
     
-    private fun bindFollowDetails(it: ProfileSummary) {
-        binding.followingCount.text = it.followingCount.toString()
-        binding.followersCount.text = it.followerCount.toString()
-        btn(binding.btnStart, binding.btnEnd, it.isFollowing)
-    }
-    
     private fun bindAllDetails(it: ProfileSummary) {
         binding.toolbarProfileUsername.text = it.username
         binding.profileFullName.text = requireContext().getString(R.string.full_name, it.first_name, it.last_name)
@@ -253,7 +262,10 @@ class ProfileFragment : Fragment() {
                 setProfilePicTransition()
             }
             
-            // mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
+            /* mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
+            val imageUtil = ImageUtil(requireContext())
+            val imageUrl = db.cacheDao().getCachedProfileImage(profileId) ?: imageUtil.getProfilePictureUrl(profileId) ?: ""*/
+            
             mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
             
             withContext(Dispatchers.Main) {
@@ -271,6 +283,7 @@ class ProfileFragment : Fragment() {
         } else if (isFollowing) {
             btnStart.text = UNFOLLOW
             btnEnd.text = MESSAGE
+            
             btnStart.setOnClickListener {
                 unFollowProfile()
             }
@@ -278,6 +291,8 @@ class ProfileFragment : Fragment() {
         } else {
             btnStart.text = FOLLOW
             btnEnd.text = MESSAGE
+            
+            
             btnStart.setOnClickListener {
                 followProfile()
             }
