@@ -250,13 +250,10 @@
         tools:layout="@layout/fragment_caption_tag">
         <action
             android:id="@+id/action_captionTagFragment_to_tagFragment"
-            app:destination="@id/tagFragment"
-            app:enterAnim="@anim/enter_from_right"
-            app:exitAnim="@anim/exit_to_left"
-            app:popEnterAnim="@anim/enter_from_left"
-            app:popExitAnim="@anim/exit_to_right"
-
-            />
+            app:destination="@id/tagFragment" />
+        <action
+            android:id="@+id/action_captionTagFragment_to_locationTagFragment"
+            app:destination="@id/locationTagFragment" />
     </fragment>
     <fragment
         android:id="@+id/tagFragment"
@@ -333,4 +330,9 @@
             android:name="pos"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/locationTagFragment"
+        android:name="com.example.instagram.fragments.LocationTagFragment"
+        android:label="LocationTagFragment"
+        tools:layout="@layout/fragment_location_tag" />
 </navigation>

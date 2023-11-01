@@ -33,6 +33,7 @@
                     android:id="@+id/toolbarProfileUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
                     android:paddingTop="4dp"
                     android:text="Tags"
                     android:textSize="20sp"
@@ -62,10 +63,7 @@
             app:iconifiedByDefault="false"
             app:layout_constraintTop_toBottomOf="@id/appbar"
             app:queryBackground="@android:color/transparent"
-            app:queryHint="Search a user"
-
-
-            />
+            app:queryHint="Search a user" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textView2"

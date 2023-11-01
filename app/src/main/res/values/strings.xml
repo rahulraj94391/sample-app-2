@@ -73,6 +73,8 @@
     <string name="biometric_instruction">System will authenticate the user before opening Instagram on supported devices.</string>
     <string name="this_message_was_deleted">This message was deleted</string>
     <string name="you_deleted_the_message">You deleted the message</string>
+    <string name="add_location">Add location</string>
+    <string name="remove_tagged_location">remove tagged location</string>
 
     <string-array name="gender">
         <item>Male</item>

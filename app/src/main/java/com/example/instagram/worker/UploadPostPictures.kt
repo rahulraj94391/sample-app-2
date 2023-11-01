@@ -58,7 +58,7 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         total = originalUri.size
         
         val timeStamp = System.currentTimeMillis()
-        val postId = db.postDao().insertPost(Post(profileId, timeStamp))
+        val postId = db.postDao().insertPost(Post(profileId, timeStamp, "abc"))
         db.postTextDao().insertPostText(PostText(postId, postText))
         Log.d(TAG, "CHECK-POINT 3")
         val downscaleImageUris = imageUtil.getUriDownscaleImages(stringToUri(originalUri))

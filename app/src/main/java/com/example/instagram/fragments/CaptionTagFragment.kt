@@ -47,6 +47,17 @@ class CaptionTagFragment : Fragment() {
             findNavController().navigate(action)
         }
         
+        binding.removeLocation.setOnClickListener {
+            viewModel.locationTag = null
+            checkAndSetLocation()
+        }
+        checkAndSetLocation()
+        
+        binding.tagLocation.setOnClickListener {
+            val action = CaptionTagFragmentDirections.actionCaptionTagFragmentToLocationTagFragment()
+            findNavController().navigate(action)
+        }
+        
         binding.tagPeopleCount.text = when (viewModel.finalTags.size) {
             0 -> "None"
             1 -> viewModel.finalTags[0].username
@@ -55,6 +66,18 @@ class CaptionTagFragment : Fragment() {
         
         binding.btnPost.setOnClickListener {
             onPostBtnClicked()
+        }
+    }
+    
+    private fun checkAndSetLocation() {
+        if (viewModel.locationTag == null) {
+            binding.removeLocation.visibility = View.INVISIBLE
+            binding.locationPrimaryName.text = "Add location"
+            // todo : resume here
+        } else {
+            binding.removeLocation.visibility = View.VISIBLE
+            val address = "${viewModel.locationTag!!.primaryText} - ${viewModel.locationTag!!.secondaryText}"
+            binding.locationPrimaryName.text = address
         }
     }
     

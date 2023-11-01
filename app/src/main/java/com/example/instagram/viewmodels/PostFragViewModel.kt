@@ -15,6 +15,7 @@ import androidx.work.WorkManager
 import com.example.instagram.ImageUtil
 import com.example.instagram.MSharedPreferences
 import com.example.instagram.database.AppDatabase
+import com.example.instagram.database.entity.Location
 import com.example.instagram.database.model.TagSearchResult
 import com.example.instagram.worker.POST_TAGS_KEY
 import com.example.instagram.worker.POST_TEXT_KEY
@@ -34,6 +35,8 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
     val tagsToUpload = mutableListOf<Long>()
     var finalTextToUpload = ""
     var uuidWorkReq = MutableLiveData<UUID>()
+    var locationTag: Location? = null
+    var locations = mutableListOf<Location>()
     
     // this will be used to display only selected tags
     val finalTags = mutableListOf<TagSearchResult>()

@@ -62,7 +62,7 @@
             android:paddingBottom="4dp"
             android:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:listitem="@layout/row_home_screen"
+            tools:listitem="@layout/row_posts_screen"
             tools:visibility="visible" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
