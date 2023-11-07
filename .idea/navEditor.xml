@@ -113,6 +113,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_captionTagFragment_to_locationTagFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_captionTagFragment_to_tagFragment">
                               <value>
                                 <LayoutPositions />
@@ -225,6 +230,11 @@
                               </value>
                             </entry>
                             <entry key="action_homeFragment_to_profileFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_homeFragment_to_sameLocationPhotosFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -403,8 +413,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="670" />
-                            <option name="y" value="763" />
+                            <option name="x" value="608" />
+                            <option name="y" value="796" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -462,13 +472,34 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="sameLocationPhotosFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="993" />
+                            <option name="y" value="-437" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_sameLocationPhotosFragment_to_onePostFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="savedPostFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="922" />
-                            <option name="y" value="769" />
+                            <option name="y" value="690" />
                           </Point>
                         </option>
                         <option name="myPositions">

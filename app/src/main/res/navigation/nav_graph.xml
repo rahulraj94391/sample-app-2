@@ -30,6 +30,9 @@
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_sameLocationPhotosFragment"
+            app:destination="@id/sameLocationPhotosFragment" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
@@ -131,6 +134,9 @@
         <argument
             android:name="pos"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_onePostFragment_to_sameLocationPhotosFragment"
+            app:destination="@id/sameLocationPhotosFragment" />
     </fragment>
     <dialog
         android:id="@+id/commentSheet"
@@ -329,10 +335,25 @@
         <argument
             android:name="pos"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_profilePostFragment_to_sameLocationPhotosFragment"
+            app:destination="@id/sameLocationPhotosFragment" />
     </fragment>
     <fragment
         android:id="@+id/locationTagFragment"
         android:name="com.example.instagram.fragments.LocationTagFragment"
         android:label="LocationTagFragment"
         tools:layout="@layout/fragment_location_tag" />
+    <fragment
+        android:id="@+id/sameLocationPhotosFragment"
+        android:name="com.example.instagram.fragments.SameLocationPhotosFragment"
+        android:label="fragment_same_location_photos"
+        tools:layout="@layout/fragment_same_location_photos" >
+        <argument
+            android:name="placeId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_sameLocationPhotosFragment_to_onePostFragment"
+            app:destination="@id/onePostFragment" />
+    </fragment>
 </navigation>

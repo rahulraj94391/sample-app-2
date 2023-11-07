@@ -54,7 +54,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        homeAdapter = PostListAdapter(homeViewModel.listOfPosts, false, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate) {
+        homeAdapter = PostListAdapter(homeViewModel.listOfPosts, false, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate, ::openPostsFromSamePlaceId) {
             // do nothing here, we are not showing "option" btn on home screen, so no delete functionality is here.
         }
         if (homeViewModel.isFirstTime) {
@@ -113,6 +113,13 @@ class HomeFragment : Fragment() {
     private fun openProfile(pos: Int) {
         val profileId: Long = homeAdapter.getProfileId(pos)
         val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment(profileId, false, -1)
+        findNavController().navigate(action)
+    }
+    
+    private fun openPostsFromSamePlaceId(placeId: String?) {
+        // TODO: NAVIGATE to photos with same location
+        if (placeId == null) return
+        val action = HomeFragmentDirections.actionHomeFragmentToSameLocationPhotosFragment(placeId)
         findNavController().navigate(action)
     }
     

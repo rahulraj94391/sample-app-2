@@ -9,6 +9,7 @@ import com.example.instagram.ImageUtil
 import com.example.instagram.TimeFormatting
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Likes
+import com.example.instagram.database.entity.Location
 import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.database.model.Post
 import kotlinx.coroutines.Dispatchers
@@ -64,7 +65,8 @@ class ProfilePostViewModel(private val currentProfile: Long, app: Application) :
             isPostAlreadySaved = isPostAlreadySaved,
             likeCount = likeCount,
             postDesc = postDesc,
-            timeOfPost = postTime
+            timeOfPost = postTime,
+            location = getLocation(postId)
         )
         return post
     }
@@ -79,6 +81,11 @@ class ProfilePostViewModel(private val currentProfile: Long, app: Application) :
         viewModelScope.launch {
             db.likesDao().deleteLike(profileId, postId)
         }
+    }
+    
+    private suspend fun getLocation(postId: Long): Location? {
+        val locationId = db.postDao().getLocationId(postId)
+        return locationId?.let { db.locationDao().getLocation(it) }
     }
     
     fun savePost(profileId: Long, postId: Long) {

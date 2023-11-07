@@ -73,7 +73,6 @@ class CaptionTagFragment : Fragment() {
         if (viewModel.locationTag == null) {
             binding.removeLocation.visibility = View.INVISIBLE
             binding.locationPrimaryName.text = "Add location"
-            // todo : resume here
         } else {
             binding.removeLocation.visibility = View.VISIBLE
             val address = "${viewModel.locationTag!!.primaryText} - ${viewModel.locationTag!!.secondaryText}"

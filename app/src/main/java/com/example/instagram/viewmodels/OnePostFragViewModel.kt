@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.instagram.ImageUtil
 import com.example.instagram.database.AppDatabase
+import com.example.instagram.database.entity.Location
 import com.example.instagram.database.model.OnePost
 
 private const val TAG = "CommTag_OnePostFragViewModel"
@@ -23,7 +24,7 @@ class OnePostFragViewModel(app: Application) : AndroidViewModel(app) {
         val profileName = db.postDao().getUsername(postId)
         val postTime = db.postDao().getPostTime(postId)
         val postText = db.postTextDao().getPostText(postId)
-        
+        val location = getLocation(postId)
         var likeStat = false
         if (liked > 0) likeStat = true
         var saveStat = false
@@ -34,8 +35,14 @@ class OnePostFragViewModel(app: Application) : AndroidViewModel(app) {
             saveStat,
             profileName,
             postText,
-            postTime
+            postTime,
+            location
         )
+    }
+    
+    private suspend fun getLocation(postId: Long): Location? {
+        val locationId = db.postDao().getLocationId(postId)
+        return locationId?.let { db.locationDao().getLocation(it) }
     }
     
     suspend fun deletePost(postId: Long) = db.postDao().deletePost(postId)

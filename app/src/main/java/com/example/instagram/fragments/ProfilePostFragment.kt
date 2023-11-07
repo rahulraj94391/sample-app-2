@@ -74,7 +74,7 @@ class ProfilePostFragment : Fragment() {
             findNavController().navigateUp()
         }
         val showMoreBtn = mainViewModel.loggedInProfileId!! == profileId && type == 0
-        postsAdapter = PostListAdapter(viewModel.listOfPosts, showMoreBtn, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate, ::deletePostDialog)
+        postsAdapter = PostListAdapter(viewModel.listOfPosts, showMoreBtn, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate, ::openPostsFromSamePlaceId, ::deletePostDialog)
         
         binding.postRV.apply {
             adapter = postsAdapter
@@ -129,21 +129,13 @@ class ProfilePostFragment : Fragment() {
         }
     }
     
-    
-    /*private fun showDeleteDialog(pos: Int) {
-        PopupMenu(requireContext(), moreBtn).apply {
-            inflate(R.menu.one_post_menu)
-            setForceShowIcon(true)
-            menu.getItem(0).title = SpannableString(DELETE).apply {
-                setSpan(ForegroundColorSpan(Color.RED), 0, DELETE.length, 0)
-            }
-            setOnMenuItemClickListener {
-                deletePostDialog()
-                true
-            }
-            show()
-        }
-    }*/
+    private fun openPostsFromSamePlaceId(placeId: String?) {
+        // TODO: NAVIGATE to photos with same location
+        if (placeId == null) return
+        val action =
+            ProfilePostFragmentDirections.actionProfilePostFragmentToSameLocationPhotosFragment(placeId)
+        findNavController().navigate(action)
+    }
     
     private fun deletePostDialog(pos: Int) {
         MaterialAlertDialogBuilder(requireContext()).setMessage("Delete this post ?").setCancelable(true).setPositiveButton("Yes") { _, _ ->

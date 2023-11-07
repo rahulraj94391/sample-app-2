@@ -19,6 +19,7 @@ import com.example.instagram.database.dao.RecentSearchDAO
 import com.example.instagram.database.dao.SavedPostDao
 import com.example.instagram.database.dao.SearchDao
 import com.example.instagram.database.dao.TagPeopleDao
+import com.example.instagram.database.entity.BlockedUsers
 import com.example.instagram.database.entity.Chat
 import com.example.instagram.database.entity.Comment
 import com.example.instagram.database.entity.Follow
@@ -53,8 +54,8 @@ private const val TAG = "AppDatabase_CommTag"
         RecentSearch::class,
         Chat::class,
         LastOnline::class,
-        Location::class
-    
+        Location::class,
+        BlockedUsers::class
     ],
     version = 1,
     exportSchema = true
@@ -85,7 +86,7 @@ abstract class AppDatabase : RoomDatabase() {
                 synchronized(this) {
                     INSTANCE = Room
                         .databaseBuilder(applicationContext, AppDatabase::class.java, "instaDB.db")
-//                        .createFromAsset("database/instaDB.db")
+                        //                        .createFromAsset("database/instaDB.db")
                         .build()
                 }
             }

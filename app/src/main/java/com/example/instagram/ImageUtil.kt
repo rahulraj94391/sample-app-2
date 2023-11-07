@@ -239,7 +239,6 @@ class ImageUtil(val context: Context) {
         return imgURLList
     }
     
-    
     fun clearTempFiles() {
         for (fileName in tempImageFiles) {
             val fileToDelete = File(context.cacheDir, fileName)

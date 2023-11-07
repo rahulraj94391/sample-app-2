@@ -9,6 +9,7 @@ import com.example.instagram.ImageUtil
 import com.example.instagram.TimeFormatting
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Likes
+import com.example.instagram.database.entity.Location
 import com.example.instagram.database.entity.SavedPost
 import com.example.instagram.database.model.Post
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +43,6 @@ class HomeFragViewModel(private val currentProfile: Long, app: Application) : An
     private suspend fun getPost(postId: Long): Post {
         val profileId = getProfileId(postId)
         val profImageUrl = db.cacheDao().getCachedProfileImage(profileId) ?: imageUtil.getProfilePictureUrl(profileId) ?: ""
-        
         val profileUsername = getProfileUserName(postId)
         val listOfPostPhotos = db.cacheDao().getCachedPostImages(postId)
         val isPostAlreadyLiked = getPostLikeStat(postId, currentProfile)
@@ -50,6 +50,7 @@ class HomeFragViewModel(private val currentProfile: Long, app: Application) : An
         val likeCount = getFormattedLikeCount(postId)
         val postDesc = getPostDesc(postId)
         val postTime = getFormattedTimeOfPost(postId)
+        val location = getLocation(postId)
         
         val post = Post(
             postId = postId,
@@ -61,7 +62,8 @@ class HomeFragViewModel(private val currentProfile: Long, app: Application) : An
             isPostAlreadySaved = isPostAlreadySaved,
             likeCount = likeCount,
             postDesc = postDesc,
-            timeOfPost = postTime
+            timeOfPost = postTime,
+            location = location
         )
         return post
     }
@@ -102,6 +104,11 @@ class HomeFragViewModel(private val currentProfile: Long, app: Application) : An
         } else {
             "$count like"
         }
+    }
+    
+    private suspend fun getLocation(postId: Long): Location? {
+        val locationId = db.postDao().getLocationId(postId)
+        return locationId?.let { db.locationDao().getLocation(it) }
     }
     
     private suspend fun getPostDesc(postId: Long): String {

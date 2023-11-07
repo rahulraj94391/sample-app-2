@@ -1,6 +1,5 @@
 package com.example.instagram.fragments
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableString
@@ -40,11 +39,10 @@ import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
 
-private const val TAG = "CommTag_OnePostFragment"
+private const val TAG = "OnePostFragment_CommTag"
 const val HIDE_DELETE_BTN = -22
 const val OPEN_AND_LOCATE_COMMENT_KEY = "open_and_locate_comment_key"
 const val DELETE = "Delete"
-
 
 class OnePostFragment : Fragment() {
     private lateinit var binding: FragmentOnePostBinding
@@ -141,16 +139,29 @@ class OnePostFragment : Fragment() {
                     postDesc.text = details.postText
                     timeOfPost.text = DateTime.timeFormatter(details.postTime, TimeFormatting.POST)
                     username.text = details.profileName
+                    if (details.location != null) {
+                        locationTag.text = details.location.primaryText
+                        locationTag.visibility = View.VISIBLE
+                    } else {
+                        locationTag.visibility = View.GONE
+                    }
                 }
+                
+                
+                binding.locationTag.setOnClickListener {
+                    val placeId = details.location?.placeId ?: return@setOnClickListener
+                    val action =
+                        OnePostFragmentDirections.actionOnePostFragmentToSameLocationPhotosFragment(placeId)
+                    findNavController().navigate(action)
+                }
+                
             }
+            
+            
         }
         
         binding.profileImage.setOnClickListener {
             openProfile()
-        }
-        
-        binding.allImagesInAPostVP2.setOnClickListener {
-            viewPagerDoubleClicked(it as ViewPager2)
         }
         
         
@@ -192,11 +203,9 @@ class OnePostFragment : Fragment() {
                 onCommentClicked()
                 // prepare here FR API B
                 
-            }, 100)
+            }, 200)
         }
-        
         registerForContextMenu(binding.btnMore)
-        
     }
     
     private fun openProfile() {
@@ -207,28 +216,6 @@ class OnePostFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         unregisterForContextMenu(binding.btnMore)
-    }
-    
-    private var lastTap = 0L
-    
-    @SuppressLint("ClickableViewAccessibility")
-    private fun viewPagerDoubleClicked(viewPager2: ViewPager2) {
-        // Todo: double tap on viewpage to like post
-        /*viewPager2.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                Log.d(TAG, "onTouch: ")
-                if (event?.action == MotionEvent.ACTION_DOWN) {
-                    val curTime = System.currentTimeMillis()
-                    if (curTime - lastTap < 700) {
-                        lastTap = curTime
-                        Log.d(TAG, "double tap")
-                        return true
-                    }
-                }
-                return false
-            }
-        })*/
-        
     }
     
     private fun onSavePostClicked(it: MaterialCheckBox) {

@@ -36,6 +36,7 @@ class PostListAdapter(
     val likeListener: (Int, View) -> Unit,
     val saveListener: (Int, View) -> Unit,
     val commentCountDelegate: (TextView, Long) -> Unit,
+    val openPostFromSamePlaceId: (String?) -> Unit,
     val deletePost: (Int) -> Unit,
 ) : RecyclerView.Adapter<PostListAdapter.PostVH>() {
     private lateinit var mContext: Context
@@ -63,6 +64,7 @@ class PostListAdapter(
         val adapter = PostAdapter()
         val counter: TextView = item.findViewById(R.id.counter)
         val btnMore: MaterialButton = item.findViewById(R.id.btnMore)
+        val location: TextView = item.findViewById(R.id.locationTag)
         
         init {
             profileImage.setOnClickListener { profileListener(adapterPosition) }
@@ -77,6 +79,13 @@ class PostListAdapter(
             }
             commentButton.setOnClickListener { commentListener(adapterPosition) }
             commentCount.setOnClickListener { commentListener(adapterPosition) }
+            
+            location.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    openPostFromSamePlaceId(list[adapterPosition].location?.placeId)
+                }
+            }
+            
             postImages.adapter = adapter
             btnMore.setOnClickListener {
                 PopupMenu(it.context, it).apply {
@@ -110,6 +119,14 @@ class PostListAdapter(
             savePostBtn.checkedState = setSavedStat(position)
             likeCount.text = list[position].likeCount
             postDesc.text = list[position].postDesc
+            if (list[position].location != null) {
+                location.text = list[position].location?.primaryText
+                location.visibility = View.VISIBLE
+            } else {
+                location.visibility = View.GONE
+            }
+            
+            
             commentCountDelegate(commentCount, list[position].postId)
             timeOfPost.text = list[position].timeOfPost
             list[position].listOfPostPhotos.let {

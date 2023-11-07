@@ -9,6 +9,7 @@ import androidx.work.WorkerParameters
 import com.example.instagram.ImageUtil
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.ImageCache
+import com.example.instagram.database.entity.Location
 import com.example.instagram.database.entity.Post
 import com.example.instagram.database.entity.PostText
 import com.example.instagram.database.entity.Tag
@@ -16,7 +17,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 const val UPLOAD_IMAGE_PATH_KEY = "photo_uri"
@@ -24,6 +24,9 @@ const val PROFILE_ID_KEY = "profile_id"
 const val POST_TEXT_KEY = "post_text"
 const val POST_TAGS_KEY = "post_tagss"
 const val IS_UPLOAD_FINISHED = "is_upload_finished"
+const val PLACE_ID_KEY = "place_id"
+const val PLACE_PRIMARY = "place_primary"
+const val PLACE_SECONDARY = "place_secondary"
 
 private const val TAG = "UploadPostPictures_CommTag"
 
@@ -33,9 +36,9 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
     private var storageRef: FirebaseStorage = FirebaseStorage.getInstance()
     private var firebaseFirestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     
-    var total = 0
-    var success = 0
-    var fail = 0
+    private var total = 0
+    private var success = 0
+    private var fail = 0
     
     
     override suspend fun doWork(): Result {
@@ -54,11 +57,26 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         // tags could be null
         val tags = inputData.getLongArray(POST_TAGS_KEY)
         
+        // get the location (if tagged)
+        var location: Location? = null
+        val placeId = inputData.getString(PLACE_ID_KEY)
+        
+        placeId?.let {
+            val primaryText = inputData.getString(PLACE_PRIMARY)
+            val secondaryText = inputData.getString(PLACE_SECONDARY)
+            location = Location(it, primaryText, secondaryText)
+        }
+        
+        location?.let {
+            db.locationDao().insert(it)
+            Log.d(TAG, "location received as = $location")
+        }
+        
+        
         Log.d(TAG, "CHECK-POINT 2")
         total = originalUri.size
         
-        val timeStamp = System.currentTimeMillis()
-        val postId = db.postDao().insertPost(Post(profileId, timeStamp, "abc"))
+        val postId = db.postDao().insertPost(Post(profileId, System.currentTimeMillis(), location?.placeId))
         db.postTextDao().insertPostText(PostText(postId, postText))
         Log.d(TAG, "CHECK-POINT 3")
         val downscaleImageUris = imageUtil.getUriDownscaleImages(stringToUri(originalUri))
@@ -72,7 +90,6 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         }
         
         Log.d(TAG, "CHECK-POINT 6")
-        delay(800)
         return Result.success(Data.Builder().putBoolean(IS_UPLOAD_FINISHED, true).build())
     }
     

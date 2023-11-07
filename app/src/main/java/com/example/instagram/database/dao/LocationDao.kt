@@ -15,7 +15,7 @@ interface LocationDao {
     @Delete
     suspend fun delete(location: Location): Int
     
-    @Query("SELECT * FROM location WHERE placeId = :locationId")
-    suspend fun getLocation(locationId: String): Location
+    @Query("SELECT * FROM location WHERE placeId = :placeId")
+    suspend fun getLocation(placeId: String): Location
     
 }

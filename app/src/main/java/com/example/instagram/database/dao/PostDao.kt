@@ -37,4 +37,10 @@ interface PostDao {
     
     @Query("DELETE FROM post WHERE post.post_id = :postId")
     suspend fun deletePost(postId: Long)
+    
+    @Query("SELECT placeId FROM post WHERE post_id = :postId")
+    suspend fun getLocationId(postId: Long): String?
+    
+    @Query("SELECT post_id from post where profile_id <> :loggedInId AND profile_id NOT IN (SELECT blockerId from blocked_users where blockedId = :loggedInId) AND placeId = :placeId Order by post_id desc limit :limit OFFSET :offset")
+    suspend fun getPostIdsFromPlaceId(placeId: String, loggedInId: Long, limit: Int, offset: Int): List<Long>
 }

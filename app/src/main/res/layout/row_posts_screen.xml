@@ -39,19 +39,39 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/circleImageView" />
 
-            <TextView
-                android:id="@+id/username"
+            <LinearLayout
+                android:id="@+id/ll"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:textColor="@color/text_color"
-                android:textStyle="bold"
+                android:orientation="vertical"
+
+                app:layout_constraintBottom_toBottomOf="@+id/profileImage"
                 app:layout_constraintEnd_toStartOf="@+id/btnMore"
                 app:layout_constraintStart_toEndOf="@+id/profileImage"
                 app:layout_constraintTop_toTopOf="@+id/profileImage"
-                app:layout_goneMarginEnd="8dp"
-                tools:text="Username" />
+                app:layout_goneMarginEnd="8dp">
 
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:paddingTop="4dp"
+                    android:textColor="@color/text_color"
+                    android:textStyle="bold"
+                    app:layout_goneMarginEnd="8dp"
+                    tools:text="Username" />
+
+                <TextView
+                    android:id="@+id/locationTag"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:paddingBottom="4dp"
+                    android:text="Zoho Corp, Guduvancherry"
+                    android:textSize="12sp"
+                    android:visibility="visible" />
+            </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMore"
@@ -66,21 +86,10 @@
                 app:layout_constraintBottom_toBottomOf="@+id/profileImage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1"
-                app:layout_constraintStart_toEndOf="@+id/username"
+                app:layout_constraintStart_toEndOf="@+id/ll"
                 app:layout_constraintTop_toTopOf="@+id/profileImage"
                 tools:ignore="SpeakableTextPresentCheck"
                 tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/locationTag"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Zoho Corp, Guduvancherry"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/profileImage"
-                app:layout_constraintEnd_toEndOf="@+id/username"
-                app:layout_constraintStart_toStartOf="@+id/username"
-                app:layout_constraintTop_toBottomOf="@+id/username" />
 
 
             <com.google.android.material.divider.MaterialDivider

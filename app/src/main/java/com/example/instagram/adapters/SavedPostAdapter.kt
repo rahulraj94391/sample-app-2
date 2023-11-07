@@ -41,7 +41,7 @@ class SavedPostAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SavedPostVH {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_photo_one_grid, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_grid_photo_one, parent, false)
         return SavedPostVH(view)
     }
 

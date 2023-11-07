@@ -48,10 +48,4 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
         }
         usersTaggedPost.postValue(onePhotoPerPost)
     }
-    
-    override fun onCleared() {
-        Log.e(TAG, "Photo Grid Frag Cleared")
-        super.onCleared()
-    }
-    
 }

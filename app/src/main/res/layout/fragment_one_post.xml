@@ -76,18 +76,38 @@
                             app:strokeColor="@color/line_border"
                             app:strokeWidth="1dp" />
 
-                        <TextView
-                            android:id="@+id/username"
+                        <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:textColor="@color/text_color"
-                            android:textStyle="bold"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="@+id/profileImage"
                             app:layout_constraintEnd_toStartOf="@+id/btnMore"
                             app:layout_constraintStart_toEndOf="@+id/profileImage"
                             app:layout_constraintTop_toTopOf="@+id/profileImage"
-                            app:layout_goneMarginEnd="8dp"
-                            tools:text="Username" />
+                            app:layout_goneMarginEnd="8dp">
+
+                            <TextView
+                                android:id="@+id/username"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_weight="1"
+                                android:paddingTop="4dp"
+                                android:textColor="@color/text_color"
+                                android:textStyle="bold"
+                                tools:text="Username" />
+
+                            <TextView
+                                android:id="@+id/locationTag"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:paddingBottom="4dp"
+                                android:textColor="@color/text_color"
+                                tools:text="Zoho Corp, Guduvancherry" />
+
+                        </LinearLayout>
+
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnMore"
@@ -226,8 +246,8 @@
                             android:layout_marginEnd="16dp"
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp"
-                            app:layout_constraintTop_toBottomOf="@+id/postDesc"
-                            android:text="2 yeart ago" />
+                            android:text="2 yeart ago"
+                            app:layout_constraintTop_toBottomOf="@+id/postDesc" />
 
                         <TextView
                             android:id="@+id/commentCount"
@@ -240,15 +260,7 @@
                             app:layout_constraintTop_toTopOf="@+id/comment"
                             tools:text="50" />
 
-                        <TextView
-                            android:id="@+id/locationTag"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Zoho Corp, Guduvancherry"
-                            android:textColor="@color/text_color"
-                            app:layout_constraintEnd_toEndOf="@+id/username"
-                            app:layout_constraintStart_toStartOf="@+id/username"
-                            app:layout_constraintTop_toBottomOf="@+id/username" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>

@@ -17,6 +17,9 @@ import com.example.instagram.MSharedPreferences
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Location
 import com.example.instagram.database.model.TagSearchResult
+import com.example.instagram.worker.PLACE_ID_KEY
+import com.example.instagram.worker.PLACE_PRIMARY
+import com.example.instagram.worker.PLACE_SECONDARY
 import com.example.instagram.worker.POST_TAGS_KEY
 import com.example.instagram.worker.POST_TEXT_KEY
 import com.example.instagram.worker.PROFILE_ID_KEY
@@ -75,22 +78,29 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
     }
     
     private fun uploadPostWork(uris: Array<String>) {
-        val data = Data.Builder()
+        val dataBuilder = Data.Builder()
             .putString(POST_TEXT_KEY, finalTextToUpload)
             .putLong(PROFILE_ID_KEY, profileId)
             .putStringArray(UPLOAD_IMAGE_PATH_KEY, uris)
             .putLongArray(POST_TAGS_KEY, tagsToUpload.toLongArray())
-            .build()
+        
+        locationTag?.let {
+            dataBuilder.putString(PLACE_ID_KEY, locationTag!!.placeId)
+            dataBuilder.putString(PLACE_PRIMARY, locationTag!!.primaryText)
+            dataBuilder.putString(PLACE_SECONDARY, locationTag!!.secondaryText)
+        }
+        
         
         val mConstraints = Constraints
             .Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
         
+        
         val oneTimeWorkRequest = OneTimeWorkRequest
             .Builder(UploadPostPictures::class.java)
             .setConstraints(mConstraints)
-            .setInputData(data)
+            .setInputData(dataBuilder.build())
             .build()
         
         Log.d(TAG, "uploadPostWork: ${oneTimeWorkRequest.id}")

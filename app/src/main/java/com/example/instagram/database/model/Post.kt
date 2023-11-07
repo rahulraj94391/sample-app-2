@@ -1,5 +1,7 @@
 package com.example.instagram.database.model
 
+import com.example.instagram.database.entity.Location
+
 data class Post(
     var postId: Long,
     var profileId: Long,
@@ -11,4 +13,5 @@ data class Post(
     var likeCount: String,
     var postDesc: String,
     var timeOfPost: String,
+    var location: Location?,
 )
