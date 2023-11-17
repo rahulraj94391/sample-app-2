@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.instagram.ImageUtil
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.model.OnePhotoPerPost
 import kotlinx.coroutines.async
@@ -14,6 +15,7 @@ private const val TAG = "CommTag_PhotoGridFragViewModel"
 class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     val usersPost = MutableLiveData<MutableList<OnePhotoPerPost>>()
+    val imageUtil = ImageUtil(app)
     val usersTaggedPost = MutableLiveData<MutableList<OnePhotoPerPost>>()
     var isUserBlocked = false
         private set
@@ -33,10 +35,12 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
         val onePhotoPerPost = mutableListOf<OnePhotoPerPost>()
         
         for (postId in postIds) {
-            val photoLink = db.cacheDao().getFirstImgFromEachPost(postId) ?: ""
+            val photoLink = db.cacheDao().getFirstImgFromEachPost(postId) ?: imageUtil.getOneImagePerPost(mutableListOf(postId))[0].imageURl ?: ""
             val onePhoto = OnePhotoPerPost(postId, photoLink)
             onePhotoPerPost.add(onePhoto)
         }
+        
+        Log.d(TAG, "onePhotoPerPost: $onePhotoPerPost")
         
         usersPost.postValue(onePhotoPerPost)
     }

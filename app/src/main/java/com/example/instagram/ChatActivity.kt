@@ -271,7 +271,7 @@ class ChatActivity : AppCompatActivity() {
                     sendMsgLayout.visibility = View.GONE
                     btnUnblock.visibility = View.VISIBLE
                     btnUnblock.setOnClickListener {
-                        chatViewModel.unblockUser(myId, userId)
+                        showUnblockDialog()
                     }
                     itemTouchHelper.attachToRecyclerView(null)
                     binding.sendHiBtn.apply {
@@ -312,6 +312,18 @@ class ChatActivity : AppCompatActivity() {
             hideReplyPreview()
         }
         // setUserProfilePictureAndName()
+    }
+    
+    private fun showUnblockDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Unblock user ?")
+            .setMessage("Unblock user ?")
+            .setCancelable(true)
+            .setPositiveButton("Yes") { _, _ ->
+                chatViewModel.unblockUser(myId, userId)
+            }.setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+            }.show()
     }
     
     private fun setChatInstructionOrRV() {

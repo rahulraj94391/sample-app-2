@@ -62,6 +62,7 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
         uploadPostWork(uriToStringArray(postImagesUri))
         
         // clear all variables after inserting.
+        locationTag = null
         tagsToUpload.clear()
         postImagesUri.clear()
         finalTags.clear()

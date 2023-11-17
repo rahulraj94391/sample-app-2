@@ -1,7 +1,6 @@
 package com.example.instagram.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,8 +27,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
-private const val TAG = "ProfilePostFragment_CommTag"
-
 class ProfilePostFragment : Fragment() {
     private lateinit var binding: FragmentProfilePostBinding
     private val args: ProfilePostFragmentArgs by navArgs()
@@ -52,7 +49,6 @@ class ProfilePostFragment : Fragment() {
         profileId = args.profileId
         openPosition = args.pos
         type = args.type
-        Log.i(TAG, "profileId = $profileId\nopenPosition = $openPosition")
         db = AppDatabase.getDatabase(requireContext())
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         viewModel = ViewModelProvider(this, ProfilePostViewModelFactory(profileId, requireActivity().application))[ProfilePostViewModel::class.java]
@@ -101,7 +97,6 @@ class ProfilePostFragment : Fragment() {
         
         viewModel.newPostsLoaded.observe(viewLifecycleOwner) {
             if (it < 1) return@observe
-            Log.d(TAG, "new posts loaded = $it")
             binding.loadingProgressBar.visibility = View.GONE
             binding.postRV.visibility = View.VISIBLE
             
@@ -111,7 +106,6 @@ class ProfilePostFragment : Fragment() {
             
             if (viewModel.isFirstTime) {
                 viewModel.isFirstTime = false
-                Log.d(TAG, "is layout manager null? = ${binding.postRV.layoutManager == null}")
                 binding.postRV.layoutManager?.scrollToPosition(openPosition)
             }
         }

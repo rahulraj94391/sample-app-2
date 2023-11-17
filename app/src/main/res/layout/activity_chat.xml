@@ -12,21 +12,19 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--        <include-->
-        <!--            android:id="@+id/toolbar"-->
-        <!--            layout="@layout/toolbar_chat" />-->
-        <!--        <com.google.android.material.appbar.AppBarLayout-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content">-->
+        <!--<include-->
+        <!--    android:id="@+id/toolbar"-->
+        <!--    layout="@layout/toolbar_chat" />-->
+        <!--<com.google.android.material.appbar.AppBarLayout-->
+        <!--    android:layout_width="match_parent"-->
+        <!--    android:layout_height="wrap_content">-->
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorSecondaryContainer"
-            android:minHeight="?attr/actionBarSize"
-
-            >
+            android:minHeight="?attr/actionBarSize">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/userImage"

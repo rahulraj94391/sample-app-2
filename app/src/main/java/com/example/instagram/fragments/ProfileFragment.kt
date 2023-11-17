@@ -334,7 +334,7 @@ class ProfileFragment : Fragment() {
             btnEnd.visibility = View.INVISIBLE
             btnUnblock.visibility = View.VISIBLE
             btnUnblock.setOnClickListener {
-                unblockUser()
+                showUnblockDialog()
             }
         } else if (isFollowing) {
             btnStart.visibility = View.VISIBLE
@@ -360,6 +360,19 @@ class ProfileFragment : Fragment() {
             }
             btnEnd.setOnClickListener { messageProfile() }
         }
+    }
+    
+    private fun showUnblockDialog() {
+        val profile = viewModel.profileSummary.value
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Unblock user ?")
+            .setMessage("Unblock ${profile?.first_name} ${profile?.last_name} ?")
+            .setCancelable(true)
+            .setPositiveButton("Yes") { _, _ ->
+                unblockUser()
+            }.setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+            }.show()
     }
     
     private fun unblockUser() {
