@@ -36,7 +36,6 @@ class SameLocationPhotosFragment : Fragment() {
     var totalItems: Int = 0
     var scrolledOut: Int = 0
     
-    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[SameLocationPhotosViewModel::class.java]
@@ -112,5 +111,4 @@ class SameLocationPhotosFragment : Fragment() {
             SameLocationPhotosFragmentDirections.actionSameLocationPhotosFragmentToOnePostFragment(postId, HIDE_DELETE_BTN)
         findNavController().navigate(action)
     }
-    
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.instagram.database.dao.BlockDao
 import com.example.instagram.database.dao.CacheDao
 import com.example.instagram.database.dao.ChatsDao
 import com.example.instagram.database.dao.CommentDao
@@ -76,6 +77,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun recentSearchDao(): RecentSearchDAO
     abstract fun lastOnlineDao(): LastOnlineDao
     abstract fun locationDao(): LocationDao
+    abstract fun blockDao(): BlockDao
     
     companion object {
         @Volatile
@@ -86,7 +88,7 @@ abstract class AppDatabase : RoomDatabase() {
                 synchronized(this) {
                     INSTANCE = Room
                         .databaseBuilder(applicationContext, AppDatabase::class.java, "instaDB.db")
-                        //                        .createFromAsset("database/instaDB.db")
+                        // .createFromAsset("database/instaDB.db")
                         .build()
                 }
             }

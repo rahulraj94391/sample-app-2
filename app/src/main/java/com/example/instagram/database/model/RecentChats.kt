@@ -8,6 +8,7 @@ data class RecentChats(
     var messageType: Int, // 1 -> Regular, 2 -> Reply, 3 -> Deleted
     var replyToChat: Long = -1,
     var rowId: Long = 0,
+    var isBlocked: Boolean
 ) {
     override fun equals(other: Any?): Boolean {
         if (other !is RecentChats) {

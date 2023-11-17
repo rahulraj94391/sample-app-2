@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.instagram.ImageUtil
 import com.example.instagram.database.AppDatabase
+import com.example.instagram.database.entity.BlockedUsers
 import com.example.instagram.database.model.ProfileSummary
 import kotlinx.coroutines.async
 
@@ -16,24 +17,39 @@ class ProfileFragViewModel(app: Application) : AndroidViewModel(app) {
     private val imageUtil = ImageUtil(app)
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     var profileSummary = MutableLiveData<ProfileSummary>()
+    var isUserBlocked = false
+        private set
     
-    suspend fun getProfileSummary(ownProfileId: Long, userProfileId: Long) {
-        val profilePic = viewModelScope.async {
-            /*imageUtil.getProfilePictureUrl(userProfileId)*/
-            db.cacheDao().getCachedProfileImage(userProfileId) ?: imageUtil.getProfilePictureUrl(userProfileId) ?: ""
+    suspend fun getProfileSummary(myId: Long, userId: Long) {
+        val fullNameBio = viewModelScope.async { db.profileDao().getFullNameBio(userId) }
+        val username = viewModelScope.async { db.loginCredDao().getUsername(userId) }
+        if (isUserBlocked(myId, userId)) {
+            val profSummary = ProfileSummary(
+                username.await(),
+                "",
+                fullNameBio.await().first_name,
+                fullNameBio.await().last_name,
+                "---",
+                0,
+                0,
+                0,
+                false
+            )
+            profileSummary.postValue(profSummary)
+            return
         }
-        val fullNameBio = viewModelScope.async { db.profileDao().getFullNameBio(userProfileId) }
-        val postCount = viewModelScope.async { db.postDao().getPostCount(userProfileId) }
-        val followerCount = viewModelScope.async { db.followDao().getFollowerCount(userProfileId) }
-        val followingCount = viewModelScope.async { db.followDao().getFollowingCount(userProfileId) }
-        val username = viewModelScope.async { db.loginCredDao().getUsername(userProfileId) }
-        val isFollowing = viewModelScope.async { db.followDao().isUserFollowingUser(ownProfileId, userProfileId) > 0 }
+        
+        val profilePic = viewModelScope.async {
+            db.cacheDao().getCachedProfileImage(userId) ?: imageUtil.getProfilePictureUrl(userId) ?: ""
+        }
+        val postCount = viewModelScope.async { db.postDao().getPostCount(userId) }
+        val followerCount = viewModelScope.async { db.followDao().getFollowerCount(userId) }
+        val followingCount = viewModelScope.async { db.followDao().getFollowingCount(userId) }
+        val isFollowing = viewModelScope.async { db.followDao().isUserFollowingUser(myId, userId) > 0 }
         
         val profSummary = ProfileSummary(
             username.await(),
-            profilePic.await().also {
-                Log.d(TAG, "$it")
-            },
+            profilePic.await(),
             fullNameBio.await().first_name,
             fullNameBio.await().last_name,
             fullNameBio.await().bio,
@@ -42,7 +58,33 @@ class ProfileFragViewModel(app: Application) : AndroidViewModel(app) {
             followingCount.await(),
             isFollowing.await()
         )
-        
         profileSummary.postValue(profSummary)
+    }
+    
+    private suspend fun isUserBlocked(myId: Long, userId: Long): Boolean {
+        val count = db.blockDao().isBlocked(myId, userId)
+        val isBlocked = if (count > 0) {
+            Log.d(TAG, "user is blocked")
+            true
+        } else {
+            Log.d(TAG, "user is NOT blocked")
+            false
+        }
+        isUserBlocked = isBlocked
+        return isBlocked
+    }
+    
+    suspend fun unblockUser(myId: Long, userId: Long) {
+        val isDeleted = db.blockDao().unblockUser(myId, userId)
+        if (isDeleted < 1) return
+        getProfileSummary(myId, userId)
+    }
+    
+    suspend fun blockUser(myId: Long, userId: Long) {
+        db.blockDao().blockUser(BlockedUsers(myId, userId))
+        db.followDao().deleteFollow(userId, myId)
+        db.followDao().deleteFollow(myId, userId)
+        db.recentSearchDao().deleteIfExist(myId, userId)
+        getProfileSummary(myId, userId)
     }
 }

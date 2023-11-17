@@ -15,8 +15,15 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
     private val db: AppDatabase = AppDatabase.getDatabase(app)
     val usersPost = MutableLiveData<MutableList<OnePhotoPerPost>>()
     val usersTaggedPost = MutableLiveData<MutableList<OnePhotoPerPost>>()
+    var isUserBlocked = false
+        private set
     
-    suspend fun getProfilePost(profileId: Long, itemCount: Int) {
+    suspend fun getProfilePost(profileId: Long, myId: Long, itemCount: Int) {
+        if (isUserBlocked(myId, profileId)) {
+            usersPost.postValue(mutableListOf())
+            return
+        }
+        
         Log.e(TAG, "getProfilePost: called in photo-grid-viewmodel")
         val postIdsAsync = viewModelScope.async {
             db.postDao().getPostOfProfile(profileId = profileId, offset = itemCount)
@@ -34,7 +41,11 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
         usersPost.postValue(onePhotoPerPost)
     }
     
-    suspend fun getAllPostWhereProfileIsTagged(profileId: Long, itemCount: Int) {
+    suspend fun getAllPostWhereProfileIsTagged(profileId: Long, myId: Long, itemCount: Int) {
+        if (isUserBlocked(myId, profileId)) {
+            usersTaggedPost.postValue(mutableListOf())
+            return
+        }
         val postIdsAsync = viewModelScope.async {
             db.tagPeopleDao().getAllTaggedPostOfProfile(profileId = profileId, offset = itemCount)
         }
@@ -47,5 +58,18 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
             onePhotoPerPost.add(OnePhotoPerPost(postId, photoLink))
         }
         usersTaggedPost.postValue(onePhotoPerPost)
+    }
+    
+    private suspend fun isUserBlocked(ownProfileId: Long, userProfileId: Long): Boolean {
+        val count = db.blockDao().isBlocked(ownProfileId, userProfileId)
+        val isBlocked = if (count > 0) {
+            Log.d(TAG, "user is blocked")
+            true
+        } else {
+            Log.d(TAG, "user is NOT blocked")
+            false
+        }
+        isUserBlocked = isBlocked
+        return isBlocked
     }
 }

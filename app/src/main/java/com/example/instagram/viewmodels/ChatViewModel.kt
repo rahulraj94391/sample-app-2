@@ -24,6 +24,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     lateinit var userFullName: FullName
     var chatAdapter: ChatAdapter? = null
     var state: Parcelable? = null
+    var amIBlockedLive = MutableLiveData(0)
     
     // message reply vars
     var replyToChat: Chat? = null
@@ -56,5 +57,31 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         return url?.let { imageUtil.getBitmap(it) }
     }
     
+    fun unblockUser(myId: Long, userId: Long) {
+        Log.d(TAG, "unblockUser: called")
+        viewModelScope.launch {
+            val isDeleted = db.blockDao().unblockUser(myId, userId)
+            if (isDeleted < 1) return@launch
+            checkBlockedStatus(userId, myId)
+        }
+    }
     
+    /**
+     * Returns -1 when current logged-in user is blocked by another user
+     *
+     * returns 1 when another user is blocked by current logged-in user
+     *
+     * return 0 when no one is blocked.
+     */
+    suspend fun checkBlockedStatus(userA: Long, userB: Long) {
+        Log.d(TAG, "checkBlockedStatus: called")
+        
+        val isUserBlocked = db.blockDao().isBlocked(userA, userB)
+        val amIBlocked = db.blockDao().isBlocked(userB, userA)
+        
+        val value = if (isUserBlocked > 0) 1
+        else if (amIBlocked > 0) -1
+        else 0
+        amIBlockedLive.postValue(value)
+    }
 }

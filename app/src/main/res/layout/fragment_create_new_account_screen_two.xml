@@ -148,7 +148,7 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="16dp"
-                android:text="@string/sign_up"
+                android:text="@string/sign_up_and_login"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

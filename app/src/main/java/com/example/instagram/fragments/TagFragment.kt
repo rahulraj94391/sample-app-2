@@ -62,8 +62,8 @@ class TagFragment : Fragment() {
         
         binding.searchViewBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText!!.isEmpty()) {
+            override fun onQueryTextChange(newText: String): Boolean {
+                if (newText.isEmpty()) {
                     visibilityWhenQueryIsEmpty()
                     if (viewModel.finalTags.isEmpty()) {
                         binding.yourTagsWillAppearHere.visibility = View.VISIBLE

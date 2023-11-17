@@ -41,7 +41,6 @@ class ProfilePostFragment : Fragment() {
     private lateinit var db: AppDatabase
     private lateinit var postsAdapter: PostListAdapter
     
-    
     // recycler view vars to load more data
     var isScrolling = false
     var currentItems: Int = 0
@@ -65,7 +64,6 @@ class ProfilePostFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile_post, container, false)
         return binding.root
     }
-    
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -130,7 +128,6 @@ class ProfilePostFragment : Fragment() {
     }
     
     private fun openPostsFromSamePlaceId(placeId: String?) {
-        // TODO: NAVIGATE to photos with same location
         if (placeId == null) return
         val action =
             ProfilePostFragmentDirections.actionProfilePostFragmentToSameLocationPhotosFragment(placeId)
@@ -191,7 +188,6 @@ class ProfilePostFragment : Fragment() {
             postsAdapter.notifyItemChanged(pos, likePayload)
         }
     }
-    
     
     private fun onSavePostClicked(pos: Int, view: View) {
         val checkedState = (view as MaterialCheckBox).checkedState

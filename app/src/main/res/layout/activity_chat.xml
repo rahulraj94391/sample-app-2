@@ -61,10 +61,50 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/instruction"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Messages Yet"
+                android:textColor="@color/text_color"
+                android:textSize="22sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/sendHiBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Send a Hi"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+
+                />
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnUnblock"
+            style="@style/Widget.Material3.Button.TonalButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Unblock"
+            android:visibility="gone" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/sendMsgLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/replyToTxtPreview"
@@ -139,6 +179,7 @@
                     android:layout_height="48dp"
                     android:layout_gravity="bottom"
                     android:layout_marginEnd="8dp"
+                    android:enabled="false"
                     app:cornerRadius="30dp"
                     app:icon="@drawable/send_24"
                     tools:ignore="SpeakableTextPresentCheck" />

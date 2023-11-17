@@ -15,6 +15,7 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -66,7 +67,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var itemTouchHelper: ItemTouchHelper
     private lateinit var haptics: Haptics
     private var actionMode: ActionMode? = null
-    
+    private var blockedStatus: Int by Delegates.notNull()
     
     // recycler view vars to load more data
     var isScrolling = false
@@ -86,21 +87,18 @@ class ChatActivity : AppCompatActivity() {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             Log.e(TAG, "onSwiped: called")
             //            adapter.notifyItemChanged(viewHolder.adapterPosition)
-            
             //            haptics.light()
             /*val animator = ValueAnimator.ofFloat(viewHolder.itemView.translationX, 0f)
             animator.addUpdateListener { animation ->
                 viewHolder.itemView.translationX = animation.animatedValue as Float
             }
             animator.duration = 200
-            animator.start()*/
-            /*itemTouchHelper.attachToRecyclerView(null)
+            animator.start()*//*itemTouchHelper.attachToRecyclerView(null)
             itemTouchHelper.attachToRecyclerView(binding.chatRV)*/
             
             /*val translationX = ObjectAnimator.ofFloat(viewHolder.itemView, View.TRANSLATION_X, ((viewHolder.itemView.width / 5).toFloat()), 0f)
             translationX.duration = 120
-            translationX.start()*/
-            /*chatViewModel.replyToChat = chatViewModel.chatAdapter?.chats?.get(viewHolder.adapterPosition)
+            translationX.start()*//*chatViewModel.replyToChat = chatViewModel.chatAdapter?.chats?.get(viewHolder.adapterPosition)
             bindDataInReplyPreview()
             showReplyPreview()*/
             
@@ -119,10 +117,9 @@ class ChatActivity : AppCompatActivity() {
             return 0.001f
         }
         
-//        val icon = ContextCompat.getDrawable(this@ChatActivity, R.drawable.round_reply_24)!!
+        //        val icon = ContextCompat.getDrawable(this@ChatActivity, R.drawable.round_reply_24)!!
         
-        override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-            // Log.d(TAG, "onChildDraw: ")
+        override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) { // Log.d(TAG, "onChildDraw: ")
             val allowedSwipe = (viewHolder.itemView.width / 5).toFloat()
             val clampedDX = dX.coerceIn(-allowedSwipe, allowedSwipe)
             super.onChildDraw(c, recyclerView, viewHolder, clampedDX, dY, actionState, isCurrentlyActive)
@@ -217,7 +214,7 @@ class ChatActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE)
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         haptics = Haptics(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat)
         chatViewModel = ViewModelProvider(this)[ChatViewModel::class.java]
@@ -233,8 +230,59 @@ class ChatActivity : AppCompatActivity() {
             }
         }
         
-        chatViewModel.chatAdapter?.selectedMessageCount?.observe(this) {
-            // Log.d(TAG, "Selected message count <LIVE> = $it")
+        lifecycleScope.launch {
+            chatViewModel.checkBlockedStatus(userId, myId)
+        }
+        
+        chatViewModel.amIBlockedLive.observe(this) {
+            //            binding.sendBtn.isEnabled = !it
+            blockedStatus = it
+            
+            
+            when (it) {
+                // when no one is blocked
+                0 -> binding.apply {
+                    sendBtn.isEnabled = true
+                    sendMsgLayout.visibility = View.VISIBLE
+                    btnUnblock.visibility = View.GONE
+                    setChatInstructionOrRV()
+                    binding.sendHiBtn.apply {
+                        visibility = View.VISIBLE
+                        setOnClickListener {
+                            onSendButtonClicked("hi ${chatViewModel.userFullName.first_name}")
+                        }
+                    }
+                    
+                    itemTouchHelper.attachToRecyclerView(binding.chatRV)
+                }
+                
+                // when i have blocked the other user
+                1 -> {
+                    binding.sendBtn.isEnabled = false
+                    itemTouchHelper.attachToRecyclerView(null)
+                    binding.sendHiBtn.apply {
+                        visibility = View.INVISIBLE
+                    }
+                }
+                
+                //  when the other user has blocked me
+                else -> binding.apply {
+                    sendBtn.isEnabled = false
+                    sendMsgLayout.visibility = View.GONE
+                    btnUnblock.visibility = View.VISIBLE
+                    btnUnblock.setOnClickListener {
+                        chatViewModel.unblockUser(myId, userId)
+                    }
+                    itemTouchHelper.attachToRecyclerView(null)
+                    binding.sendHiBtn.apply {
+                        visibility = View.INVISIBLE
+                    }
+                }
+            }
+            setUserProfilePictureAndName()
+        }
+        
+        chatViewModel.chatAdapter?.selectedMessageCount?.observe(this) { // Log.d(TAG, "Selected message count <LIVE> = $it")
             if (it < 1) {
                 actionMode?.finish()
                 return@observe
@@ -243,8 +291,7 @@ class ChatActivity : AppCompatActivity() {
             actionMode?.title = if (it > 1) "$it messages selected." else "$it message selected."
         }
         
-        chatViewModel.chatAdapter?.otherMessageCount?.observe(this) {
-            // Log.d(TAG, "Other message count <LIVE> = $it")
+        chatViewModel.chatAdapter?.otherMessageCount?.observe(this) { // Log.d(TAG, "Other message count <LIVE> = $it")
             val prev = chatViewModel.chatAdapter?.lastOtherMsgCount!!
             val current = it
             if (prev == current) return@observe
@@ -253,21 +300,34 @@ class ChatActivity : AppCompatActivity() {
         }
         
         chatViewModel.chatsLive.observe(this) {
-            if (it.isEmpty() || isRecreating) return@observe
+            if (it.isEmpty() || isRecreating) {
+                return@observe
+            }
             chatViewModel.chatAdapter!!.addNewChats(it)
+            setChatInstructionOrRV()
         }
-        binding.sendBtn.setOnClickListener { onSendButtonClicked() }
+        binding.sendBtn.setOnClickListener { onSendButtonClicked(binding.messageBox.text.toString().trim()) }
         binding.discardBtn.setOnClickListener {
             chatViewModel.replyToChat = null
             hideReplyPreview()
         }
-        setUserProfilePictureAndName()
+        // setUserProfilePictureAndName()
+    }
+    
+    private fun setChatInstructionOrRV() {
+        if (chatViewModel.chatAdapter?.itemCount == 0) {
+            (binding.chatRV.layoutParams as LinearLayout.LayoutParams).weight = 0F
+            (binding.instruction.layoutParams as LinearLayout.LayoutParams).weight = 1F
+        } else {
+            (binding.chatRV.layoutParams as LinearLayout.LayoutParams).weight = 1F
+            (binding.instruction.layoutParams as LinearLayout.LayoutParams).weight = 0F
+        }
     }
     
     private fun setUserProfilePictureAndName() {
         lifecycleScope.launch {
             val userprofilePicture = chatViewModel.getUserImage(userId)
-            if (userprofilePicture != null) {
+            if (userprofilePicture != null && blockedStatus == 0) {
                 binding.userImage.setImageBitmap(userprofilePicture)
             } else {
                 binding.userImage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.person_24, theme))
@@ -287,14 +347,15 @@ class ChatActivity : AppCompatActivity() {
     
     private fun setUserIdsFromIntentOrExitActivity() {
         val bundle = intent.extras
-        if (null != bundle) {
-            userId = bundle.getLong(USER_ID)
-            myId = bundle.getLong(LOGGED_IN_ID)
-            userLastTime = bundle.getLong(USER_LAST_LOGIN)
-        } else {
+        if (null == bundle) {
             Toast.makeText(this, "Some error occurred.", Toast.LENGTH_SHORT).show()
             finish()
+            return
         }
+        
+        userId = bundle.getLong(USER_ID)
+        myId = bundle.getLong(LOGGED_IN_ID)
+        userLastTime = bundle.getLong(USER_LAST_LOGIN)
     }
     
     private fun initializeVariables() {
@@ -316,11 +377,14 @@ class ChatActivity : AppCompatActivity() {
             layoutManager = llManager
             addOnScrollListener(scrollListener)
         }
-        itemTouchHelper.attachToRecyclerView(binding.chatRV)
     }
     
-    private fun onSendButtonClicked() {
-        val text = binding.messageBox.text.toString().trim()
+    private fun onSendButtonClicked(text: String) {
+        if (blockedStatus == -1) {
+            Toast.makeText(this, "You are now allowed to send messages to this user.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
         if (text.isBlank()) {
             Toast.makeText(this, "Message cannot be blank.", Toast.LENGTH_SHORT).show()
             return
@@ -336,6 +400,8 @@ class ChatActivity : AppCompatActivity() {
             chatViewModel.chatAdapter!!.addSentChat(chat)
             binding.chatRV.invalidateItemDecorations()
             
+            setChatInstructionOrRV()
+            
             binding.messageBox.text.clear()
             binding.chatRV.scrollToPosition(0)
             hideReplyPreview()
@@ -347,18 +413,18 @@ class ChatActivity : AppCompatActivity() {
     
     private fun highlightMsg(chatId: Long) {
         /*val pos = chatViewModel.chatAdapter!!.getPositionForChatId(chatId)
-            if (pos == -1) return
-            Log.d(TAG, "pos = $pos")
-            binding.chatRV.scrollToPosition(pos)
-            val vh = binding.chatRV.findViewHolderForLayoutPosition(pos) ?: return
-            Log.d(TAG, "ViewHolder is not null")
-            lifecycleScope.launch {
-                withContext(Dispatchers.Main) {
-                    vh.itemView.setBackgroundColor(resources.getColor(R.color.grey, theme))
-                    delay(700)
-                    vh.itemView.setBackgroundColor(resources.getColor(android.R.color.transparent, theme))
-                }
-            }*/
+          if (pos == -1) return
+          Log.d(TAG, "pos = $pos")
+          binding.chatRV.scrollToPosition(pos)
+          val vh = binding.chatRV.findViewHolderForLayoutPosition(pos) ?: return
+          Log.d(TAG, "ViewHolder is not null")
+          lifecycleScope.launch {
+              withContext(Dispatchers.Main) {
+                  vh.itemView.setBackgroundColor(resources.getColor(R.color.grey, theme))
+                  delay(700)
+                  vh.itemView.setBackgroundColor(resources.getColor(android.R.color.transparent, theme))
+              }
+          }*/
     }
     
     private fun showReplyPreview() {
@@ -404,18 +470,13 @@ class ChatActivity : AppCompatActivity() {
     
     private fun showDeleteMessageAlert() {
         if (chatViewModel.chatAdapter?.selectedItems?.size!! < 1) return
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Delete chats.")
-            .setMessage("Delete ${chatViewModel.chatAdapter?.selectedItems?.size} message(s) ?")
-            .setNegativeButton("No") { dialog, which ->
-                dialog.dismiss()
-            }
-            .setPositiveButton("Yes") { dialog, which ->
-                markChatsAsDelete()
-                dialog.dismiss()
-                chatViewModel.chatAdapter?.resetSelectMode()
-            }
-            .show()
+        MaterialAlertDialogBuilder(this).setTitle("Delete chats.").setMessage("Delete ${chatViewModel.chatAdapter?.selectedItems?.size} message(s) ?").setNegativeButton("No") { dialog, which ->
+            dialog.dismiss()
+        }.setPositiveButton("Yes") { dialog, which ->
+            markChatsAsDelete()
+            dialog.dismiss()
+            chatViewModel.chatAdapter?.resetSelectMode()
+        }.show()
     }
     
     override fun onPause() {

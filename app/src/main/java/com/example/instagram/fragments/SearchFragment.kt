@@ -24,9 +24,7 @@ import com.example.instagram.databinding.FragmentSearchBinding
 import com.example.instagram.viewmodels.SearchFragViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 private const val TAG = "CommTag_SearchFragment"
 
@@ -98,7 +96,6 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
                 binding.startSearchInstruction.visibility = View.GONE
                 binding.searchRV.visibility = View.VISIBLE
             } else if (binding.searchViewBar.query.isNotEmpty() && it.size == 0) { // when searched but no user is found
-                Log.d(TAG, "No users found")
                 binding.noUsersFoundIns.visibility = View.VISIBLE
             }
         }
@@ -118,12 +115,12 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
         
         binding.searchViewBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
-            override fun onQueryTextChange(newText: String?): Boolean {
+            override fun onQueryTextChange(newText: String): Boolean {
                 viewModel.apply {
                     searchLiveData.value?.clear()
                     imagesLiveData.value?.clear()
                 }
-                if (newText!!.isBlank()) {
+                if (newText.isBlank()) {
                     if (recentSearchAdapter.isEmpty()) {
                         visibilityConfig3()
                     } else {
@@ -133,7 +130,6 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
                     searchJob?.cancel()
                     visibilityConfig1()
                     searchJob = lifecycleScope.launch {
-                        delay(1)
                         viewModel.getSearchResults(newText)
                     }
                 }
@@ -144,7 +140,6 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
     
     
     override fun onResume() {
-        Log.d(TAG, "onResume: ")
         super.onResume()
         binding.searchViewBar.requestFocus()
         (requireActivity() as HomeActivity).openKeyboard()
@@ -157,15 +152,13 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
             (requireActivity() as HomeActivity).hideBottomNavigationView()
         } else
             (requireActivity() as HomeActivity).showBottomNavigationView()
-
+        
     }
     
     override fun onPause() {
         super.onPause()
         binding.searchViewBar.clearFocus()
         (requireActivity() as HomeActivity).showBottomNavigationView()
-    
-        Log.d(TAG, "onPause: ")
     }
     
     /**
@@ -229,7 +222,6 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
             } catch (e: Exception) {
                 findNavController().navigateUp()
                 findNavController().navigate(action)
-                
             }
         }
     }

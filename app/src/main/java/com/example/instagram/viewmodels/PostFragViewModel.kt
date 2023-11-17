@@ -96,7 +96,6 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
         
-        
         val oneTimeWorkRequest = OneTimeWorkRequest
             .Builder(UploadPostPictures::class.java)
             .setConstraints(mConstraints)
@@ -131,10 +130,8 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
             tempList
         }
         
-        
         val finalListWithImages = imageUrlFromFirebase.await()
         val finalListWithImage = mutableListOf<TagSearchResult>()
-        
         for (i in finalResultWoPicUrl.indices) {
             val singleRes = TagSearchResult(
                 finalResultWoPicUrl[i].profile_id,

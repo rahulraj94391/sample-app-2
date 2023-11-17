@@ -20,7 +20,7 @@
     <string name="app_name">SociableX</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
-    <string name="sign_up">Sign Up</string>
+    <string name="sign_up_and_login">Sign up and login</string>
     <string name="bio">Bio</string>
     <string name="last_name">Last name</string>
     <string name="save_changes">Save Changes</string>

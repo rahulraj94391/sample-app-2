@@ -119,12 +119,10 @@ class LocationTagFragment : Fragment() {
         
     }
     
-    
     private fun onLocationClicked(pos: Int) {
         viewModel.apply {
             locationTag = locations[pos]
             findNavController().navigateUp()
         }
     }
-    
 }

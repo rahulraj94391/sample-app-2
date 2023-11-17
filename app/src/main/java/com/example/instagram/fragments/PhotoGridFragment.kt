@@ -90,10 +90,19 @@ class PhotoGridFragment : Fragment() {
         userPostedPhotoAdapter = PhotoGridAdapter(this::onPostClicked)
         
         mainViewModel.startProfileRefresh.observe(viewLifecycleOwner) {
-            if (listRef == 0 && it) {
+            if (!it) return@observe
+            
+            if (listRef == 0) {
+                Log.d(TAG, "refresh page 0")
                 lifecycleScope.launch {
                     userPostedPhotoAdapter.clearList()
-                    viewModel.getProfilePost(userProfId, 0)
+                    viewModel.getProfilePost(userProfId, mainViewModel.loggedInProfileId!!, 0)
+                }
+            } else if (listRef == 1) {
+                Log.d(TAG, "refresh page 1")
+                lifecycleScope.launch {
+                    userPostedPhotoAdapter.clearList()
+                    viewModel.getAllPostWhereProfileIsTagged(userProfId, mainViewModel.loggedInProfileId!!, 0)
                 }
             }
         }
@@ -102,11 +111,12 @@ class PhotoGridFragment : Fragment() {
         if (listRef == 0) {
             lifecycleScope.launch {
                 delay(50)
-                Log.d(TAG, "List Type 0: userId = $userProfId, itemCount = ${userPostedPhotoAdapter.itemCount}")
                 userPostedPhotoAdapter.clearList()
-                viewModel.getProfilePost(userProfId, 0)
+                viewModel.getProfilePost(userProfId, mainViewModel.loggedInProfileId!!, 0)
             }
+            
             viewModel.usersPost.observe(viewLifecycleOwner) {
+                Log.d(TAG, "Inside observer 0")
                 mainViewModel.startProfileRefresh.postValue(false)
                 mainViewModel.isProfileRefreshed.postValue(true)
                 
@@ -121,6 +131,7 @@ class PhotoGridFragment : Fragment() {
                 // when there is no image to show, then show the
                 // instruction label on the screen.
                 if (it.size == 0 && userPostedPhotoAdapter.itemCount == 0) {
+                    Log.d(TAG, "INS nO post 0")
                     binding.ins1.visibility = View.VISIBLE
                     return@observe
                 }
@@ -134,13 +145,15 @@ class PhotoGridFragment : Fragment() {
         } else {
             lifecycleScope.launch {
                 delay(50)
-                Log.d(TAG, "List Type 0: userId = $userProfId, itemCount = ${userPostedPhotoAdapter.itemCount}")
                 userPostedPhotoAdapter.clearList()
-                viewModel.getAllPostWhereProfileIsTagged(userProfId, 0)
+                viewModel.getAllPostWhereProfileIsTagged(userProfId, mainViewModel.loggedInProfileId!!, 0)
             }
             viewModel.usersTaggedPost.observe(viewLifecycleOwner) {
+                Log.d(TAG, "Inside observer 1")
                 binding.loadingProgressBar.visibility = View.GONE
                 if (it.size == 0 && userPostedPhotoAdapter.itemCount == 0) {
+                    Log.d(TAG, "INS nO post 1")
+                    
                     binding.ins2.visibility = View.VISIBLE
                     return@observe
                 }
@@ -174,14 +187,12 @@ class PhotoGridFragment : Fragment() {
                     isScrolling = false
                     if (listRef == 0) {
                         lifecycleScope.launch {
-                            Log.d(TAG, "List Type 0: userId = $userProfId, itemCount = ${userPostedPhotoAdapter.itemCount} :: From scroll Listener")
-                            viewModel.getProfilePost(userProfId, userPostedPhotoAdapter.itemCount)
+                            viewModel.getProfilePost(userProfId, mainViewModel.loggedInProfileId!!, userPostedPhotoAdapter.itemCount)
                         }
                         
                     } else {
                         lifecycleScope.launch {
-                            Log.d(TAG, "List Type 1: userId = $userProfId, itemCount = ${userPostedPhotoAdapter.itemCount} :: From scroll Listener")
-                            viewModel.getAllPostWhereProfileIsTagged(userProfId, userPostedPhotoAdapter.itemCount)
+                            viewModel.getAllPostWhereProfileIsTagged(userProfId, mainViewModel.loggedInProfileId!!, userPostedPhotoAdapter.itemCount)
                         }
                     }
                 }
@@ -190,8 +201,11 @@ class PhotoGridFragment : Fragment() {
         
     }
     
+    fun onUserUnblocked() {
+    
+    }
+    
     override fun onStart() {
-        Log.d(TAG, "onStart: Photo_Grid_Fragment")
         super.onStart()
         requireActivity().supportFragmentManager.setFragmentResultListener(DEL_POST_REQ_KEY, requireActivity()) { _, bundle ->
             val pos = bundle.getInt(POST_POS)
@@ -199,27 +213,8 @@ class PhotoGridFragment : Fragment() {
         }
     }
     
-    override fun onResume() {
-        Log.d(TAG, "onResume: Photo_Grid_Fragment")
-        super.onResume()
-        /*firebaseFireStore.collection("postImages").addSnapshotListener { value, error ->
-            if (error != null) {
-                Log.w(TAG, "Listen failed.", error)
-                return@addSnapshotListener
-            }
-            Log.d(TAG, "changed snapshot size = ${value!!.size()}")
-        }*/
-    }
-    
     override fun onDestroyView() {
-        Log.d(TAG, "onDestroyView: Photo_Grid_Fragment")
         binding.gridOfPosts.adapter = null
-        _binding = null
         super.onDestroyView()
-    }
-    
-    override fun onDestroy() {
-        Log.d(TAG, "onDestroy: Photo_Grid_Fragment")
-        super.onDestroy()
     }
 }

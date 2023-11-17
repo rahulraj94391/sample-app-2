@@ -1,5 +1,7 @@
 package com.example.instagram.fragments
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -15,8 +17,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
+import com.example.instagram.HomeActivity
 import com.example.instagram.ImageUtil
+import com.example.instagram.MSharedPreferences
 import com.example.instagram.MainViewModel
 import com.example.instagram.PasswordHashing
 import com.example.instagram.R
@@ -52,6 +55,8 @@ class CreateNewAccountScreenTwoFragment : Fragment() {
     private var isAccountCreationDone = MutableLiveData(false)
     private lateinit var profilePicUriToUpload: Uri
     
+    
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_new_account_screen_two, container, false)
         imageUtil = ImageUtil(requireContext())
@@ -73,8 +78,11 @@ class CreateNewAccountScreenTwoFragment : Fragment() {
         
         isAccountCreationDone.observe(viewLifecycleOwner) {
             if (it == true) {
-                findNavController().navigate(R.id.action_createNewAccountScreenTwoFragment_to_loginFragment)
-                Toast.makeText(requireContext(), "Account created.", Toast.LENGTH_SHORT).show()
+                /*findNavController().navigate(R.id.action_createNewAccountScreenTwoFragment_to_loginFragment)
+                Toast.makeText(requireContext(), "Account created.", Toast.LENGTH_SHORT).show()*/
+                lifecycleScope.launch {
+                    login()
+                }
             }
         }
         binding.passwordField.addTextChangedListener(CustomTextWatcher())
@@ -113,7 +121,9 @@ class CreateNewAccountScreenTwoFragment : Fragment() {
         
         } else { // run this block when username is unique and password qualifies the condition.
             sharedViewModel.newProfileSignup!!.apply {
-                profile_id = System.currentTimeMillis()
+                profile_id = System.currentTimeMillis().also {
+                
+                }
                 val bioText = binding.bio.text.toString()
                 bio = bioText.trim().ifBlank {
                     "\uD83C\uDF0E Hello World.\n" +
@@ -126,15 +136,30 @@ class CreateNewAccountScreenTwoFragment : Fragment() {
                 return
             }
             profileId = db.profileDao().insertNewProfile(sharedViewModel.newProfileSignup!!)
-            val rowId: Long = db.loginCredDao().insertNewLoginCred(LoginCred(profileId, username, passwordHash))
+            val rowId = db.loginCredDao().insertNewLoginCred(LoginCred(profileId, username, passwordHash))
             Log.d(TAG, "Id = $profileId, username_ID = $rowId")
             if (::profilePicUriToUpload.isInitialized) uploadProfileImage()
             else {
                 binding.signUpBtn.isEnabled = false
-                findNavController().navigate(R.id.action_createNewAccountScreenTwoFragment_to_loginFragment)
-                Toast.makeText(requireContext(), "Account created.", Toast.LENGTH_SHORT).show()
+                /*findNavController().navigate(R.id.action_createNewAccountScreenTwoFragment_to_loginFragment)
+                Toast.makeText(requireContext(), "Account created.", Toast.LENGTH_SHORT).show()*/
+                login()
             }
             
+        }
+    }
+    
+    private suspend fun login() {
+        val sharedPref = requireActivity().getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        sharedPref.edit().apply {
+            putLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, profileId)
+            putBoolean(MSharedPreferences.IS_LOGGED_IN, true)
+            apply()
+        }
+        
+        withContext(Dispatchers.Main) {
+            startActivity(Intent(requireContext(), HomeActivity::class.java))
+            requireActivity().finish()
         }
     }
     

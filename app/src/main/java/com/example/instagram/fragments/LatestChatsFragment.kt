@@ -20,6 +20,7 @@ import com.example.instagram.USER_ID
 import com.example.instagram.USER_LAST_LOGIN
 import com.example.instagram.adapters.RecentChatsAdapter
 import com.example.instagram.database.AppDatabase
+import com.example.instagram.database.entity.Chat
 import com.example.instagram.database.model.RecentChats
 import com.example.instagram.databinding.FragmentLatestChatsBinding
 import com.example.instagram.viewmodels.LatestChatFragViewModel
@@ -66,18 +67,39 @@ class LatestChatsFragment : Fragment() {
         }
         db.chatDao().getMyLatestChatsPerUser(mainViewModel.loggedInProfileId!!).observe(viewLifecycleOwner) {
             it ?: return@observe
-            
-            val set = mutableSetOf<RecentChats>()
-            for (i in it) {
-                set.add(RecentChats(i.senderId, i.receiverId, i.message, i.timeStamp, i.messageType, i.replyToChat, i.rowId))
+            lifecycleScope.launch {
+                getRecentChats(it)
             }
-            
-            val list = set.toMutableList()
-            list.sortedByDescending { time ->
-                time.timeStamp
-            }
-            recentChatAdapter.setNewList(list)
-            
+        }
+        
+    }
+    
+    private suspend fun getRecentChats(chats: List<Chat>) {
+        val set = mutableSetOf<RecentChats>()
+        for (i in chats) {
+            val isBlocked = db.blockDao().isBlocked(i.senderId, i.receiverId) == 1 || db.blockDao().isBlocked(i.receiverId, i.senderId) == 1
+            set.add(
+                RecentChats(
+                    i.senderId,
+                    i.receiverId,
+                    i.message,
+                    i.timeStamp,
+                    i.messageType,
+                    i.replyToChat,
+                    i.rowId,
+                    isBlocked
+                )
+            )
+        }
+        
+        val list = set.toMutableList()
+        list.sortedByDescending { time ->
+            time.timeStamp
+        }
+        recentChatAdapter.setNewList(list)
+        
+        if (chats.isEmpty() && recentChatAdapter.itemCount == 0) {
+            binding.noMsg.visibility = View.VISIBLE
         }
     }
     

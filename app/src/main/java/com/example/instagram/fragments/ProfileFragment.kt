@@ -2,14 +2,18 @@ package com.example.instagram.fragments
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.PopupMenu
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
@@ -40,7 +44,7 @@ import com.example.instagram.database.entity.Follow
 import com.example.instagram.database.model.ProfileSummary
 import com.example.instagram.databinding.FragmentProfileBinding
 import com.example.instagram.viewmodels.ProfileFragViewModel
-import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,9 +58,9 @@ import kotlin.properties.Delegates
 
 private const val TAG = "ProfileFragment_CommTag"
 
-const val POST_OPEN_REQ_KEY = "postId"
-const val POST_ID = "postIdToOpen"
 const val POST_POS = "postIdPosition"
+const val BLOCK = "Block"
+
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
@@ -112,18 +116,12 @@ class ProfileFragment : Fragment() {
     }
     
     override fun onDestroyView() {
-        /*if (mainViewModel.loggedInProfileId!! != profileId || showUpBtb) {
-            (requireActivity() as HomeActivity).showBottomNavigationView()
-        }*/
         _binding = null
         super.onDestroyView()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (profileId != mainViewModel.loggedInProfileId!!) {
-            binding.btnProfileBottomSheet.visibility = View.INVISIBLE
-        }
         
         if (mainViewModel.loggedInProfileId!! != profileId || showUpBtb) {
             /*(requireActivity() as HomeActivity).hideBottomNavigationView()*/
@@ -144,12 +142,7 @@ class ProfileFragment : Fragment() {
             
         }*/
         
-        mainViewModel.openPost2.observe(viewLifecycleOwner) {
-            if (it == Pair(-1, -1)) return@observe
-            val action = ProfileFragmentDirections.actionProfileFragmentToProfilePostFragment(profileId, it.first, it.second)
-            findNavController().navigate(action)
-            mainViewModel.openPost2.postValue(Pair(-1, -1))
-        }
+        
         
         
         binding.viewPagerPostAndTagPhoto.isSaveEnabled = true
@@ -184,7 +177,12 @@ class ProfileFragment : Fragment() {
         binding.btnProfileBottomSheet.setOnClickListener abc@{
             // check below condition to avoid crash when 'btnProfileBottomSheet' is tapped quickly.
             if (findNavController().currentDestination?.id == R.id.profileMenu2) return@abc
-            findNavController().navigate(R.id.action_profileFragment_to_profileMenu2)
+            
+            if (profileId == mainViewModel.loggedInProfileId!!)
+                findNavController().navigate(R.id.action_profileFragment_to_profileMenu2)
+            else {
+                showBlockMenuPopup()
+            }
         }
         
         binding.followersCount.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWER, profileId)) }
@@ -193,7 +191,53 @@ class ProfileFragment : Fragment() {
         binding.followingLabel.setOnClickListener { findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToListFollowFragment(TYPE_FOLLOWING, profileId)) }
     }
     
+    private fun showBlockMenuPopup() {
+        PopupMenu(binding.btnProfileBottomSheet.context, binding.btnProfileBottomSheet).apply {
+            inflate(R.menu.block_user_menu)
+            setForceShowIcon(true)
+            menu.getItem(0).title = SpannableString(BLOCK).apply {
+                setSpan(ForegroundColorSpan(Color.RED), 0, BLOCK.length, 0)
+            }
+            setOnMenuItemClickListener {
+                showBlockUserDialog()
+                true
+            }
+            show()
+        }
+    }
+    
+    private fun showBlockUserDialog() {
+        val profile = viewModel.profileSummary.value
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Block user ?")
+            .setMessage("Block ${profile?.first_name} ${profile?.last_name} ?")
+            .setCancelable(true)
+            .setPositiveButton("Yes") { _, _ ->
+                lifecycleScope.launch {
+                    Log.d(TAG, "User ${profile?.first_name} ${profile?.last_name} Blocked.")
+                    blockUser()
+                }
+            }.setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+            }.show()
+    }
+    
+    private fun blockUser() {
+        lifecycleScope.launch {
+            viewModel.blockUser(mainViewModel.loggedInProfileId!!, profileId)
+            mainViewModel.startProfileRefresh.postValue(true)
+        }
+    }
+    
     private fun setObservers() {
+        mainViewModel.openPost2.observe(viewLifecycleOwner) {
+            if (it == Pair(-1, -1)) return@observe
+            val action =
+                ProfileFragmentDirections.actionProfileFragmentToProfilePostFragment(profileId, it.first, it.second)
+            findNavController().navigate(action)
+            mainViewModel.openPost2.postValue(Pair(-1, -1))
+        }
+        
         binding.refreshProfile.setOnRefreshListener {
             mainViewModel.startProfileRefresh.postValue(true)
         }
@@ -213,20 +257,20 @@ class ProfileFragment : Fragment() {
             }
         }
         
-        db.profileDao().getPostCount(profileId).observe(viewLifecycleOwner) {
+        /*db.profileDao().getPostCount(profileId).observe(viewLifecycleOwner) {
             binding.postCount.text = it.toString()
-        }
+        }*/
     }
     
     private fun setViewPagerHeight() {
         Log.d(TAG, "setViewPagerHeight: ")
-        var heightToMinus = 0
+        var heightToSubtract = 0
         val viewToMeasure0 = binding.toolbar
         val vto0 = viewToMeasure0.viewTreeObserver
         vto0.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 viewToMeasure0.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                heightToMinus += viewToMeasure0.height
+                heightToSubtract += viewToMeasure0.height
             }
         })
         
@@ -237,7 +281,7 @@ class ProfileFragment : Fragment() {
         vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 viewToMeasure.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                val height: Int = viewToMeasure.height - heightToMinus - tabLayoutHeight
+                val height: Int = viewToMeasure.height - heightToSubtract - tabLayoutHeight
                 val layoutParams = binding.viewPagerPostAndTagPhoto.layoutParams
                 layoutParams.height = height
                 binding.viewPagerPostAndTagPhoto.layoutParams = layoutParams
@@ -251,7 +295,8 @@ class ProfileFragment : Fragment() {
         binding.profileBio.text = it.bio
         binding.followersCount.text = it.followerCount.toString()
         binding.followingCount.text = it.followingCount.toString()
-        btn(binding.btnStart, binding.btnEnd, it.isFollowing)
+        binding.postCount.text = it.postCount.toString()
+        setButtons(it.isFollowing)
         
         CoroutineScope(Dispatchers.IO).launch {
             if (it.profilePicUrl == null) {
@@ -274,25 +319,42 @@ class ProfileFragment : Fragment() {
         }
     }
     
-    private fun btn(btnStart: MaterialButton, btnEnd: MaterialButton, isFollowing: Boolean) {
+    private fun setButtons(isFollowing: Boolean) {
+        val btnStart = binding.btnStart
+        val btnEnd = binding.btnEnd
+        val btnUnblock = binding.btnUnblock
+        
         if (mainViewModel.loggedInProfileId!! == profileId) {
             btnStart.text = EDIT_PROFILE
             btnEnd.text = SHARE_PROFILE
             btnStart.setOnClickListener { editProfile() }
             btnEnd.setOnClickListener { shareAction() }
+        } else if (viewModel.isUserBlocked) {
+            btnStart.visibility = View.INVISIBLE
+            btnEnd.visibility = View.INVISIBLE
+            btnUnblock.visibility = View.VISIBLE
+            btnUnblock.setOnClickListener {
+                unblockUser()
+            }
         } else if (isFollowing) {
+            btnStart.visibility = View.VISIBLE
+            btnEnd.visibility = View.VISIBLE
+            btnUnblock.visibility = View.INVISIBLE
+            
             btnStart.text = UNFOLLOW
             btnEnd.text = MESSAGE
-            
             btnStart.setOnClickListener {
                 unFollowProfile()
             }
             btnEnd.setOnClickListener { messageProfile() }
         } else {
+            btnStart.visibility = View.VISIBLE
+            btnEnd.visibility = View.VISIBLE
+            btnUnblock.visibility = View.INVISIBLE
+            
+            
             btnStart.text = FOLLOW
             btnEnd.text = MESSAGE
-            
-            
             btnStart.setOnClickListener {
                 followProfile()
             }
@@ -300,9 +362,14 @@ class ProfileFragment : Fragment() {
         }
     }
     
-    private fun editProfile() {
-        findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
+    private fun unblockUser() {
+        lifecycleScope.launch {
+            viewModel.unblockUser(mainViewModel.loggedInProfileId!!, profileId)
+            mainViewModel.startProfileRefresh.postValue(true)
+        }
     }
+    
+    private fun editProfile() = findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
     
     private fun messageProfile() {
         if (findNavController().currentDestination?.id != R.id.profileFragment) return
@@ -333,7 +400,6 @@ class ProfileFragment : Fragment() {
             db.followDao().deleteFollow(mainViewModel.loggedInProfileId!!, profileId)
             viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
         }
-        
         mainViewModel.removeProfileFromFollowingList.postValue(profilePosInFollowingList)
     }
     

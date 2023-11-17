@@ -117,7 +117,6 @@ class HomeFragment : Fragment() {
     }
     
     private fun openPostsFromSamePlaceId(placeId: String?) {
-        // TODO: NAVIGATE to photos with same location
         if (placeId == null) return
         val action = HomeFragmentDirections.actionHomeFragmentToSameLocationPhotosFragment(placeId)
         findNavController().navigate(action)

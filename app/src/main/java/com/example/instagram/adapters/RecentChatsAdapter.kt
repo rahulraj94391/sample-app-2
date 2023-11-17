@@ -59,6 +59,7 @@ class RecentChatsAdapter(private val myId: Long, val openMessageScreen: (Long) -
         val sender = chat.senderId
         CoroutineScope(Dispatchers.IO).launch {
             val imageUrl = imageUtil.getProfilePictureUrl(userId) ?: return@launch
+            if (chat.isBlocked) return@launch
             val bitmap = imageUtil.getBitmap(imageUrl)
             withContext(Dispatchers.Main) {
                 holder.profileImage.setImageBitmap(bitmap)
@@ -66,6 +67,13 @@ class RecentChatsAdapter(private val myId: Long, val openMessageScreen: (Long) -
         }
         
         CoroutineScope(Dispatchers.IO).launch {
+            /*if (chat.isBlocked) { // enable this to hide name
+                withContext(Dispatchers.Main) {
+                    holder.fullName.text = "SocialbleX User"
+                }
+                return@launch
+            }*/
+            
             val fullName = db.profileDao().getFullName(userId)
             withContext(Dispatchers.Main) {
                 holder.fullName.text = "${fullName.first_name} ${fullName.last_name}"
