@@ -97,15 +97,6 @@ class ProfileFragment : Fragment() {
         } catch (e: Exception) {
             -1
         }
-        
-        /*(requireActivity() as HomeActivity).navHostFragment.childFragmentManager.setFragmentResultListener(POST_OPEN_REQ_KEY, requireActivity()) { _, bundle ->
-            val postId = bundle.getLong(POST_ID)
-            val pos = bundle.getInt(POST_POS)
-            val action = ProfileFragmentDirections.actionProfileFragmentToOnePostFragment(postId, pos)
-            findNavController().navigate(action)
-        }*/
-        
-        
     }
     
     
@@ -124,27 +115,11 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         if (mainViewModel.loggedInProfileId!! != profileId || showUpBtb) {
-            /*(requireActivity() as HomeActivity).hideBottomNavigationView()*/
-            
             binding.toolbar.setNavigationIcon(R.drawable.arrow_back_24)
             binding.toolbar.setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
         }
-        
-        /*mainViewModel.openPost.observe(viewLifecycleOwner) openPost@{
-            if (it == Pair(-1L, -1)) return@openPost
-            val postId = it.first
-            val pos = it.second
-            val action = ProfileFragmentDirections.actionProfileFragmentToOnePostFragment(postId, pos)
-            findNavController().navigate(action)
-            mainViewModel.openPost.postValue(Pair(-1L, -1))
-            
-        }*/
-        
-        
-        
-        
         binding.viewPagerPostAndTagPhoto.isSaveEnabled = true
         setOnClickListener()
         //setViewPagerHeight()
@@ -256,10 +231,6 @@ class ProfileFragment : Fragment() {
                 bindAllDetails(it)
             }
         }
-        
-        /*db.profileDao().getPostCount(profileId).observe(viewLifecycleOwner) {
-            binding.postCount.text = it.toString()
-        }*/
     }
     
     private fun setViewPagerHeight() {
@@ -306,13 +277,7 @@ class ProfileFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 setProfilePicTransition()
             }
-            
-            /* mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
-            val imageUtil = ImageUtil(requireContext())
-            val imageUrl = db.cacheDao().getCachedProfileImage(profileId) ?: imageUtil.getProfilePictureUrl(profileId) ?: ""*/
-            
             mainViewModel.profileImageBitmap = ImageUtil(requireContext()).getBitmap(it.profilePicUrl)
-            
             withContext(Dispatchers.Main) {
                 binding.profilePic.setImageBitmap(mainViewModel.profileImageBitmap)
             }
@@ -404,6 +369,7 @@ class ProfileFragment : Fragment() {
         lifecycleScope.launch {
             db.followDao().insertNewFollow(Follow(mainViewModel.loggedInProfileId!!, profileId, System.currentTimeMillis()))
             viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
+            mainViewModel.reloadHomeFeed.postValue(true)
         }
     }
     
@@ -412,6 +378,7 @@ class ProfileFragment : Fragment() {
         lifecycleScope.launch {
             db.followDao().deleteFollow(mainViewModel.loggedInProfileId!!, profileId)
             viewModel.getProfileSummary(mainViewModel.loggedInProfileId!!, profileId)
+            mainViewModel.reloadHomeFeed.postValue(true)
         }
         mainViewModel.removeProfileFromFollowingList.postValue(profilePosInFollowingList)
     }
@@ -425,7 +392,7 @@ class ProfileFragment : Fragment() {
             Log.i(TAG, "shareAction: ${e.message}")
         }
         val share = Intent(Intent.ACTION_SEND)
-        val textToShare = "Look at my profile on Instagram\n\nhttps://instagram.com/uid=${mainViewModel.loggedInProfileId!!}"
+        val textToShare = "Look at my profile on SociableX\n\nhttps://sociablex.com/uid=${mainViewModel.loggedInProfileId!!}"
         share.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         val bmpUri: Uri? = saveImage(bitmap)
         share.type = if (bmpUri == null) {

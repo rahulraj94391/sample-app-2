@@ -64,7 +64,6 @@ class FollowAdapter(
     fun updateList(newList: MutableList<FollowList>) {
         this.users = newList
         notifyDataSetChanged()
-        
     }
     
     fun removeUserAt(pos: Int) {

@@ -49,6 +49,7 @@
     <color name="msg_edit_text">#DDE6ED</color>
     <color name="date_rect">#E4E4E4</color>
     <color name="divider">#E6E6E6</color>
+    <color name="tag_color">#00178B</color>
 
 
 </resources>

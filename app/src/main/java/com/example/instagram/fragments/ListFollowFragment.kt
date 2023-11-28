@@ -75,6 +75,8 @@ class ListFollowFragment : Fragment() {
         
         
         val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
+        divider.dividerThickness = 2
+        divider.dividerColor = requireContext().resources.getColor(R.color.divider, context?.theme)
         divider.dividerInsetStart = dpToPx(84)
         binding.usersRV.addItemDecoration(divider)
         binding.usersRV.adapter = adapter

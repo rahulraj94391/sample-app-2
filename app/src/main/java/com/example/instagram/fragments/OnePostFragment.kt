@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -22,6 +23,7 @@ import com.example.instagram.DateTime
 import com.example.instagram.HomeActivity
 import com.example.instagram.ImageUtil
 import com.example.instagram.MainViewModel
+import com.example.instagram.PostDescParser
 import com.example.instagram.R
 import com.example.instagram.TimeFormatting
 import com.example.instagram.adapters.PostAdapter
@@ -136,7 +138,8 @@ class OnePostFragment : Fragment() {
                 binding.apply {
                     likeBtn.isChecked = details.isPostAlreadyLiked // setLikeColorAsPerState(likeBtn, details.isPostAlreadyLiked)
                     btnSavePost.isChecked = details.isPostAlreadySaved
-                    postDesc.text = details.postText
+//                    postDesc.text = details.postText
+                    PostDescParser(details.postText, postDesc, ::openHashTag).parsePostDesc()
                     timeOfPost.text = DateTime.timeFormatter(details.postTime, TimeFormatting.POST)
                     username.text = details.profileName
                     if (details.location != null) {
@@ -154,16 +157,12 @@ class OnePostFragment : Fragment() {
                         OnePostFragmentDirections.actionOnePostFragmentToSameLocationPhotosFragment(placeId)
                     findNavController().navigate(action)
                 }
-                
             }
-            
-            
         }
         
         binding.profileImage.setOnClickListener {
             openProfile()
         }
-        
         
         viewModel.profileImageUrl.observe(viewLifecycleOwner) {
             if (it == null) return@observe
@@ -194,6 +193,15 @@ class OnePostFragment : Fragment() {
             }
         }
     }
+    
+    private fun openHashTag(tag: String) {
+        Log.d(TAG, "navigate to next screen with args param = $tag")
+        Toast.makeText(requireContext(), tag, Toast.LENGTH_SHORT).show()
+    
+    
+        // TODO: Open Hash tag screen
+    }
+    
     
     override fun onResume() {
         super.onResume()

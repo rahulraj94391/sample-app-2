@@ -1,10 +1,12 @@
 package com.example.instagram.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +25,7 @@ import com.example.instagram.viewmodels.HomeFragViewModel
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
 
 private const val TAG = "HomeFragment_CommTag"
 
@@ -54,7 +57,17 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        homeAdapter = PostListAdapter(homeViewModel.listOfPosts, false, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate, ::openPostsFromSamePlaceId) {
+        homeAdapter = PostListAdapter(
+            homeViewModel.listOfPosts,
+            false,
+            ::openCommentBottomSheet,
+            ::openProfile,
+            ::onLikeClicked,
+            ::onSavePostClicked,
+            ::commentCountDelegate,
+            ::openPostsFromSamePlaceId,
+            ::openHashTag
+        ) {
             // do nothing here, we are not showing "option" btn on home screen, so no delete functionality is here.
         }
         if (homeViewModel.isFirstTime) {
@@ -93,10 +106,25 @@ class HomeFragment : Fragment() {
         homeViewModel.newPostsLoaded.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
             binding.homeRV.visibility = View.VISIBLE
-            /*if (it.size == 0) binding.followToSeeFeed.visibility = View.VISIBLE*/
             if (it > 0) {
                 homeAdapter.notifyNewPostsAdded(it)
             }
+
+//            val param = binding.toolbar.layoutParams as AppBarLayout.LayoutParams
+            if (homeAdapter.itemCount < 1) {
+                binding.followToSeeFeed.visibility = View.VISIBLE
+//                param.scrollFlags = SCROLL_FLAG_NO_SCROLL
+            } else {
+                binding.followToSeeFeed.visibility = View.GONE
+//                param.scrollFlags = SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SCROLL
+            }
+        }
+        
+        mainViewModel.reloadHomeFeed.observe(viewLifecycleOwner) {
+            if (!it) return@observe
+            homeAdapter.clearList()
+            homeViewModel.addNewPostToList(mainViewModel.loggedInProfileId!!, 5, homeAdapter.itemCount)
+            mainViewModel.reloadHomeFeed.postValue(false)
         }
     }
     
@@ -178,7 +206,13 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         binding.homeRV.layoutManager = null
         super.onDestroyView()
+    }
+    
+    private fun openHashTag(tag: String) {
+        Log.d(TAG, "navigate to next screen with args param = $tag")
+        Toast.makeText(requireContext(), "home screen: $tag", Toast.LENGTH_SHORT).show()
         
+        // TODO: Open Hash tag screen
     }
     
     private fun whenNotificationBtnClicked() {
@@ -186,5 +220,4 @@ class HomeFragment : Fragment() {
         val action = HomeFragmentDirections.actionHomeFragmentToNotificationFragment()
         findNavController().navigate(action)
     }
-    
 }

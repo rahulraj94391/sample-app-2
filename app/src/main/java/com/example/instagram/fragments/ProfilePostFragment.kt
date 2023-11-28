@@ -1,10 +1,12 @@
 package com.example.instagram.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +28,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
+
+private const val TAG = "ProfilePostFragment_CommTag"
 
 class ProfilePostFragment : Fragment() {
     private lateinit var binding: FragmentProfilePostBinding
@@ -68,7 +72,7 @@ class ProfilePostFragment : Fragment() {
             findNavController().navigateUp()
         }
         val showMoreBtn = mainViewModel.loggedInProfileId!! == profileId && type == 0
-        postsAdapter = PostListAdapter(viewModel.listOfPosts, showMoreBtn, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate, ::openPostsFromSamePlaceId, ::deletePostDialog)
+        postsAdapter = PostListAdapter(viewModel.listOfPosts, showMoreBtn, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate, ::openPostsFromSamePlaceId, ::openHashTag, ::deletePostDialog)
         
         binding.postRV.apply {
             adapter = postsAdapter
@@ -128,6 +132,14 @@ class ProfilePostFragment : Fragment() {
         findNavController().navigate(action)
     }
     
+    private fun openHashTag(tag: String) {
+        Log.d(TAG, "navigate to next screen with args param = $tag")
+        Toast.makeText(requireContext(), tag, Toast.LENGTH_SHORT).show()
+        
+        
+        // TODO: Open Hash tag screen
+    }
+    
     private fun deletePostDialog(pos: Int) {
         MaterialAlertDialogBuilder(requireContext()).setMessage("Delete this post ?").setCancelable(true).setPositiveButton("Yes") { _, _ ->
             lifecycleScope.launch {
@@ -152,14 +164,16 @@ class ProfilePostFragment : Fragment() {
     
     private fun openCommentBottomSheet(pos: Int) {
         val postId: Long = postsAdapter.getPostId(pos)
-        val action = ProfilePostFragmentDirections.actionProfilePostFragmentToCommentSheet(postId)
+        val action =
+            ProfilePostFragmentDirections.actionProfilePostFragmentToCommentSheet(postId)
         findNavController().navigate(action)
         (requireActivity() as HomeActivity).haptics.light()
     }
     
     private fun openProfile(pos: Int) {
         val profileId: Long = postsAdapter.getProfileId(pos)
-        val action = ProfilePostFragmentDirections.actionProfilePostFragmentToProfileFragment(profileId, false, -1)
+        val action =
+            ProfilePostFragmentDirections.actionProfilePostFragmentToProfileFragment(profileId, false, -1)
         findNavController().navigate(action)
     }
     

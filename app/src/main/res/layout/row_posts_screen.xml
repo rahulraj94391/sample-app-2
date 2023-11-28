@@ -68,9 +68,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:paddingBottom="4dp"
-                    android:text="Zoho Corp, Guduvancherry"
                     android:textSize="12sp"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    tools:text="Zoho Corp, Guduvancherry" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -179,13 +179,11 @@
                 android:layout_marginStart="14dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="14dp"
-                android:ellipsize="end"
                 android:justificationMode="inter_word"
-                android:maxLines="2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/allImagesInAPostVP2"
-                tools:text="loading ..." />
+                tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Aum socii" />
 
             <TextView
                 android:id="@+id/timeOfPost"

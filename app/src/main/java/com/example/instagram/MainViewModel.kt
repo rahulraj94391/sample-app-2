@@ -49,6 +49,18 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
      */
     val openPost = MutableLiveData(Pair(-1L, -1))
     
-    val openPost2 = MutableLiveData(Pair(-1, -1)) // pair(type, pos)
+    val openPost2 = MutableLiveData(Pair(-1, -1)) // pair(type[], pos)
+    
+    val reloadHomeFeed = MutableLiveData(false)
+    
+    
+    /**
+     * hides any open suggestion list when back button is pressed.
+     *
+     * eg:
+     *
+     *      1. hides the #tag suggestion list on the CaptionTagFragment
+     */
+    val closeSuggestionList = MutableLiveData(false)
     
 }

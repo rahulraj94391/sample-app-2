@@ -7,7 +7,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
@@ -157,7 +157,7 @@ class DeleteAccountFragment : Fragment() {
     }
     
     private fun setTermAndConditionTextView() {
-        val spannableString = SpannableString(binding.terms.text)
+        val spannableString = SpannableStringBuilder(binding.terms.text)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(view: View) {
                 showTermsAndCondition()

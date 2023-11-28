@@ -9,8 +9,8 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:background="?attr/colorSecondaryContainer"
         android:layout_height="match_parent"
+        android:background="?attr/colorSecondaryContainer"
         tools:context=".fragments.HomeFragment">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -31,7 +31,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="4dp"
                     android:src="@drawable/app_logo"
-                    app:tint="@color/icon_tint" />
+                    app:tint="@color/icon_tint"
+                    tools:ignore="ContentDescription" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnMessages"
@@ -51,7 +52,6 @@
                     android:layout_marginEnd="8dp"
                     app:icon="@drawable/notifications_24" />
             </androidx.appcompat.widget.Toolbar>
-
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -74,7 +74,7 @@
             android:visibility="visible"
             tools:indeterminate="true" />
 
-        <!--<TextView
+        <TextView
             android:id="@+id/followToSeeFeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,12 +82,10 @@
             android:clickable="false"
             android:gravity="center"
             android:padding="12dp"
-            android:text="@string/follow_people_to_see_their_latest_feed"
+            android:text="@string/home_inst"
             android:textColor="@color/logo_tint"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:visibility="gone" />-->
-
-
+            android:visibility="gone" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

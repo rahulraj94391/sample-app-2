@@ -165,6 +165,7 @@ class HomeActivity : AppCompatActivity() {
         /*if (navController.currentDestination?.id == R.id.profileFragment) {
             if (mainViewModel.profileOpenCount == 1) mainViewModel.profileOpenCount = 0
         }*/
+        mainViewModel.closeSuggestionList.postValue(true)
         super.onBackPressed()
     }
     

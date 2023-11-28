@@ -23,7 +23,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 
-private const val TAG = "ImageUtil_CommTag"
+private const val TAG = "ImageUtil"
 
 class ImageUtil(val context: Context) {
     private val tempImageFiles = mutableListOf<String>()
@@ -39,12 +39,12 @@ class ImageUtil(val context: Context) {
         else getImageFromCache("$fileName") ?: onEntryPresentAndFileMissing(url, fileName)
     }
     
-    suspend fun getBitmapPath() {
+    /*suspend fun getBitmapPath() {
         // val fileName = db.cacheDao().getCachedImageFileNameIfPresent(url)
         
     }
     
-    fun addTempFileNameToList(fileName: String) = tempImageFiles.add(fileName)
+    fun addTempFileNameToList(fileName: String) = tempImageFiles.add(fileName)*/
     
     private suspend fun onEntryPresentAndFileMissing(url: String, fileName: Long): Bitmap {
         Log.d(TAG, "onEntryPresentAndFileMissing")

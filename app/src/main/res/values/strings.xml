@@ -1,9 +1,9 @@
 <resources>
-    <string name="follow_people_to_see_their_latest_feed">Follow people to see \ntheir latest feed</string>
     <string name="tap_here_to_start_selecting_photos">Tap here to start selecting photos</string>
     <string name="only_alphabet_allowed">Only alphabets are allowed.</string>
     <string name="must_contain_10_digit">Must contains 10 digits.</string>
     <string name="upload_profile_picture">Upload Profile Picture</string>
+    <string name="home_inst">Follower\'s post will\nappear here</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="field_cant_be_empty">Field can\'t be empty.</string>
     <string name="forgotten_password">Forgotten Password ?</string>

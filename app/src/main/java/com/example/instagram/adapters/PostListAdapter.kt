@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.instagram.Haptics
 import com.example.instagram.ImageUtil
+import com.example.instagram.PostDescParser
 import com.example.instagram.R
 import com.example.instagram.database.model.Post
 import com.example.instagram.fragments.DELETE
@@ -37,6 +38,7 @@ class PostListAdapter(
     val saveListener: (Int, View) -> Unit,
     val commentCountDelegate: (TextView, Long) -> Unit,
     val openPostFromSamePlaceId: (String?) -> Unit,
+    val openTag: (String) -> Unit,
     val deletePost: (Int) -> Unit,
 ) : RecyclerView.Adapter<PostListAdapter.PostVH>() {
     private lateinit var mContext: Context
@@ -118,7 +120,8 @@ class PostListAdapter(
             likeBtn.checkedState = setLikedStat(position)
             savePostBtn.checkedState = setSavedStat(position)
             likeCount.text = list[position].likeCount
-            postDesc.text = list[position].postDesc
+//            postDesc.text = list[position].postDesc
+            parseString(position, postDesc)
             if (list[position].location != null) {
                 location.text = list[position].location?.primaryText
                 location.visibility = View.VISIBLE
@@ -212,6 +215,17 @@ class PostListAdapter(
     
     fun getProfileId(position: Int): Long {
         return list[position].profileId
+    }
+    
+    fun clearList() {
+        list.clear()
+        notifyDataSetChanged()
+    }
+    
+    private fun parseString(pos: Int, tv: TextView) {
+        // postDesc.text = list[position].postDesc
+        val text = list[pos].postDesc
+        PostDescParser(text, tv, openTag)
     }
     
     data class LikePayload(val newLikeString: String, val postId: Long, val newState: Int)

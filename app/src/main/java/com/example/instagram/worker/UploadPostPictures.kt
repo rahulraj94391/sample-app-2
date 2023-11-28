@@ -93,6 +93,68 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         return Result.success(Data.Builder().putBoolean(IS_UPLOAD_FINISHED, true).build())
     }
     
+    private suspend fun insertTagsInDB(str: String, postId: Long) {
+        val tags = extractKeywords(str)
+        
+        
+    }
+    
+    fun parseHashTags(str: String): MutableList<String> {
+        val s = str.lowercase()
+        val tagLists: MutableSet<String> = mutableSetOf()
+        val sb = StringBuilder()
+        var flag = false
+        for (c in s) {
+            if (c == '#' && flag && sb.isNotEmpty()) {
+                tagLists.add(sb.toString())
+                sb.clear()
+            }
+            if (c == '#') {
+                flag = true
+                continue
+            } else if (!flag) {
+                continue
+            } else if (isValidChar(c)) {
+                sb.append(c)
+            } else {
+                flag = false
+                tagLists.add(sb.toString())
+                sb.clear()
+            }
+        }
+        if (sb.isNotEmpty()) {
+            tagLists.add(sb.toString())
+        }
+        return tagLists.toMutableList()
+    }
+    
+    
+    private fun isValidChar(c: Char): Boolean {
+        val c1 = c in '0'..'9'
+        val c2 = c in 'a'..'z'
+        val c3 = c in 'A'..'Z'
+        val c4 = c == '_'
+        return c1 || c2 || c3 || c4
+    }
+    
+    private fun extractKeywords(inputText: String): List<String> {
+        val keywords = mutableSetOf<String>()
+        
+        // Regular expression to match hashtags and extract keywords
+        val regex = Regex("#(\\w+)")
+        
+        // Find all matches in the input text
+        val matches = regex.findAll(inputText)
+        
+        // Extract keywords from matches and add to the list
+        for (match in matches) {
+            val keyword = match.groupValues[1]
+            keywords.add(keyword)
+        }
+        
+        return keywords.toList()
+    }
+    
     private fun prepareTagsOnPost(tags: LongArray, postId: Long): MutableList<Tag> {
         val list = mutableListOf<Tag>()
         for (i in tags) {
