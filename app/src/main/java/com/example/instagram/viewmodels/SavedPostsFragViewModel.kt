@@ -22,3 +22,5 @@ class SavedPostsFragViewModel(app: Application) : AndroidViewModel(app) {
         listOfSavedPosts.postValue(oneImageAssociatedWithPostId)
     }
 }
+
+

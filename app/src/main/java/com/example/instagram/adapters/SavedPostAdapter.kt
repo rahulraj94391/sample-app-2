@@ -21,7 +21,7 @@ class SavedPostAdapter(
     private var listOfSavedPost = mutableListOf<OnePhotoPerPost>()
 
     inner class SavedPostVH(view: View) : RecyclerView.ViewHolder(view) {
-        val profileImage: ImageView = view.findViewById(R.id.gridImage)
+        val image: ImageView = view.findViewById(R.id.gridImage)
 
         init {
             view.setOnClickListener {
@@ -49,7 +49,7 @@ class SavedPostAdapter(
         CoroutineScope(Dispatchers.IO).launch {
             val bitmap = imageUtil.getBitmap(listOfSavedPost[position].imageURl)
             withContext(Dispatchers.Main) {
-                holder.profileImage.setImageBitmap(bitmap)
+                holder.image.setImageBitmap(bitmap)
             }
         }
     }

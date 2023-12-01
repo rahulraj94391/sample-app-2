@@ -18,10 +18,8 @@
     <color name="msg_edit_text">#292929</color>
     <color name="date_rect">#4D4D4D</color>
     <color name="hyperlink_texts">#6088FF</color>
-
     <color name="divider">#474747</color>
-
     <color name="tag_color">#D3DAFF</color>
-
+    <color name="suggestion_drop_down">#2A2C39</color>
 
 </resources>

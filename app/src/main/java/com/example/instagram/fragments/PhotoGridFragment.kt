@@ -201,10 +201,6 @@ class PhotoGridFragment : Fragment() {
         
     }
     
-    fun onUserUnblocked() {
-    
-    }
-    
     override fun onStart() {
         super.onStart()
         requireActivity().supportFragmentManager.setFragmentResultListener(DEL_POST_REQ_KEY, requireActivity()) { _, bundle ->

@@ -223,7 +223,6 @@ class ImageUtil(val context: Context) {
     }
     
     suspend fun getOneImagePerPost(postIds: MutableList<Long>): MutableList<OnePhotoPerPost> {
-        Log.d(TAG, "getOneImagePerPost:")
         val imgURLList = mutableListOf<OnePhotoPerPost>()
         for (postId in postIds) {
             val snapShots = firebaseFireStore
@@ -236,6 +235,7 @@ class ImageUtil(val context: Context) {
                 imgURLList.add(OnePhotoPerPost(postId, link))
             }
         }
+        Log.d(TAG, "getOneImagePerPost:$imgURLList")
         return imgURLList
     }
     

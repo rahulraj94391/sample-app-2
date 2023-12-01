@@ -8,6 +8,7 @@ import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.example.instagram.ImageUtil
 import com.example.instagram.database.AppDatabase
+import com.example.instagram.database.entity.HashTag
 import com.example.instagram.database.entity.ImageCache
 import com.example.instagram.database.entity.Location
 import com.example.instagram.database.entity.Post
@@ -78,6 +79,7 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         
         val postId = db.postDao().insertPost(Post(profileId, System.currentTimeMillis(), location?.placeId))
         db.postTextDao().insertPostText(PostText(postId, postText))
+        insertHashTagsInDB(postText, postId)
         Log.d(TAG, "CHECK-POINT 3")
         val downscaleImageUris = imageUtil.getUriDownscaleImages(stringToUri(originalUri))
         Log.d(TAG, "CHECK-POINT 4")
@@ -93,67 +95,27 @@ class UploadPostPictures(val context: Context, private val workerParameter: Work
         return Result.success(Data.Builder().putBoolean(IS_UPLOAD_FINISHED, true).build())
     }
     
-    private suspend fun insertTagsInDB(str: String, postId: Long) {
-        val tags = extractKeywords(str)
-        
-        
-    }
-    
-    fun parseHashTags(str: String): MutableList<String> {
-        val s = str.lowercase()
-        val tagLists: MutableSet<String> = mutableSetOf()
-        val sb = StringBuilder()
-        var flag = false
-        for (c in s) {
-            if (c == '#' && flag && sb.isNotEmpty()) {
-                tagLists.add(sb.toString())
-                sb.clear()
-            }
-            if (c == '#') {
-                flag = true
-                continue
-            } else if (!flag) {
-                continue
-            } else if (isValidChar(c)) {
-                sb.append(c)
-            } else {
-                flag = false
-                tagLists.add(sb.toString())
-                sb.clear()
-            }
+    private suspend fun insertHashTagsInDB(postDesc: String, postId: Long) {
+        val tags = extractKeywords(postDesc)
+        val hashTags = mutableListOf<HashTag>()
+        for (keyword in tags) {
+            hashTags.add(HashTag(postId, keyword))
         }
-        if (sb.isNotEmpty()) {
-            tagLists.add(sb.toString())
-        }
-        return tagLists.toMutableList()
-    }
-    
-    
-    private fun isValidChar(c: Char): Boolean {
-        val c1 = c in '0'..'9'
-        val c2 = c in 'a'..'z'
-        val c3 = c in 'A'..'Z'
-        val c4 = c == '_'
-        return c1 || c2 || c3 || c4
+        val insertIds = db.hashtagDao().inset(hashTags)
+        Log.d(TAG, "tag insert Ids = $insertIds")
     }
     
     private fun extractKeywords(inputText: String): List<String> {
         val keywords = mutableSetOf<String>()
-        
-        // Regular expression to match hashtags and extract keywords
         val regex = Regex("#(\\w+)")
-        
-        // Find all matches in the input text
         val matches = regex.findAll(inputText)
-        
-        // Extract keywords from matches and add to the list
         for (match in matches) {
             val keyword = match.groupValues[1]
             keywords.add(keyword)
         }
-        
         return keywords.toList()
     }
+    
     
     private fun prepareTagsOnPost(tags: LongArray, postId: Long): MutableList<Tag> {
         val list = mutableListOf<Tag>()

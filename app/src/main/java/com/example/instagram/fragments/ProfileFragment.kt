@@ -209,7 +209,9 @@ class ProfileFragment : Fragment() {
             if (it == Pair(-1, -1)) return@observe
             val action =
                 ProfileFragmentDirections.actionProfileFragmentToProfilePostFragment(profileId, it.first, it.second)
-            findNavController().navigate(action)
+            if (findNavController().currentDestination?.id == R.id.profileFragment) {
+                findNavController().navigate(action)
+            }
             mainViewModel.openPost2.postValue(Pair(-1, -1))
         }
         

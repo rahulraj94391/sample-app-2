@@ -1,5 +1,6 @@
 package com.example.instagram
 
+import android.graphics.Color
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextPaint
@@ -20,6 +21,10 @@ private const val TAG = "PostDescParser_CommTag"
 class PostDescParser(private val str: String, private val tv: TextView, private val openTag: (String) -> Unit) {
     private val context = tv.context
     private val resource = context.resources
+    
+    init {
+        tv.highlightColor = Color.TRANSPARENT
+    }
     
     fun parsePostDescToShort() {
         if (str.length > 100) {
@@ -89,4 +94,44 @@ class PostDescParser(private val str: String, private val tv: TextView, private 
         ssb.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         ssb.setSpan(ForegroundColorSpan(resource.getColor(R.color.tag_color, context.theme)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
+    
+    
+    /*fun parseHashTags(str: String): MutableList<String> {
+        val s = str.lowercase()
+        val tagLists: MutableSet<String> = mutableSetOf()
+        val sb = StringBuilder()
+        var flag = false
+        for (c in s) {
+            if (c == '#' && flag && sb.isNotEmpty()) {
+                tagLists.add(sb.toString())
+                sb.clear()
+            }
+            if (c == '#') {
+                flag = true
+                continue
+            } else if (!flag) {
+                continue
+            } else if (isValidChar(c)) {
+                sb.append(c)
+            } else {
+                flag = false
+                tagLists.add(sb.toString())
+                sb.clear()
+            }
+        }
+        if (sb.isNotEmpty()) {
+            tagLists.add(sb.toString())
+        }
+        return tagLists.toMutableList()
+    }
+    
+    
+    private fun isValidChar(c: Char): Boolean {
+        val c1 = c in '0'..'9'
+        val c2 = c in 'a'..'z'
+        val c3 = c in 'A'..'Z'
+        val c4 = c == '_'
+        return c1 || c2 || c3 || c4
+    }*/
+    
 }

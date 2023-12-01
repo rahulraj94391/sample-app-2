@@ -33,6 +33,13 @@
         <action
             android:id="@+id/action_homeFragment_to_sameLocationPhotosFragment"
             app:destination="@id/sameLocationPhotosFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_hashTagFragment"
+            app:destination="@id/hashTagFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
@@ -137,6 +144,13 @@
         <action
             android:id="@+id/action_onePostFragment_to_sameLocationPhotosFragment"
             app:destination="@id/sameLocationPhotosFragment" />
+        <action
+            android:id="@+id/action_onePostFragment_to_hashTagFragment"
+            app:destination="@id/hashTagFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
     </fragment>
     <dialog
         android:id="@+id/commentSheet"
@@ -338,6 +352,13 @@
         <action
             android:id="@+id/action_profilePostFragment_to_sameLocationPhotosFragment"
             app:destination="@id/sameLocationPhotosFragment" />
+        <action
+            android:id="@+id/action_profilePostFragment_to_hashTagFragment"
+            app:destination="@id/hashTagFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
     </fragment>
     <fragment
         android:id="@+id/locationTagFragment"
@@ -348,12 +369,31 @@
         android:id="@+id/sameLocationPhotosFragment"
         android:name="com.example.instagram.fragments.SameLocationPhotosFragment"
         android:label="fragment_same_location_photos"
-        tools:layout="@layout/fragment_same_location_photos" >
+        tools:layout="@layout/fragment_same_location_photos">
         <argument
             android:name="placeId"
             app:argType="string" />
         <action
             android:id="@+id/action_sameLocationPhotosFragment_to_onePostFragment"
             app:destination="@id/onePostFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/hashTagFragment"
+        android:name="com.example.instagram.fragments.HashTagFragment"
+        android:label="fragment_hash_tag"
+        tools:layout="@layout/fragment_hash_tag">
+        <argument
+            android:name="tagName"
+            app:argType="string"
+            />
+        <action
+            android:id="@+id/action_hashTagFragment_to_onePostFragment"
+            app:destination="@id/onePostFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right"
+
+            />
     </fragment>
 </navigation>

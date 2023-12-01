@@ -136,7 +136,8 @@
                 android:layout_height="32dp"
                 android:layout_marginBottom="8dp"
                 android:importantForAccessibility="no"
-                android:src="@drawable/tag" />
+                android:src="@drawable/tag"
+                app:tint="@color/text_color" />
 
             <TextView
                 android:layout_width="wrap_content"

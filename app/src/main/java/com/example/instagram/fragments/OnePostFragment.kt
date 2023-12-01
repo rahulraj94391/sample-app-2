@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -194,12 +193,9 @@ class OnePostFragment : Fragment() {
         }
     }
     
-    private fun openHashTag(tag: String) {
-        Log.d(TAG, "navigate to next screen with args param = $tag")
-        Toast.makeText(requireContext(), tag, Toast.LENGTH_SHORT).show()
-    
-    
-        // TODO: Open Hash tag screen
+    private fun openHashTag(hashTag: String) {
+        val action = OnePostFragmentDirections.actionOnePostFragmentToHashTagFragment(hashTag)
+        findNavController().navigate(action)
     }
     
     

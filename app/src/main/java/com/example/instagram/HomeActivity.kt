@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -117,6 +119,11 @@ class HomeActivity : AppCompatActivity() {
         }
     }
     
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        Log.d(TAG, "onKeyDown: ${keyCode == KeyEvent.KEYCODE_BACK}, keyEvent: $event")
+        return super.onKeyDown(keyCode, event)
+    }
+    
     fun openKeyboard() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
@@ -189,3 +196,5 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 }
+
+

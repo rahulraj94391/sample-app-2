@@ -14,11 +14,16 @@ import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
+import com.example.instagram.adapters.HashTagTextAdapter
 import com.example.instagram.databinding.FragmentCaptionTagBinding
 import com.example.instagram.viewmodels.PostFragViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import kotlin.properties.Delegates
 
@@ -29,11 +34,14 @@ class CaptionTagFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: PostFragViewModel
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var hashTagAdapter: HashTagTextAdapter
+    private var tagSearchJob: Job? = null
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[PostFragViewModel::class.java]
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        hashTagAdapter = HashTagTextAdapter(viewModel.hashTagList, ::copyHashTagSuggestionInTextView)
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -45,6 +53,11 @@ class CaptionTagFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.postDesc.addTextChangedListener(CustomTextWatcher())
         binding.toolbarCreatePost.setNavigationIcon(R.drawable.arrow_back_24)
+        binding.tagSuggestions.apply {
+            adapter = hashTagAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+        
         binding.toolbarCreatePost.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -92,6 +105,37 @@ class CaptionTagFragment : Fragment() {
             binding.tagSuggestions.visibility = View.GONE
             mainViewModel.closeSuggestionList.postValue(false)
         }*/
+        
+        
+        viewModel.isHashTagListUpdated.observe(viewLifecycleOwner) {
+            hashTagAdapter.notifyDataSetChanged()
+            binding.tagSuggestions.visibility = if (hashTagAdapter.itemCount < 1) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+        }
+    }
+    
+    private fun copyHashTagSuggestionInTextView(pos: Int) {
+        Log.d(TAG, "copyHashTagSuggestionInTextView: ")
+        val tag = try {
+            viewModel.hashTagList[pos]
+        } catch (e: Exception) {
+            Log.e(TAG, e.message.toString())
+            ""
+        }
+        val str = binding.postDesc.text
+        var count = 0
+        for (c in str.reversed()) {
+            if (c == '#') break
+            count++
+        }
+        str.delete(str.length - count, str.length)
+        str.append(tag).append(" ")
+        binding.postDesc.text = str
+        binding.postDesc.setSelection(str.length)
+        binding.tagSuggestions.visibility = View.GONE
     }
     
     private fun checkAndSetLocation() {
@@ -114,16 +158,20 @@ class CaptionTagFragment : Fragment() {
     
     inner class CustomTextWatcher : TextWatcher {
         private var lastChar by Delegates.notNull<Char>()
-        private val listOfTags = mutableListOf<String>()
         
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//            Log.d(TAG, "beforeTextChanged: $s   start = $start  count = $count  after = $after")
-            
         }
         
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//            Log.d(TAG, "onTextChanged: $s   start = $start  before = $before  count = $count")
             lastChar = if (s?.isNotEmpty() == true) s[s.length - 1] else 32.toChar()
+            val hashTag = findSubstringAfterLastHashTag(s.toString())
+            Log.d(TAG, "last tag = $hashTag")
+            tagSearchJob?.cancel()
+            tagSearchJob = lifecycleScope.launch {
+                if (hashTag != null) {
+                    viewModel.searchHashTag(hashTag)
+                }
+            }
         }
         
         override fun afterTextChanged(s: Editable?) {
@@ -136,8 +184,8 @@ class CaptionTagFragment : Fragment() {
                     val s = matcher.start() + 1
                     val e = matcher.end()
                     val tag = text.subSequence(s, e)
-                    Log.i(TAG, "post show suggestions. string = $tag")
-                    binding.tagSuggestions.visibility = View.VISIBLE
+//                    Log.i(TAG, "post show suggestions. string = $tag")
+//                    binding.tagSuggestions.visibility = View.VISIBLE
                     
                     break
                 }
@@ -154,10 +202,19 @@ class CaptionTagFragment : Fragment() {
             if (c1 && c2 && c3 && c4 && c5) {
 //              Log.d(TAG, "afterTextChanged: last char = $lastChar")
                 binding.tagSuggestions.visibility = View.GONE
-                Log.d(TAG, "post hide suggestions")
+//                Log.d(TAG, "post hide suggestions")
             }
             
             binding.btnPost.isEnabled = s?.isEmpty() != true && isInternetActive(requireContext())
+        }
+        
+        private fun findSubstringAfterLastHashTag(input: String): String? {
+            val index = input.lastIndexOf('#')
+            return if (index != -1 && index < input.length - 1) {
+                input.substring(index + 1)
+            } else {
+                null
+            }
         }
     }
     

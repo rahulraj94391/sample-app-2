@@ -75,6 +75,7 @@
     <string name="you_deleted_the_message">You deleted the message</string>
     <string name="add_location">Add location</string>
     <string name="remove_tagged_location">remove tagged location</string>
+    <string name="no_images">No Images</string>
 
     <string-array name="gender">
         <item>Male</item>

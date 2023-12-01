@@ -223,9 +223,9 @@ class PostListAdapter(
     }
     
     private fun parseString(pos: Int, tv: TextView) {
-        // postDesc.text = list[position].postDesc
+//         tv.text = list[pos].postDesc
         val text = list[pos].postDesc
-        PostDescParser(text, tv, openTag)
+        PostDescParser(text, tv, openTag).parsePostDescToShort()
     }
     
     data class LikePayload(val newLikeString: String, val postId: Long, val newState: Int)

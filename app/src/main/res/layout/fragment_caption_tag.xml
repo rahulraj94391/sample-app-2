@@ -82,13 +82,14 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/tagSuggestions"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="4dp"
-                    android:background="@color/divider"
+                    android:background="@color/suggestion_drop_down"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_max="400dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/postDesc" />
 

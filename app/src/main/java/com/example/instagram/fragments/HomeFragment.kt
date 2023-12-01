@@ -1,12 +1,10 @@
 package com.example.instagram.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -51,12 +49,6 @@ class HomeFragment : Fragment() {
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
-        return binding.root
-    }
-    
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        
         homeAdapter = PostListAdapter(
             homeViewModel.listOfPosts,
             false,
@@ -70,6 +62,26 @@ class HomeFragment : Fragment() {
         ) {
             // do nothing here, we are not showing "option" btn on home screen, so no delete functionality is here.
         }
+        
+        return binding.root
+    }
+    
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+       /* homeAdapter = PostListAdapter(
+            homeViewModel.listOfPosts,
+            false,
+            ::openCommentBottomSheet,
+            ::openProfile,
+            ::onLikeClicked,
+            ::onSavePostClicked,
+            ::commentCountDelegate,
+            ::openPostsFromSamePlaceId,
+            ::openHashTag
+        ) {
+            // do nothing here, we are not showing "option" btn on home screen, so no delete functionality is here.
+        }*/
         if (homeViewModel.isFirstTime) {
             homeViewModel.isFirstTime = false
             homeViewModel.addNewPostToList(mainViewModel.loggedInProfileId!!, 5, homeAdapter.itemCount)
@@ -208,9 +220,9 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
     }
     
-    private fun openHashTag(tag: String) {
-        Log.d(TAG, "navigate to next screen with args param = $tag")
-        Toast.makeText(requireContext(), "home screen: $tag", Toast.LENGTH_SHORT).show()
+    private fun openHashTag(hashTag: String) {
+        val action = HomeFragmentDirections.actionHomeFragmentToHashTagFragment(hashTag)
+        findNavController().navigate(action)
         
         // TODO: Open Hash tag screen
     }

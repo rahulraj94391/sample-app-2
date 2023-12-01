@@ -51,5 +51,7 @@
     <color name="divider">#E6E6E6</color>
     <color name="tag_color">#00178B</color>
 
+    <color name="suggestion_drop_down">#F7F8FF</color>
+
 
 </resources>

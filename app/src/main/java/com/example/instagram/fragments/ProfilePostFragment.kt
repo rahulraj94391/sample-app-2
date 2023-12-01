@@ -1,12 +1,10 @@
 package com.example.instagram.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -56,11 +54,17 @@ class ProfilePostFragment : Fragment() {
         db = AppDatabase.getDatabase(requireContext())
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         viewModel = ViewModelProvider(this, ProfilePostViewModelFactory(profileId, requireActivity().application))[ProfilePostViewModel::class.java]
+        val limit = if ((openPosition + 1) <= 5) 5 else (openPosition + 1)
+        val showMoreBtn = mainViewModel.loggedInProfileId!! == profileId && type == 0
+        postsAdapter = PostListAdapter(viewModel.listOfPosts, showMoreBtn, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate, ::openPostsFromSamePlaceId, ::openHashTag, ::deletePostDialog)
+        
+        if (postsAdapter.itemCount < 1)
+            viewModel.addPostsToList(profileId, type, limit, 0)
+        
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val limit = if ((openPosition + 1) <= 5) 5 else (openPosition + 1)
-        viewModel.addPostsToList(profileId, type, limit, 0)
+        
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile_post, container, false)
         return binding.root
     }
@@ -71,9 +75,9 @@ class ProfilePostFragment : Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
-        val showMoreBtn = mainViewModel.loggedInProfileId!! == profileId && type == 0
+        /*val showMoreBtn = mainViewModel.loggedInProfileId!! == profileId && type == 0
         postsAdapter = PostListAdapter(viewModel.listOfPosts, showMoreBtn, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate, ::openPostsFromSamePlaceId, ::openHashTag, ::deletePostDialog)
-        
+        */
         binding.postRV.apply {
             adapter = postsAdapter
             val llManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -100,13 +104,14 @@ class ProfilePostFragment : Fragment() {
         }
         
         viewModel.newPostsLoaded.observe(viewLifecycleOwner) {
-            if (it < 1) return@observe
-            binding.loadingProgressBar.visibility = View.GONE
-            binding.postRV.visibility = View.VISIBLE
-            
             if (it > 0) {
                 postsAdapter.notifyNewPostsAdded(it)
             }
+            if (postsAdapter.itemCount < 1) return@observe
+            binding.loadingProgressBar.visibility = View.GONE
+            binding.postRV.visibility = View.VISIBLE
+            
+            
             
             if (viewModel.isFirstTime) {
                 viewModel.isFirstTime = false
@@ -132,11 +137,9 @@ class ProfilePostFragment : Fragment() {
         findNavController().navigate(action)
     }
     
-    private fun openHashTag(tag: String) {
-        Log.d(TAG, "navigate to next screen with args param = $tag")
-        Toast.makeText(requireContext(), tag, Toast.LENGTH_SHORT).show()
-        
-        
+    private fun openHashTag(hashTag: String) {
+        val action = ProfilePostFragmentDirections.actionProfilePostFragmentToHashTagFragment(hashTag)
+        findNavController().navigate(action)
         // TODO: Open Hash tag screen
     }
     
@@ -220,8 +223,8 @@ class ProfilePostFragment : Fragment() {
     
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.listOfPosts.clear()
-        postsAdapter.notifyItemRangeRemoved(0, postsAdapter.itemCount)
+//        viewModel.listOfPosts.clear()
+//        postsAdapter.notifyItemRangeRemoved(0, postsAdapter.itemCount)
     }
     
 }

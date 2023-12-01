@@ -9,6 +9,7 @@ import com.example.instagram.database.dao.CacheDao
 import com.example.instagram.database.dao.ChatsDao
 import com.example.instagram.database.dao.CommentDao
 import com.example.instagram.database.dao.FollowDao
+import com.example.instagram.database.dao.HashTagDao
 import com.example.instagram.database.dao.LastOnlineDao
 import com.example.instagram.database.dao.LikesDao
 import com.example.instagram.database.dao.LocationDao
@@ -24,6 +25,7 @@ import com.example.instagram.database.entity.BlockedUsers
 import com.example.instagram.database.entity.Chat
 import com.example.instagram.database.entity.Comment
 import com.example.instagram.database.entity.Follow
+import com.example.instagram.database.entity.HashTag
 import com.example.instagram.database.entity.ImageCache
 import com.example.instagram.database.entity.LastOnline
 import com.example.instagram.database.entity.Likes
@@ -56,7 +58,8 @@ private const val TAG = "AppDatabase_CommTag"
         Chat::class,
         LastOnline::class,
         Location::class,
-        BlockedUsers::class
+        BlockedUsers::class,
+        HashTag::class
     ],
     version = 1,
     exportSchema = true
@@ -78,6 +81,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun lastOnlineDao(): LastOnlineDao
     abstract fun locationDao(): LocationDao
     abstract fun blockDao(): BlockDao
+    abstract fun hashtagDao(): HashTagDao
     
     companion object {
         @Volatile
@@ -88,7 +92,7 @@ abstract class AppDatabase : RoomDatabase() {
                 synchronized(this) {
                     INSTANCE = Room
                         .databaseBuilder(applicationContext, AppDatabase::class.java, "instaDB.db")
-                        .createFromAsset("database/instaDB.db")
+                        /*.createFromAsset("database/instaDB.db")*/
                         .build()
                 }
             }

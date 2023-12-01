@@ -32,7 +32,10 @@ import java.util.UUID
 private const val TAG = "CommTag_PostFragmentViewModel"
 
 class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
+    val isHashTagListUpdated = MutableLiveData<Boolean>(false)
+    val hashTagList = mutableListOf<String>()
     private val imageUtil = ImageUtil(app)
+    private val db = AppDatabase.getDatabase(app)
     val postImagesUri: MutableList<Uri> = mutableListOf()
     var profileId: Long = -1
     val tagsToUpload = mutableListOf<Long>()
@@ -61,7 +64,14 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
         
         uploadPostWork(uriToStringArray(postImagesUri))
         
+        clearAllAfterDonePosting()
+    }
+    
+    
+    private fun clearAllAfterDonePosting() {
         // clear all variables after inserting.
+        hashTagList.clear()
+        isHashTagListUpdated.postValue(true)
         locationTag = null
         tagsToUpload.clear()
         postImagesUri.clear()
@@ -91,7 +101,6 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
             dataBuilder.putString(PLACE_SECONDARY, locationTag!!.secondaryText)
         }
         
-        
         val mConstraints = Constraints
             .Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -113,7 +122,6 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
     suspend fun getSearchResults(name: String) {
         val sharedPref = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         val ownID = sharedPref.getLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
-        val db = AppDatabase.getDatabase(app)
         
         // get profile_id, username, first_name, last_name
         val searchResFormDB = viewModelScope.async {
@@ -144,5 +152,13 @@ class PostFragViewModel(private val app: Application) : AndroidViewModel(app) {
             finalListWithImage.add(singleRes)
         }
         tagSearchResults.postValue(finalListWithImage)
+    }
+    
+    suspend fun searchHashTag(hashTag: String) {
+        hashTagList.apply {
+            clear()
+            addAll(db.hashtagDao().getHashTags(hashTag))
+        }
+        isHashTagListUpdated.postValue(true)
     }
 }

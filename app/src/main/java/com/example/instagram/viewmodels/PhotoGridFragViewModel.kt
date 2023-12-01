@@ -35,7 +35,11 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
         val onePhotoPerPost = mutableListOf<OnePhotoPerPost>()
         
         for (postId in postIds) {
-            val photoLink = db.cacheDao().getFirstImgFromEachPost(postId) ?: imageUtil.getOneImagePerPost(mutableListOf(postId))[0].imageURl ?: ""
+            val photoLink = try {
+                db.cacheDao().getFirstImgFromEachPost(postId) ?: imageUtil.getOneImagePerPost(mutableListOf(postId))[0].imageURl
+            } catch (e: Exception) {
+                ""
+            }
             val onePhoto = OnePhotoPerPost(postId, photoLink)
             onePhotoPerPost.add(onePhoto)
         }
