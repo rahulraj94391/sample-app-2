@@ -23,12 +23,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     
     /**
      * When we swipe down to refresh on ProfileFragment, PhotoGridFragment is observing this live data,
-     * and give call to PhotoGridFragment's view-model to re-fetch logged-in profile photos.
+     * and give call to PhotoGridFragment's suggestionList-model to re-fetch logged-in profile photos.
      */
     val startProfileRefresh = MutableLiveData(false)
     
     /** This is observed by the ProfileFragment, when the re-fetching/refresh of photos is done by the
-     * PhotoGridFragment's view-model then ProfileFragment sets ->
+     * PhotoGridFragment's suggestionList-model then ProfileFragment sets ->
      * swipeRefreshLayout.isRefreshing = false
      */
     val isProfileRefreshed = MutableLiveData(false)

@@ -47,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
         // first put the current user id in the Main ViewModel as the Home fragment starts creating once the Activity
         // reaches the {DataBindingUtil.setContentView(this, R.layout.activity_home)} line as the home fragment is the
         // first screen that shows up to the user.
-        // without this the app crashes as the view model factory uses logged in id from main view model to create the home fragment.
+        // without this the app crashes as the suggestionList model factory uses logged in id from main suggestionList model to create the home fragment.
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         val sharedPreferences = getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         mainViewModel.loggedInProfileId = sharedPreferences.getLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
@@ -60,7 +60,7 @@ class HomeActivity : AppCompatActivity() {
         haptics = Haptics(this)
         
         
-        // setup bottom navigation view with nav controller
+        // setup bottom navigation suggestionList with nav controller
         navHostFragment = supportFragmentManager.findFragmentById(R.id.fragContainerView) as NavHostFragment
         navController = navHostFragment.findNavController()
         binding.bottomNavView.setupWithNavController(navController)
@@ -154,7 +154,7 @@ class HomeActivity : AppCompatActivity() {
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         registerReceiver(broadcastReceiver, filter)
         
-        // this removes the tooltip from the menu of bottom navigation view
+        // this removes the tooltip from the menu of bottom navigation suggestionList
         binding.bottomNavView.menu.forEach {
             val view = binding.bottomNavView.findViewById<View>(it.itemId)
             view.setOnLongClickListener {

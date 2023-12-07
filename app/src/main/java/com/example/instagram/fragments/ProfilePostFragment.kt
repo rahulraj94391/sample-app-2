@@ -40,7 +40,7 @@ class ProfilePostFragment : Fragment() {
     private lateinit var db: AppDatabase
     private lateinit var postsAdapter: PostListAdapter
     
-    // recycler view vars to load more data
+    // recycler suggestionList vars to load more data
     var isScrolling = false
     var currentItems: Int = 0
     var totalItems: Int = 0
@@ -54,17 +54,12 @@ class ProfilePostFragment : Fragment() {
         db = AppDatabase.getDatabase(requireContext())
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         viewModel = ViewModelProvider(this, ProfilePostViewModelFactory(profileId, requireActivity().application))[ProfilePostViewModel::class.java]
-        val limit = if ((openPosition + 1) <= 5) 5 else (openPosition + 1)
         val showMoreBtn = mainViewModel.loggedInProfileId!! == profileId && type == 0
         postsAdapter = PostListAdapter(viewModel.listOfPosts, showMoreBtn, ::openCommentBottomSheet, ::openProfile, ::onLikeClicked, ::onSavePostClicked, ::commentCountDelegate, ::openPostsFromSamePlaceId, ::openHashTag, ::deletePostDialog)
-        
-        if (postsAdapter.itemCount < 1)
-            viewModel.addPostsToList(profileId, type, limit, 0)
         
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile_post, container, false)
         return binding.root
     }
@@ -102,20 +97,33 @@ class ProfilePostFragment : Fragment() {
                 }
             })
         }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        val limit = if ((openPosition + 1) <= 5) 5 else (openPosition + 1)
+        if (postsAdapter.itemCount < 1) {
+            viewModel.addPostsToList(profileId, type, limit, 0)
+        }
         
         viewModel.newPostsLoaded.observe(viewLifecycleOwner) {
-            if (it > 0) {
-                postsAdapter.notifyNewPostsAdded(it)
-            }
-            if (postsAdapter.itemCount < 1) return@observe
-            binding.loadingProgressBar.visibility = View.GONE
-            binding.postRV.visibility = View.VISIBLE
-            
-            
-            
-            if (viewModel.isFirstTime) {
-                viewModel.isFirstTime = false
-                binding.postRV.layoutManager?.scrollToPosition(openPosition)
+            lifecycleScope.launch {
+                if (viewModel.isFirstTime) delay(120)
+                
+                if (it > 0) {
+                    /*postsAdapter.notifyNewPostsAdded(it)*/
+                }
+                if (postsAdapter.itemCount < 1) {
+                    binding.loadingProgressBar.visibility = View.VISIBLE
+                    return@launch
+                }
+                binding.loadingProgressBar.visibility = View.GONE
+                binding.postRV.visibility = View.VISIBLE
+                
+                if (viewModel.isFirstTime) {
+                    viewModel.isFirstTime = false
+                    binding.postRV.layoutManager?.scrollToPosition(openPosition)
+                }
             }
         }
     }
@@ -140,7 +148,6 @@ class ProfilePostFragment : Fragment() {
     private fun openHashTag(hashTag: String) {
         val action = ProfilePostFragmentDirections.actionProfilePostFragmentToHashTagFragment(hashTag)
         findNavController().navigate(action)
-        // TODO: Open Hash tag screen
     }
     
     private fun deletePostDialog(pos: Int) {
@@ -209,7 +216,7 @@ class ProfilePostFragment : Fragment() {
             MaterialCheckBox.STATE_CHECKED
         } else {
             viewModel.removeSavedPost(mainViewModel.loggedInProfileId!!, postId)
-            // view.setButtonIconTintList()
+            // suggestionList.setButtonIconTintList()
             MaterialCheckBox.STATE_UNCHECKED
         }
         
@@ -220,11 +227,4 @@ class ProfilePostFragment : Fragment() {
         }
         
     }
-    
-    override fun onDestroyView() {
-        super.onDestroyView()
-//        viewModel.listOfPosts.clear()
-//        postsAdapter.notifyItemRangeRemoved(0, postsAdapter.itemCount)
-    }
-    
 }

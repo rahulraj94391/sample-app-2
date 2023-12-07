@@ -30,7 +30,7 @@ class HashTagFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var adapter: HashTagPhotosAdapter
     
-    // recycler view vars to load more data
+    // recycler suggestionList vars to load more data
     var isScrolling = false
     var currentItems: Int = 0
     var totalItems: Int = 0

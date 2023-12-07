@@ -44,7 +44,7 @@ class PhotoGridFragment : Fragment() {
     private var listRef: Int by Delegates.notNull()
     private var userProfId: Long by Delegates.notNull()
     
-    // recycler view vars to load more data
+    // recycler suggestionList vars to load more data
     var isScrolling = false
     var currentItems: Int = 0
     var totalItems: Int = 0

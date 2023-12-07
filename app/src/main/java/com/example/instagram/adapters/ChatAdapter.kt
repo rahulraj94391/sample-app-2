@@ -191,12 +191,12 @@ class ChatAdapter(
             REGULAR_RECEIVED -> RegularReceivedViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bubble_received_txt_msg, parent, false))
             REPLY_RECEIVED -> ReplyReceivedViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bubble_received_reply_msg, parent, false))
             DELETE_RECEIVED -> DeleteReceivedViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bubble_received_msg_deleted, parent, false))
-            else -> throw Exception("onCreateViewHolder: Viewtype($viewType) is unknown for chat recycler view")
+            else -> throw Exception("onCreateViewHolder: Viewtype($viewType) is unknown for chat recycler suggestionList")
         }
     }
     
     /**
-     * Here the view holders itemView are tagged with a Pair<Int, Int>.
+     * Here the suggestionList holders itemView are tagged with a Pair<Int, Int>.
      * Pair.first denotes the VH adapter position and pair.second denotes
      * the type of the VH as defined as REGULAR_SENT, REPLY_SENT,
      * REGULAR_RECEIVED, REPLY_RECEIVED, DELETE_SENT, DELETE_RECEIVED.

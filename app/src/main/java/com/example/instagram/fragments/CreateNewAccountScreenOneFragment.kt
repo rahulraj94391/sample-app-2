@@ -81,7 +81,7 @@ class CreateNewAccountScreenOneFragment : Fragment() {
         etPhoneNumber.addTextChangedListener(CustomTextWatcher(etPhoneNumber))
         etEmail.addTextChangedListener(CustomTextWatcher(etEmail))
         
-        // adapter for gender field (autocomplete text view)
+        // adapter for gender field (autocomplete text suggestionList)
         val genderArr = resources.getStringArray(R.array.gender)
         val genderArrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, genderArr)
         autoTVGender.setAdapter(genderArrayAdapter)

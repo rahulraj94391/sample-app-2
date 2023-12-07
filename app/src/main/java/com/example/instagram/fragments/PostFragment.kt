@@ -67,14 +67,14 @@ class PostFragment : Fragment() {
     private fun showHideListAndInstruction(size: Int) {
         binding.addMorePhotoBtn.isEnabled = (size <= 5)
         binding.btnNext.isEnabled = (size > 0)
-        if (size < 1) { // hide recycler view, addMorePhotosBtn and countPost + show instruction TextView
+        if (size < 1) { // hide recycler suggestionList, addMorePhotosBtn and countPost + show instruction TextView
             binding.apply {
                 photoCount.visibility = View.GONE
                 recyclerView.visibility = View.GONE
                 addMorePhotoBtn.visibility = View.GONE
                 instruction.visibility = View.VISIBLE
             }
-        } else { // show recycler view, addMorePhotosBtn and countPost + hide instruction TextView
+        } else { // show recycler suggestionList, addMorePhotosBtn and countPost + hide instruction TextView
             binding.apply {
                 photoCount.visibility = View.VISIBLE
                 instruction.visibility = View.GONE

@@ -41,7 +41,6 @@ class HomeFragViewModel(private val currentProfile: Long, app: Application) : An
     }
     
     
-    
     private suspend fun getPost(postId: Long): Post {
         val profileId = getProfileId(postId)
         val profImageUrl = db.cacheDao().getCachedProfileImage(profileId) ?: imageUtil.getProfilePictureUrl(profileId) ?: ""

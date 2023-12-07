@@ -30,7 +30,7 @@ class SameLocationPhotosFragment : Fragment() {
     private lateinit var locationPhotoAdapter: SameLocationAdapter
     private lateinit var placeId: String
     
-    // recycler view vars to load more data
+    // recycler suggestionList vars to load more data
     var isScrolling = false
     var currentItems: Int = 0
     var totalItems: Int = 0

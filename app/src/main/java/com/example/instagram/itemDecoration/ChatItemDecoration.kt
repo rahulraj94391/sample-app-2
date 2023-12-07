@@ -38,17 +38,17 @@ class ChatItemDecoration(private val context: Context, private val chats: List<C
     }
     
     /**
-     * The onDraw method of an item decoration in Android is called multiple times with respect to the currently visible RecyclerView's child items. It's called once for each child view that is currently visible on the screen, including partially visible child views. Here's how it works:
+     * The onDraw method of an item decoration in Android is called multiple times with respect to the currently visible RecyclerView's child items. It's called once for each child suggestionList that is currently visible on the screen, including partially visible child views. Here's how it works:
      *
      * 1. Visible Child Views: When the RecyclerView is scrolled or initially laid out, it determines which child views are currently visible within its bounds. These are the child views that are either fully or partially visible on the screen.
      *
      * 2. onDraw Invocation: For each of these visible child views, the onDraw method of the item decoration is called. This allows you to customize the appearance of each visible item or draw decorations around them.
      *
-     * 3. Order of Invocation: The onDraw method is called in the order in which the child views are drawn on the screen. It starts with the child view at the top of the visible area and proceeds down the list of visible child views.
+     * 3. Order of Invocation: The onDraw method is called in the order in which the child views are drawn on the screen. It starts with the child suggestionList at the top of the visible area and proceeds down the list of visible child views.
      *
      * 4. Complete Lifecycle: The onDraw method is called during the rendering process, and it's part of the rendering lifecycle. It's invoked whenever the RecyclerView's contents change or when the RecyclerView is scrolled, which triggers a re-rendering of the visible items.
      *
-     * 5. Partial Visibility: If a child view is only partially visible on the screen (e.g., it's partially scrolled into view), onDraw is still called for that view. This allows you to customize the appearance of the partially visible portion of the item.
+     * 5. Partial Visibility: If a child suggestionList is only partially visible on the screen (e.g., it's partially scrolled into suggestionList), onDraw is still called for that suggestionList. This allows you to customize the appearance of the partially visible portion of the item.
      *
      * 6. Drawing Overlapping Decorations: If multiple item decorations are applied to the RecyclerView, they are drawn in the order in which they were added using the addItemDecoration method. Decorations added later will be drawn on top of those added earlier.
      *

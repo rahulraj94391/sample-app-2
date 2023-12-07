@@ -38,6 +38,7 @@ class ProfilePostViewModel(private val currentProfile: Long, app: Application) :
                 tempList.add(getPost(i))
             }
             listOfPosts.addAll(tempList)
+            /*delay(120)*/
             newPostsLoaded.postValue(tempList.size)
             getImagesJob = null
         }

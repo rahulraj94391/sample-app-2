@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,7 +147,6 @@ class PostListAdapter(
             postImages.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    Log.d(TAG, "onPageSelected: $position")
                     counter.text = "${position + 1}/${adapter.itemCount}"
                 }
             })

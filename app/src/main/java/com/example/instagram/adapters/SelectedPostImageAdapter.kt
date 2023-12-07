@@ -14,8 +14,8 @@ package com.example.instagram.adapters
 //        this.listOfImageUris = Uris
 //    }
 //
-//    inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-//        val image: ImageView = view.findViewById(R.id.gridImage)
+//    inner class MyViewHolder(suggestionList: View) : RecyclerView.ViewHolder(suggestionList) {
+//        val image: ImageView = suggestionList.findViewById(R.id.gridImage)
 //
 //        init {
 //            image.setOnLongClickListener {
@@ -32,8 +32,8 @@ package com.example.instagram.adapters
 //    }
 //
 //    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-//        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_photo_one_grid, parent, false)
-//        return MyViewHolder(view)
+//        val suggestionList = LayoutInflater.from(parent.context).inflate(R.layout.row_photo_one_grid, parent, false)
+//        return MyViewHolder(suggestionList)
 //    }
 //
 //    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {

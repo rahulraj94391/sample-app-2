@@ -51,12 +51,15 @@ class CaptionTagFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        binding.postDesc.suggestionList = binding.tagSuggestions
         binding.postDesc.addTextChangedListener(CustomTextWatcher())
         binding.toolbarCreatePost.setNavigationIcon(R.drawable.arrow_back_24)
         binding.tagSuggestions.apply {
             adapter = hashTagAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+        
         
         binding.toolbarCreatePost.setNavigationOnClickListener {
             findNavController().navigateUp()
@@ -125,7 +128,7 @@ class CaptionTagFragment : Fragment() {
             Log.e(TAG, e.message.toString())
             ""
         }
-        val str = binding.postDesc.text
+        val str: Editable = (binding.postDesc.text ?: "as") as Editable
         var count = 0
         for (c in str.reversed()) {
             if (c == '#') break
@@ -228,6 +231,8 @@ class CaptionTagFragment : Fragment() {
     }
     
     override fun onDestroyView() {
+        viewModel.hashTagList.clear()
+        hashTagAdapter.notifyItemRangeRemoved(0, hashTagAdapter.itemCount)
         _binding = null
         super.onDestroyView()
     }
