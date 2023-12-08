@@ -151,21 +151,25 @@ class ProfilePostFragment : Fragment() {
     }
     
     private fun deletePostDialog(pos: Int) {
-        MaterialAlertDialogBuilder(requireContext()).setMessage("Delete this post ?").setCancelable(true).setPositiveButton("Yes") { _, _ ->
-            lifecycleScope.launch {
-                deletePost(pos)
-            }
-        }.setNegativeButton("No") { dialogInterface, _ ->
-            dialogInterface.cancel()
-        }.show()
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage("Delete this post ?")
+            .setCancelable(true)
+            .setPositiveButton("Yes") { _, _ ->
+                lifecycleScope.launch {
+                    deletePost(pos)
+                }
+            }.setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+            }.show()
     }
     
     private fun deletePost(pos: Int) {
+        val postId = viewModel.listOfPosts[pos].postId
+        viewModel.listOfPosts.removeAt(pos)
         postsAdapter.notifyItemRemoved(pos)
+        
         lifecycleScope.launch {
-            val postId = viewModel.listOfPosts[pos].postId
             viewModel.deletePost(postId)
-            viewModel.listOfPosts.removeAt(pos)
             if (postsAdapter.itemCount < 1) {
                 findNavController().navigateUp()
             }

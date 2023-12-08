@@ -224,7 +224,6 @@ class HomeFragment : Fragment() {
         val action = HomeFragmentDirections.actionHomeFragmentToHashTagFragment(hashTag)
         findNavController().navigate(action)
         
-        // TODO: Open Hash tag screen
     }
     
     private fun whenNotificationBtnClicked() {
