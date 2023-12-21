@@ -26,7 +26,6 @@ class PhotoGridFragViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         
-        Log.e(TAG, "getProfilePost: called in photo-grid-viewmodel")
         val postIdsAsync = viewModelScope.async {
             db.postDao().getPostOfProfile(profileId = profileId, offset = itemCount)
         }

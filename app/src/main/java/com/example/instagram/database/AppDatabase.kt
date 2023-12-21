@@ -17,7 +17,7 @@ import com.example.instagram.database.dao.LoginCredDao
 import com.example.instagram.database.dao.PostDao
 import com.example.instagram.database.dao.PostTextDao
 import com.example.instagram.database.dao.ProfileDao
-import com.example.instagram.database.dao.RecentSearchDAO
+import com.example.instagram.database.dao.RecentSearchDao
 import com.example.instagram.database.dao.SavedPostDao
 import com.example.instagram.database.dao.SearchDao
 import com.example.instagram.database.dao.TagPeopleDao
@@ -77,7 +77,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun postTextDao(): PostTextDao
     abstract fun cacheDao(): CacheDao
     abstract fun chatDao(): ChatsDao
-    abstract fun recentSearchDao(): RecentSearchDAO
+    abstract fun recentSearchDao(): RecentSearchDao
     abstract fun lastOnlineDao(): LastOnlineDao
     abstract fun locationDao(): LocationDao
     abstract fun blockDao(): BlockDao

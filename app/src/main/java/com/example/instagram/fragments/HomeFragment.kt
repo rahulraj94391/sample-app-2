@@ -14,11 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.HomeActivity
 import com.example.instagram.MainViewModel
+import com.example.instagram.MyApplication
 import com.example.instagram.R
 import com.example.instagram.adapters.PostListAdapter
-import com.example.instagram.database.AppDatabase
 import com.example.instagram.databinding.FragmentHomeBinding
-import com.example.instagram.viewModelFactory.ViewModelFactory
+import com.example.instagram.di.HomeScreenDependencies
+import com.example.instagram.domain.util.LikeFormatter
 import com.example.instagram.viewmodels.HomeFragViewModel
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.coroutines.delay
@@ -27,12 +28,13 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "HomeFragment_CommTag"
 
+
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homeAdapter: PostListAdapter
     private lateinit var homeViewModel: HomeFragViewModel
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var db: AppDatabase
+    private lateinit var container: HomeScreenDependencies
     
     // recycler suggestionList vars to load more data
     var isScrolling = false
@@ -42,13 +44,14 @@ class HomeFragment : Fragment() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        db = AppDatabase.getDatabase(requireContext())
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        homeViewModel = ViewModelProvider(this, ViewModelFactory(mainViewModel.loggedInProfileId!!, requireActivity().application))[HomeFragViewModel::class.java]
-    }
-    
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        
+        with(HomeScreenDependencies(requireActivity().application, mainViewModel.loggedInProfileId!!)) {
+            (requireActivity().application as MyApplication).appContainer.homeScreenDependencies = this
+            container = this
+            homeViewModel = ViewModelProvider(this@HomeFragment, viewModelFactory)[HomeFragViewModel::class.java]
+        }
+        
         homeAdapter = PostListAdapter(
             homeViewModel.listOfPosts,
             false,
@@ -63,25 +66,15 @@ class HomeFragment : Fragment() {
             // do nothing here, we are not showing "option" btn on home screen, so no delete functionality is here.
         }
         
+    }
+    
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         return binding.root
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-       /* homeAdapter = PostListAdapter(
-            homeViewModel.listOfPosts,
-            false,
-            ::openCommentBottomSheet,
-            ::openProfile,
-            ::onLikeClicked,
-            ::onSavePostClicked,
-            ::commentCountDelegate,
-            ::openPostsFromSamePlaceId,
-            ::openHashTag
-        ) {
-            // do nothing here, we are not showing "option" btn on home screen, so no delete functionality is here.
-        }*/
         if (homeViewModel.isFirstTime) {
             homeViewModel.isFirstTime = false
             homeViewModel.addNewPostToList(mainViewModel.loggedInProfileId!!, 5, homeAdapter.itemCount)
@@ -90,8 +83,8 @@ class HomeFragment : Fragment() {
         binding.btnNotifications.setOnClickListener { whenNotificationBtnClicked() }
         
         binding.homeRV.apply {
-            adapter = homeAdapter
             val llManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            adapter = homeAdapter
             layoutManager = llManager
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -111,25 +104,15 @@ class HomeFragment : Fragment() {
                         homeViewModel.addNewPostToList(mainViewModel.loggedInProfileId!!, 5, homeAdapter.itemCount)
                     }
                 }
-            }
-            )
+            })
         }
         
         homeViewModel.newPostsLoaded.observe(viewLifecycleOwner) {
             binding.loadingProgressBar.visibility = View.GONE
             binding.homeRV.visibility = View.VISIBLE
-            if (it > 0) {
-                homeAdapter.notifyNewPostsAdded(it)
-            }
-
-//            val param = binding.toolbar.layoutParams as AppBarLayout.LayoutParams
-            if (homeAdapter.itemCount < 1) {
-                binding.followToSeeFeed.visibility = View.VISIBLE
-//                param.scrollFlags = SCROLL_FLAG_NO_SCROLL
-            } else {
-                binding.followToSeeFeed.visibility = View.GONE
-//                param.scrollFlags = SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SCROLL
-            }
+            if (it > 0) homeAdapter.notifyNewPostsAdded(it)
+            if (homeAdapter.itemCount < 1) binding.followToSeeFeed.visibility = View.VISIBLE
+            else binding.followToSeeFeed.visibility = View.GONE
         }
         
         mainViewModel.reloadHomeFeed.observe(viewLifecycleOwner) {
@@ -141,7 +124,7 @@ class HomeFragment : Fragment() {
     }
     
     private fun commentCountDelegate(tv: TextView, postId: Long) {
-        db.commentDao().commentCount(postId).observe(viewLifecycleOwner) {
+        container.commentRepo.commentCount(postId).observe(viewLifecycleOwner) {
             tv.text = if (it > 1) {
                 "$it comments"
             } else {
@@ -175,8 +158,8 @@ class HomeFragment : Fragment() {
         }
         
         lifecycleScope.launch {
-            delay(100)
-            val likeString = homeViewModel.getFormattedLikeCount(postId)
+            delay(100) // use job to check if the instance is still active or not, this is not appropriate method to do.
+            val likeString = LikeFormatter.getFormattedLikeCount(postId, container.likeRepo)
             val likePayload = PostListAdapter.LikePayload(likeString, postId, newState)
             homeAdapter.notifyItemChanged(pos, likePayload)
         }
@@ -191,7 +174,6 @@ class HomeFragment : Fragment() {
             MaterialCheckBox.STATE_CHECKED
         } else {
             homeViewModel.removeSavedPost(mainViewModel.loggedInProfileId!!, postId)
-            // suggestionList.setButtonIconTintList()
             MaterialCheckBox.STATE_UNCHECKED
         }
         
@@ -215,20 +197,25 @@ class HomeFragment : Fragment() {
         findNavController().navigate(action)
     }
     
-    override fun onDestroyView() {
-        binding.homeRV.layoutManager = null
-        super.onDestroyView()
-    }
-    
     private fun openHashTag(hashTag: String) {
+        if (findNavController().currentDestination?.id != R.id.homeFragment) return
         val action = HomeFragmentDirections.actionHomeFragmentToHashTagFragment(hashTag)
         findNavController().navigate(action)
-        
     }
     
     private fun whenNotificationBtnClicked() {
         if (findNavController().currentDestination?.id != R.id.homeFragment) return
         val action = HomeFragmentDirections.actionHomeFragmentToNotificationFragment()
         findNavController().navigate(action)
+    }
+    
+    override fun onDestroyView() {
+        binding.homeRV.layoutManager = null
+        super.onDestroyView()
+    }
+    
+    override fun onDestroy() {
+        (requireActivity().application as MyApplication).appContainer.homeScreenDependencies = null
+        super.onDestroy()
     }
 }

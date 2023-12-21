@@ -70,7 +70,7 @@
     <string name="device_settings">Device settings</string>
     <string name="theme_instruction">If you choose Device settings, this app will use the mode that\'s already selected in this device settings.</string>
     <string name="biometric">Biometric</string>
-    <string name="biometric_instruction">System will authenticate the user before opening Instagram on supported devices.</string>
+    <string name="biometric_instruction">System will authenticate the user before opening SociableX on supported devices.</string>
     <string name="this_message_was_deleted">This message was deleted</string>
     <string name="you_deleted_the_message">You deleted the message</string>
     <string name="add_location">Add location</string>

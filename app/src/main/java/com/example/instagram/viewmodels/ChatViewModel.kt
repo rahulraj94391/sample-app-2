@@ -46,7 +46,6 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 myLastOnlineStatus.time = System.currentTimeMillis()
                 db.lastOnlineDao().updateMyLastOnlineStatus(myLastOnlineStatus)
             } else { // record doesn't exists, insert a new LastOnline in db
-                Log.d(TAG, "inside else-block")
                 db.lastOnlineDao().insertMyLastOnlineStatus(LastOnline(myId, userId, System.currentTimeMillis()))
             }
         }
@@ -58,7 +57,6 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     }
     
     fun unblockUser(myId: Long, userId: Long) {
-        Log.d(TAG, "unblockUser: called")
         viewModelScope.launch {
             val isDeleted = db.blockDao().unblockUser(myId, userId)
             if (isDeleted < 1) return@launch

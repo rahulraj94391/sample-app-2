@@ -18,11 +18,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.instagram.DateTime
+import com.example.instagram.domain.util.DateTime
 import com.example.instagram.HomeActivity
 import com.example.instagram.MainViewModel
 import com.example.instagram.R
-import com.example.instagram.TimeFormatting
+import com.example.instagram.domain.util.TimeFormatting
 import com.example.instagram.adapters.FOLLOWLOG
 import com.example.instagram.adapters.LIKELOG
 import com.example.instagram.adapters.NotificationAdapter
@@ -94,9 +94,8 @@ class NotificationFragment : Fragment() {
             if (binding.swipeRefreshNotification.isRefreshing) {
                 binding.swipeRefreshNotification.isRefreshing = false
             }
-            //            if (placeHolderReference.size == notificationAdapter.itemCount) return@observe
+            //if (placeHolderReference.size == notificationAdapter.itemCount) return@observe
             notificationAdapter.setNewList(viewModel.followLogs, viewModel.likeLogs, viewModel.commentLogs, placeHolderReference)
-            
         }
     }
     

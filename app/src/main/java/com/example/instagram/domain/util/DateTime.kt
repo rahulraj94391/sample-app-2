@@ -1,4 +1,4 @@
-package com.example.instagram
+package com.example.instagram.domain.util
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -12,10 +12,10 @@ object DateTime {
     private val dayMonthYearFormat = SimpleDateFormat(datePattern, locale)
     
     private const val ONE_SEC = 1000
-    private const val ONE_MIN = 60 * 1000
-    private const val ONE_HOUR = 60 * 60 * 1000
-    private const val ONE_DAY = 24 * 60 * 60 * 1000
-    private const val ONE_WEEK = 7 * 24 * 60 * 60 * 1000
+    private const val ONE_MIN = 60 * ONE_SEC
+    private const val ONE_HOUR = 60 * ONE_MIN
+    private const val ONE_DAY = 24 * ONE_HOUR
+    private const val ONE_WEEK = 7 * ONE_DAY
     
     fun timeFormatter(time: Long, formatting: TimeFormatting): String {
         val currentTime: Long = System.currentTimeMillis()

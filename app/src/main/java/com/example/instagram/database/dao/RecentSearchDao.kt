@@ -9,7 +9,7 @@ import androidx.room.Transaction
 import com.example.instagram.database.entity.RecentSearch
 
 @Dao
-interface RecentSearchDAO {
+interface RecentSearchDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecentSearch(search: RecentSearch): Long
     

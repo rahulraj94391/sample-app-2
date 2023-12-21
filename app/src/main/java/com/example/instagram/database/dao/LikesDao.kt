@@ -22,5 +22,4 @@ interface LikesDao {
 
     @Query("SELECT likes.profile_id, login_credential.username, likes.post_id, likes.like_time FROM likes LEFT JOIN login_credential ON login_credential.profile_id = likes.profile_id WHERE likes.post_id IN (SELECT post.post_id FROM post WHERE profile_id = :ownerId) AND likes.profile_id != :ownerId")
     suspend fun getLikeLog(ownerId: Long): List<LikeLog>
-
 }

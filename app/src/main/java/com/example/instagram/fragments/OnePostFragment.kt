@@ -18,13 +18,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
-import com.example.instagram.DateTime
+import com.example.instagram.domain.util.DateTime
 import com.example.instagram.HomeActivity
 import com.example.instagram.ImageUtil
 import com.example.instagram.MainViewModel
 import com.example.instagram.PostDescParser
 import com.example.instagram.R
-import com.example.instagram.TimeFormatting
+import com.example.instagram.domain.util.TimeFormatting
 import com.example.instagram.adapters.PostAdapter
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.entity.Likes

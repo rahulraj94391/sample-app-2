@@ -7,7 +7,7 @@ import android.graphics.Rect
 import android.util.TypedValue
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.example.instagram.DateTime
+import com.example.instagram.domain.util.DateTime
 import com.example.instagram.R
 import com.example.instagram.database.entity.Chat
 

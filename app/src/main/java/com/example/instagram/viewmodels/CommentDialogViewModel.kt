@@ -5,9 +5,9 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.instagram.DateTime
+import com.example.instagram.domain.util.DateTime
 import com.example.instagram.ImageUtil
-import com.example.instagram.TimeFormatting
+import com.example.instagram.domain.util.TimeFormatting
 import com.example.instagram.database.AppDatabase
 import com.example.instagram.database.model.Comment
 import kotlinx.coroutines.async

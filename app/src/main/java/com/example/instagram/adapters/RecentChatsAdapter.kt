@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.instagram.DateTime
+import com.example.instagram.domain.util.DateTime
 import com.example.instagram.ImageUtil
 import com.example.instagram.R
 import com.example.instagram.database.AppDatabase

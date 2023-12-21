@@ -7,9 +7,6 @@ import com.example.instagram.database.entity.BlockedUsers
 
 @Dao
 interface BlockDao {
-    /**
-     * return 1 when 'userA' has blocked 'userB'
-     */
     @Query("select count(rowId) from blocked_users where blockerId = :userA and blockedId = :userB")
     suspend fun isBlocked(userA: Long, userB: Long): Int
     
