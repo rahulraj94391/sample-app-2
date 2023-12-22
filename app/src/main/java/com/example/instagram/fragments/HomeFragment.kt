@@ -46,10 +46,10 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         
-        with(HomeScreenDependencies(requireActivity().application, mainViewModel.loggedInProfileId!!)) {
-            (requireActivity().application as MyApplication).appContainer.homeScreenDependencies = this
-            container = this
+        container = with(HomeScreenDependencies(requireActivity().application, mainViewModel.loggedInProfileId!!)) {
             homeViewModel = ViewModelProvider(this@HomeFragment, viewModelFactory)[HomeFragViewModel::class.java]
+            (requireActivity().application as MyApplication).appContainer.homeScreenDependencies = this
+            this
         }
         
         homeAdapter = PostListAdapter(
