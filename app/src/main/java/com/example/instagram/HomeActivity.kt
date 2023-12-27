@@ -17,6 +17,10 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.instagram.common.Haptics
+import com.example.instagram.common.InternetBroadcastReceiver
+import com.example.instagram.common.MainViewModel
+import com.example.instagram.common.util.MSharedPreferences
 import com.example.instagram.databinding.ActivityHomeBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

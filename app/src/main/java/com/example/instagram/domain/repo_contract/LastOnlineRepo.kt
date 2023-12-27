@@ -1,6 +1,6 @@
 package com.example.instagram.domain.repo_contract
 
-import com.example.instagram.database.entity.LastOnline
+import com.example.instagram.data.entity.LastOnline
 
 interface LastOnlineRepo {
     suspend fun getUserLastOnlineStatus(userId: Long, myId: Long): LastOnline?

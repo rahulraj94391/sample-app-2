@@ -1,14 +1,13 @@
 package com.example.instagram.data.repo
 
 import androidx.lifecycle.LiveData
-import com.example.instagram.database.dao.ProfileDao
-import com.example.instagram.database.entity.Profile
-import com.example.instagram.database.model.FullName
-import com.example.instagram.database.model.FullNameBio
+import com.example.instagram.data.dao.ProfileDao
+import com.example.instagram.data.entity.Profile
+import com.example.instagram.data.common_model.FullName
+import com.example.instagram.screen_profilePostGridView.model.FullNameBio
 import com.example.instagram.domain.repo_contract.ProfileRepo
 
 class ProfileRepoImpl(private val dao: ProfileDao) : ProfileRepo {
-    
     override suspend fun insertNewProfile(profile: Profile): Long {
         return dao.insertNewProfile(profile)
     }

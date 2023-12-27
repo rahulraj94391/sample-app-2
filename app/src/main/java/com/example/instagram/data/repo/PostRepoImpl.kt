@@ -1,7 +1,7 @@
 package com.example.instagram.data.repo
 
-import com.example.instagram.database.dao.PostDao
-import com.example.instagram.database.entity.Post
+import com.example.instagram.data.dao.PostDao
+import com.example.instagram.data.entity.Post
 import com.example.instagram.domain.repo_contract.PostRepo
 
 class PostRepoImpl(private val dao: PostDao) : PostRepo {

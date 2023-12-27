@@ -1,7 +1,7 @@
 package com.example.instagram.data.repo
 
-import com.example.instagram.database.dao.HashTagDao
-import com.example.instagram.database.entity.HashTag
+import com.example.instagram.data.dao.HashTagDao
+import com.example.instagram.data.entity.HashTag
 import com.example.instagram.domain.repo_contract.HashTagRepo
 
 class HashTagRepoImpl(private val dao: HashTagDao) : HashTagRepo {

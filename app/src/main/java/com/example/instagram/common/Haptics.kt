@@ -1,0 +1,24 @@
+package com.example.instagram.common
+
+import android.content.Context
+import android.os.VibrationEffect
+import android.os.Vibrator
+
+class Haptics(private val context: Context) {
+    private val vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    fun light() {
+        vibrator.vibrate(VibrationEffect.createOneShot(10, 120))
+    }
+    
+    fun soft() {
+        vibrator.vibrate(VibrationEffect.createOneShot(10, 50))
+    }
+    
+    fun doubleClick() {
+        vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_DOUBLE_CLICK))
+    }
+    
+    fun heavy() {
+        vibrator.vibrate(VibrationEffect.createOneShot(10, 255))
+    }
+}

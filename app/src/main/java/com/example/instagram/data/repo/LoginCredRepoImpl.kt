@@ -1,7 +1,7 @@
 package com.example.instagram.data.repo
 
-import com.example.instagram.database.dao.LoginCredDao
-import com.example.instagram.database.entity.LoginCred
+import com.example.instagram.data.dao.LoginCredDao
+import com.example.instagram.data.entity.LoginCred
 import com.example.instagram.domain.repo_contract.LoginCredRepo
 
 class LoginCredRepoImpl(private val dao: LoginCredDao) : LoginCredRepo {

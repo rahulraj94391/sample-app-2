@@ -1,7 +1,7 @@
 package com.example.instagram.domain.repo_contract
 
 import androidx.lifecycle.LiveData
-import com.example.instagram.database.entity.RecentSearch
+import com.example.instagram.data.entity.RecentSearch
 
 interface RecentSearchRepo {
     suspend fun insertRecentSearch(search: RecentSearch): Long

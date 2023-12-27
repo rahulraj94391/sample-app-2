@@ -1,7 +1,7 @@
 package com.example.instagram.data.repo
 
-import com.example.instagram.database.dao.LastOnlineDao
-import com.example.instagram.database.entity.LastOnline
+import com.example.instagram.data.dao.LastOnlineDao
+import com.example.instagram.data.entity.LastOnline
 import com.example.instagram.domain.repo_contract.LastOnlineRepo
 
 class LastOnlineRepoImpl(private val dao: LastOnlineDao) : LastOnlineRepo {

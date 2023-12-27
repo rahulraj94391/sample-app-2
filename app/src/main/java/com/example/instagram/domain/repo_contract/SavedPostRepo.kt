@@ -1,6 +1,6 @@
 package com.example.instagram.domain.repo_contract
 
-import com.example.instagram.database.entity.SavedPost
+import com.example.instagram.data.entity.SavedPost
 
 interface SavedPostRepo {
     suspend fun isPostSavedByProfile(profileId: Long, postId: Long): Int

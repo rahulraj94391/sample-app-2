@@ -1,7 +1,7 @@
 package com.example.instagram.domain.repo_contract
 
-import com.example.instagram.database.model.SearchResult
+import com.example.instagram.screen_searchUser.model.UserSearchResult
 
 interface SearchRepo {
-    suspend fun getSearchResult(name: String, ownID: Long): MutableList<SearchResult>
+    suspend fun getSearchResult(name: String, ownID: Long): MutableList<UserSearchResult>
 }

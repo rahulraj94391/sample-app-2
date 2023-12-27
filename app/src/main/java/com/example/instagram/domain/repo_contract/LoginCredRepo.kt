@@ -1,6 +1,6 @@
 package com.example.instagram.domain.repo_contract
 
-import com.example.instagram.database.entity.LoginCred
+import com.example.instagram.data.entity.LoginCred
 
 interface LoginCredRepo {
     suspend fun insertNewLoginCred(loginCred: LoginCred): Long

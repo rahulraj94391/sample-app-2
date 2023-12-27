@@ -1,6 +1,6 @@
 package com.example.instagram.domain.repo_contract
 
-import com.example.instagram.database.entity.BlockedUsers
+import com.example.instagram.data.entity.BlockedUsers
 
 interface BlockRepo {
     /**

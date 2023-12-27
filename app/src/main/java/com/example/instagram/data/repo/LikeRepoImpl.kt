@@ -1,8 +1,8 @@
 package com.example.instagram.data.repo
 
-import com.example.instagram.database.dao.LikesDao
-import com.example.instagram.database.entity.Likes
-import com.example.instagram.database.model.LikeLog
+import com.example.instagram.data.dao.LikesDao
+import com.example.instagram.data.entity.Likes
+import com.example.instagram.screen_notification.model.LikeLog
 import com.example.instagram.domain.repo_contract.LikeRepo
 
 private const val TAG = "LikeRepoImpl_CommTag"

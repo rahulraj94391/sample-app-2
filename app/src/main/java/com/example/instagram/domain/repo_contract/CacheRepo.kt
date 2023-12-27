@@ -1,6 +1,6 @@
 package com.example.instagram.domain.repo_contract
 
-import com.example.instagram.database.entity.ImageCache
+import com.example.instagram.data.entity.ImageCache
 
 interface CacheRepo {
     suspend fun insertCacheUrl(imageCache: ImageCache): Long

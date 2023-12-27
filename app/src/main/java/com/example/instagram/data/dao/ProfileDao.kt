@@ -1,0 +1,38 @@
+package com.example.instagram.data.dao
+
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.example.instagram.data.common_model.FullName
+import com.example.instagram.data.entity.Profile
+import com.example.instagram.screen_profilePostGridView.model.FullNameBio
+
+@Dao
+interface ProfileDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertNewProfile(profile: Profile): Long
+    
+    @Query("SELECT * FROM profile WHERE profile.first_name = :name")
+    fun getUsersWithFirstname(name: String): LiveData<MutableList<Profile>>
+    
+    @Query("SELECT first_name, last_name FROM profile WHERE profile_id = :profileId")
+    suspend fun getFullName(profileId: Long): FullName
+    
+    @Query("SELECT first_name, last_name, bio FROM profile WHERE profile_id = :profileId")
+    suspend fun getFullNameBio(profileId: Long): FullNameBio
+    
+    @Query("UPDATE profile SET first_name = :firstName, last_name = :lastName, bio = :bio WHERE profile_id = :profileId")
+    suspend fun editProfile(firstName: String, lastName: String, bio: String, profileId: Long)
+    
+    @Query("SELECT COUNT(post_id) FROM post WHERE profile_id = :profileId")
+    fun getPostCount(profileId: Long): LiveData<Int>
+    
+    @Query("SELECT * FROM profile where profile_id = :profileId")
+    suspend fun getProfile(profileId: Long): Profile
+    
+    @Delete
+    suspend fun deleteProfile(profile: Profile)
+}

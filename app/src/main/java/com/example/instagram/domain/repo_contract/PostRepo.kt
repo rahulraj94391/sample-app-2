@@ -1,6 +1,6 @@
 package com.example.instagram.domain.repo_contract
 
-import com.example.instagram.database.entity.Post
+import com.example.instagram.data.entity.Post
 
 interface PostRepo {
     suspend fun insertPost(post: Post): Long

@@ -1,7 +1,7 @@
 package com.example.instagram.data.repo
 
-import com.example.instagram.database.dao.TagPeopleDao
-import com.example.instagram.database.entity.Tag
+import com.example.instagram.data.dao.TagPeopleDao
+import com.example.instagram.data.entity.Tag
 import com.example.instagram.domain.repo_contract.TagPeopleRepo
 
 class TagPeopleRepoImpl(private val dao: TagPeopleDao) : TagPeopleRepo {

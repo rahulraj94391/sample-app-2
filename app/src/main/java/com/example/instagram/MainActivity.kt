@@ -6,13 +6,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
-import com.example.instagram.fragments.AUTO
-import com.example.instagram.fragments.DARK_MODE
-import com.example.instagram.fragments.LIGHT_MODE
-import com.example.instagram.fragments.SETTINGS_PREF_NAME
-import com.example.instagram.fragments.THEME_KEY
+import com.example.instagram.common.MainViewModel
 
-private const val TAG = "MainActivity_CommTag"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainViewModel: MainViewModel

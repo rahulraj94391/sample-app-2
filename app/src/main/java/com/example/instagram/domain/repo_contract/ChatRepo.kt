@@ -1,7 +1,7 @@
 package com.example.instagram.domain.repo_contract
 
 import androidx.lifecycle.LiveData
-import com.example.instagram.database.entity.Chat
+import com.example.instagram.data.entity.Chat
 
 interface ChatRepo {
     suspend fun getChats(userId: Long, myId: Long, offset: Int): MutableList<Chat>

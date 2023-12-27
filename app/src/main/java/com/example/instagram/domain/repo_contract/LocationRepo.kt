@@ -1,6 +1,6 @@
 package com.example.instagram.domain.repo_contract
 
-import com.example.instagram.database.entity.Location
+import com.example.instagram.data.entity.Location
 
 interface LocationRepo {
     suspend fun insert(location: Location)

@@ -1,8 +1,8 @@
 package com.example.instagram.data.repo
 
 import androidx.lifecycle.LiveData
-import com.example.instagram.database.dao.ChatsDao
-import com.example.instagram.database.entity.Chat
+import com.example.instagram.data.dao.ChatsDao
+import com.example.instagram.data.entity.Chat
 import com.example.instagram.domain.repo_contract.ChatRepo
 
 class ChatRepoImpl(private val dao: ChatsDao) : ChatRepo {

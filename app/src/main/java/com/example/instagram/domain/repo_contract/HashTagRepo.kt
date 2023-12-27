@@ -1,6 +1,6 @@
 package com.example.instagram.domain.repo_contract
 
-import com.example.instagram.database.entity.HashTag
+import com.example.instagram.data.entity.HashTag
 
 interface HashTagRepo {
     suspend fun inset(hashTags: MutableList<HashTag>): List<Long>

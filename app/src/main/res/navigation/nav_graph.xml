@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.instagram.fragments.HomeFragment"
+        android:name="com.example.instagram.screen_feed.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -43,9 +43,9 @@
     </fragment>
     <fragment
         android:id="@+id/postFragment"
-        android:name="com.example.instagram.fragments.PostFragment"
+        android:name="com.example.instagram.screen_createPost.CreatePostFragment"
         android:label="fragment_post"
-        tools:layout="@layout/fragment_post">
+        tools:layout="@layout/fragment_create_post">
         <action
             android:id="@+id/action_postFragment_to_captionTagFragment"
             app:destination="@id/captionTagFragment"
@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.instagram.fragments.SearchFragment"
+        android:name="com.example.instagram.screen_searchUser.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search">
         <action
@@ -71,7 +71,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.instagram.fragments.ProfileFragment"
+        android:name="com.example.instagram.screen_profilePostGridView.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile">
         <action
@@ -120,7 +120,7 @@
     </fragment>
     <fragment
         android:id="@+id/onePostFragment"
-        android:name="com.example.instagram.fragments.OnePostFragment"
+        android:name="com.example.instagram.screen_singlePostView.PostFragment"
         android:label="OnePostFragment"
         tools:layout="@layout/fragment_one_post">
         <argument
@@ -154,7 +154,7 @@
     </fragment>
     <dialog
         android:id="@+id/commentSheet"
-        android:name="com.example.instagram.bottomsheet.CommentSheet"
+        android:name="com.example.instagram.screen_commentView.CommentSheet"
         android:label="CommentSheet"
         tools:layout="@layout/bottomsheet_comments">
         <argument
@@ -172,7 +172,7 @@
     </dialog>
     <dialog
         android:id="@+id/profileMenu2"
-        android:name="com.example.instagram.bottomsheet.ProfileMenu"
+        android:name="com.example.instagram.screen_profilePostGridView.ProfileMenu"
         android:label="ProfileMenu"
         tools:layout="@layout/bottomsheet_my_profile_menu">
         <action
@@ -184,7 +184,7 @@
     </dialog>
     <fragment
         android:id="@+id/savedPostFragment"
-        android:name="com.example.instagram.fragments.SavedPostFragment"
+        android:name="com.example.instagram.screen_savedPosts.SavedPostFragment"
         android:label="SavedPostFragment"
         tools:layout="@layout/fragment_saved_post">
         <action
@@ -197,7 +197,7 @@
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
-        android:name="com.example.instagram.fragments.EditProfileFragment"
+        android:name="com.example.instagram.screen_editProfile.EditProfileFragment"
         android:label="EditProfileFragment"
         tools:layout="@layout/fragment_edit_profile">
         <action
@@ -212,7 +212,7 @@
     </fragment>
     <fragment
         android:id="@+id/listFollowFragment"
-        android:name="com.example.instagram.fragments.ListFollowFragment"
+        android:name="com.example.instagram.screen_followerAndFollowingView.ConnectionsFragment"
         android:label="fragment_list_follow"
         tools:layout="@layout/fragment_list_follow">
         <argument
@@ -245,12 +245,12 @@
 
     <fragment
         android:id="@+id/profilePictureFragment"
-        android:name="com.example.instagram.fragments.ProfilePictureFragment"
+        android:name="com.example.instagram.screen_profilePostGridView.ProfilePictureFragment"
         android:label="fragment_profile_picture"
         tools:layout="@layout/fragment_profile_picture" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.instagram.fragments.SettingsFragment"
+        android:name="com.example.instagram.screen_settings.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings">
         <action
@@ -265,7 +265,7 @@
     </fragment>
     <fragment
         android:id="@+id/captionTagFragment"
-        android:name="com.example.instagram.fragments.CaptionTagFragment"
+        android:name="com.example.instagram.screen_createPost.PostDescriptionFragment"
         android:label="fragment_caption_tag"
         tools:layout="@layout/fragment_caption_tag">
         <action
@@ -277,19 +277,19 @@
     </fragment>
     <fragment
         android:id="@+id/tagFragment"
-        android:name="com.example.instagram.fragments.TagFragment"
+        android:name="com.example.instagram.screen_createPost.AddTagsFragment"
         android:label="TagFragment"
-        tools:layout="@layout/fragment_tag" />
+        tools:layout="@layout/fragment_add_tag" />
 
     <dialog
         android:id="@+id/downloadDialog"
-        android:name="com.example.instagram.dialog.UploadDialog"
+        android:name="com.example.instagram.screen_deleteAccount.ImagesDownloadProgressDialog"
         android:label="UploadDialog"
         tools:layout="@layout/dialog_download_progress" />
 
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.example.instagram.fragments.NotificationFragment"
+        android:name="com.example.instagram.screen_notification.NotificationFragment"
         android:label="NotificationFragment"
         tools:layout="@layout/fragment_notification">
         <action
@@ -309,12 +309,12 @@
     </fragment>
     <fragment
         android:id="@+id/latestChatsFragment"
-        android:name="com.example.instagram.fragments.LatestChatsFragment"
+        android:name="com.example.instagram.screen_chat.LatestChatsFragment"
         android:label="LatestChatsFragment"
         tools:layout="@layout/fragment_latest_chats" />
     <fragment
         android:id="@+id/deleteAccountFragment"
-        android:name="com.example.instagram.fragments.DeleteAccountFragment"
+        android:name="com.example.instagram.screen_deleteAccount.DeleteAccountFragment"
         android:label="fragment_delete_account"
         tools:layout="@layout/fragment_delete_account">
         <action
@@ -323,7 +323,7 @@
     </fragment>
     <fragment
         android:id="@+id/profilePostFragment"
-        android:name="com.example.instagram.fragments.ProfilePostFragment"
+        android:name="com.example.instagram.screen_profilePostListView.ProfilePostImagesFragment"
         android:label="fragment_profile_post"
         tools:layout="@layout/fragment_profile_post">
         <argument
@@ -362,12 +362,12 @@
     </fragment>
     <fragment
         android:id="@+id/locationTagFragment"
-        android:name="com.example.instagram.fragments.LocationTagFragment"
+        android:name="com.example.instagram.screen_createPost.AddLocationFragment"
         android:label="LocationTagFragment"
         tools:layout="@layout/fragment_location_tag" />
     <fragment
         android:id="@+id/sameLocationPhotosFragment"
-        android:name="com.example.instagram.fragments.SameLocationPhotosFragment"
+        android:name="com.example.instagram.screen_samePlaceIdPhotosView.SameLocationPhotosFragment"
         android:label="fragment_same_location_photos"
         tools:layout="@layout/fragment_same_location_photos">
         <argument
@@ -379,7 +379,7 @@
     </fragment>
     <fragment
         android:id="@+id/hashTagFragment"
-        android:name="com.example.instagram.fragments.HashTagFragment"
+        android:name="com.example.instagram.screen_hashTagView.HashTagFragment"
         android:label="fragment_hash_tag"
         tools:layout="@layout/fragment_hash_tag">
         <argument

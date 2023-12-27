@@ -1,8 +1,8 @@
 package com.example.instagram.data.repo
 
 import androidx.lifecycle.LiveData
-import com.example.instagram.database.dao.RecentSearchDao
-import com.example.instagram.database.entity.RecentSearch
+import com.example.instagram.data.dao.RecentSearchDao
+import com.example.instagram.data.entity.RecentSearch
 import com.example.instagram.domain.repo_contract.RecentSearchRepo
 
 class RecentSearchRepoImpl(private val dao: RecentSearchDao) : RecentSearchRepo {

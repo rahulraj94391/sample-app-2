@@ -1,7 +1,7 @@
 package com.example.instagram.data.repo
 
-import com.example.instagram.database.dao.CacheDao
-import com.example.instagram.database.entity.ImageCache
+import com.example.instagram.data.dao.CacheDao
+import com.example.instagram.data.entity.ImageCache
 import com.example.instagram.domain.repo_contract.CacheRepo
 
 class CacheRepoImpl(private val dao: CacheDao) : CacheRepo {

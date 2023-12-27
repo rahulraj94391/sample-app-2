@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:splitMotionEvents="false"
-        tools:context=".fragments.CaptionTagFragment">
+        tools:context=".screen_createPost.PostDescriptionFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.example.instagram.CustomEditText
+                <com.example.instagram.screen_createPost.CustomEditText
                     android:id="@+id/postDesc"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

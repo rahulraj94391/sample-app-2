@@ -1,8 +1,8 @@
 package com.example.instagram.domain.repo_contract
 
 import androidx.lifecycle.LiveData
-import com.example.instagram.database.entity.Comment
-import com.example.instagram.database.model.CommentLog
+import com.example.instagram.data.entity.Comment
+import com.example.instagram.screen_notification.model.CommentLog
 
 interface CommentRepo {
     fun commentCount(postId: Long): LiveData<Int>

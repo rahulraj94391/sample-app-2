@@ -1,7 +1,7 @@
 package com.example.instagram.data.repo
 
-import com.example.instagram.database.dao.LocationDao
-import com.example.instagram.database.entity.Location
+import com.example.instagram.data.dao.LocationDao
+import com.example.instagram.data.entity.Location
 import com.example.instagram.domain.repo_contract.LocationRepo
 
 class LocationRepoImpl(private val dao: LocationDao) : LocationRepo {

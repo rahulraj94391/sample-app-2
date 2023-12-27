@@ -1,10 +1,8 @@
 package com.example.instagram
 
-import com.example.instagram.di.HomeScreenDependencies
-import com.example.instagram.di.ProfileScreenDependencies
+import com.example.instagram.screen_feed.HomeScreenDependencies
 
 class AppContainer {
     var homeScreenDependencies: HomeScreenDependencies? = null
-    var profileScreenDependencies: ProfileScreenDependencies? = null
 }
 

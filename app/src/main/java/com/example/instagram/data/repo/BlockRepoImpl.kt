@@ -1,7 +1,7 @@
 package com.example.instagram.data.repo
 
-import com.example.instagram.database.dao.BlockDao
-import com.example.instagram.database.entity.BlockedUsers
+import com.example.instagram.data.dao.BlockDao
+import com.example.instagram.data.entity.BlockedUsers
 import com.example.instagram.domain.repo_contract.BlockRepo
 
 class BlockRepoImpl(private val dao: BlockDao) : BlockRepo {

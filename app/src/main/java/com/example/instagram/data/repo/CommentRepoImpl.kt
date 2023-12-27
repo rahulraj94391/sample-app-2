@@ -1,9 +1,9 @@
 package com.example.instagram.data.repo
 
 import androidx.lifecycle.LiveData
-import com.example.instagram.database.dao.CommentDao
-import com.example.instagram.database.entity.Comment
-import com.example.instagram.database.model.CommentLog
+import com.example.instagram.data.dao.CommentDao
+import com.example.instagram.data.entity.Comment
+import com.example.instagram.screen_notification.model.CommentLog
 import com.example.instagram.domain.repo_contract.CommentRepo
 
 class CommentRepoImpl(private val dao: CommentDao) :  CommentRepo{
