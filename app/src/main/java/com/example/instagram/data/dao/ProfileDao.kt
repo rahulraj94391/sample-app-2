@@ -8,7 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.instagram.data.common_model.FullName
 import com.example.instagram.data.entity.Profile
-import com.example.instagram.screen_profilePostGridView.model.FullNameBio
+import com.example.instagram.screen_profile.model.FullNameBio
 
 @Dao
 interface ProfileDao {

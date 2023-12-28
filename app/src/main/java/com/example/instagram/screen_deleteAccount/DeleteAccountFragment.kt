@@ -22,7 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.instagram.BIOMETRIC_KEY
 import com.example.instagram.HomeActivity
-import com.example.instagram.MainActivity
+import com.example.instagram.StartupActivity
 import com.example.instagram.R
 import com.example.instagram.SETTINGS_PREF_NAME
 import com.example.instagram.common.MainViewModel
@@ -113,7 +113,7 @@ class DeleteAccountFragment : Fragment() {
             saveData(mainViewModel.loggedInProfileId!!)
             val profile = db.profileDao().getProfile(mainViewModel.loggedInProfileId!!)
             db.profileDao().deleteProfile(profile)
-            val loginIntent = Intent(requireContext(), MainActivity::class.java)
+            val loginIntent = Intent(requireContext(), StartupActivity::class.java)
             requireActivity().finish()
             changeSharedPreference()
             startActivity(loginIntent)

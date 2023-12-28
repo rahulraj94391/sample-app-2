@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import com.example.instagram.data.dao.ProfileDao
 import com.example.instagram.data.entity.Profile
 import com.example.instagram.data.common_model.FullName
-import com.example.instagram.screen_profilePostGridView.model.FullNameBio
+import com.example.instagram.screen_profile.model.FullNameBio
 import com.example.instagram.domain.repo_contract.ProfileRepo
 
 class ProfileRepoImpl(private val dao: ProfileDao) : ProfileRepo {

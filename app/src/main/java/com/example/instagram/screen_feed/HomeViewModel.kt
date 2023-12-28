@@ -8,6 +8,8 @@ import com.example.instagram.data.common_model.Post
 import com.example.instagram.domain.repo_contract.PostRepo
 import com.example.instagram.screen_feed.usecase.GetPostUseCase
 import com.example.instagram.screen_feed.usecase.LikeUseCase
+import com.example.instagram.screen_feed.usecase.RemoveLikeUseCase
+import com.example.instagram.screen_feed.usecase.RemoveSavePostUseCase
 import com.example.instagram.screen_feed.usecase.SavePostUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -15,7 +17,9 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val likeUseCase: LikeUseCase,
+    private val removeLikeUseCase: RemoveLikeUseCase,
     private val savePostUseCase: SavePostUseCase,
+    private val removeSavePostUseCase: RemoveSavePostUseCase,
     private val getPostUseCase: GetPostUseCase,
     private val postRepo: PostRepo,
     private val imageUtil: ImageUtil,
@@ -46,25 +50,25 @@ class HomeViewModel(
     
     fun likePost(postId: Long, profileId: Long) {
         viewModelScope.launch {
-            likeUseCase.likePost(postId, profileId)
+            likeUseCase(postId, profileId)
         }
     }
     
     fun removeLike(postId: Long, profileId: Long) {
         viewModelScope.launch {
-            likeUseCase.removeLike(postId, profileId)
+            removeLikeUseCase(postId, profileId)
         }
     }
     
     fun savePost(profileId: Long, postId: Long) {
         viewModelScope.launch {
-            savePostUseCase.savePost(profileId, postId)
+            savePostUseCase(profileId, postId)
         }
     }
     
     fun removeSavedPost(profileId: Long, postId: Long) {
         viewModelScope.launch {
-            savePostUseCase.removeSavedPost(profileId, postId)
+            removeSavePostUseCase(profileId, postId)
         }
     }
 }

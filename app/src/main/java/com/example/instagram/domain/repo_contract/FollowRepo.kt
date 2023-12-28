@@ -1,7 +1,7 @@
 package com.example.instagram.domain.repo_contract
 
 import com.example.instagram.data.entity.Follow
-import com.example.instagram.screen_followerAndFollowingView.model.Connection
+import com.example.instagram.screen_connections.model.Connection
 import com.example.instagram.screen_notification.model.FollowLog
 
 interface FollowRepo {

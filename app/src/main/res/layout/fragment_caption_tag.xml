@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.example.instagram.screen_createPost.CustomEditText
+                <com.example.instagram.screen_createPost.PostDescEditText
                     android:id="@+id/postDesc"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

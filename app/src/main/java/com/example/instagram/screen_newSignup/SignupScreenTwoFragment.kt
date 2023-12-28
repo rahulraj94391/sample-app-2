@@ -16,7 +16,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.instagram.CHECK
+import com.example.instagram.CROSS
 import com.example.instagram.HomeActivity
+import com.example.instagram.PASS_LINE_1
+import com.example.instagram.PASS_LINE_2
+import com.example.instagram.PASS_LINE_3
+import com.example.instagram.PASS_LINE_4
+import com.example.instagram.PASS_LINE_5
 import com.example.instagram.R
 import com.example.instagram.common.MainViewModel
 import com.example.instagram.common.util.ImageUtil
@@ -33,15 +40,8 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
-const val PASS_LINE_1 = "Password must contains: "
-const val PASS_LINE_2 = "atleast one uppercase and lowercase character."
-const val PASS_LINE_3 = "eight characters."
-const val PASS_LINE_4 = "atleast one special character."
-const val PASS_LINE_5 = "atleast one number."
-const val CHECK = "✓ "
-const val CROSS = "╳ "
 
-class CreateNewAccountScreenTwoFragment : Fragment() {
+class SignupScreenTwoFragment : Fragment() {
     private var _binding: FragmentCreateNewAccountScreenTwoBinding? = null
     private val binding get() = _binding!!
     private lateinit var sharedViewModel: MainViewModel
@@ -51,7 +51,6 @@ class CreateNewAccountScreenTwoFragment : Fragment() {
     private var profileId: Long by Delegates.notNull()
     private var isAccountCreationDone = MutableLiveData(false)
     private lateinit var profilePicUriToUpload: Uri
-    
     
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

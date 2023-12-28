@@ -15,7 +15,9 @@ import com.example.instagram.common.util.ImageUtil
 import com.example.instagram.common.util.MSharedPreferences
 import com.example.instagram.data.AppDatabase
 import com.example.instagram.data.entity.Location
+import com.example.instagram.data.repo.LocationCacheRepoImpl
 import com.example.instagram.screen_createPost.model.TagSearchResult
+import com.example.instagram.screen_createPost.screen_locationTag.GetLocationUseCase
 import kotlinx.coroutines.async
 import java.util.UUID
 
@@ -32,6 +34,7 @@ class CreatePostViewModel(private val app: Application) : AndroidViewModel(app) 
     var uuidWorkReq = MutableLiveData<UUID>()
     var locationTag: Location? = null
     var locations = mutableListOf<Location>()
+    val getLocationUseCase = GetLocationUseCase(LocationCacheRepoImpl(db.locationCacheDao()))
     
     // this will be used to display only selected tags
     val finalTags = mutableListOf<TagSearchResult>()
@@ -53,7 +56,6 @@ class CreatePostViewModel(private val app: Application) : AndroidViewModel(app) 
         uploadPostWork(uriToStringArray(postImagesUri))
         clearAllAfterDonePosting()
     }
-    
     
     private fun clearAllAfterDonePosting() {
         // clear all variables after inserting.

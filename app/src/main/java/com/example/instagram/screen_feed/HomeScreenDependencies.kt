@@ -2,6 +2,7 @@ package com.example.instagram.screen_feed
 
 import android.content.Context
 import com.example.instagram.common.util.ImageUtil
+import com.example.instagram.data.AppDatabase
 import com.example.instagram.data.repo.CacheRepoImpl
 import com.example.instagram.data.repo.CommentRepoImpl
 import com.example.instagram.data.repo.LikeRepoImpl
@@ -9,9 +10,10 @@ import com.example.instagram.data.repo.LocationRepoImpl
 import com.example.instagram.data.repo.PostRepoImpl
 import com.example.instagram.data.repo.PostTextRepoImpl
 import com.example.instagram.data.repo.SavedPostRepoImpl
-import com.example.instagram.data.AppDatabase
 import com.example.instagram.screen_feed.usecase.GetPostUseCase
 import com.example.instagram.screen_feed.usecase.LikeUseCase
+import com.example.instagram.screen_feed.usecase.RemoveLikeUseCase
+import com.example.instagram.screen_feed.usecase.RemoveSavePostUseCase
 import com.example.instagram.screen_feed.usecase.SavePostUseCase
 
 class HomeScreenDependencies(context: Context, loggedInProfileId: Long) {
@@ -29,7 +31,9 @@ class HomeScreenDependencies(context: Context, loggedInProfileId: Long) {
     //use cases
     val getPostUseCase = GetPostUseCase(loggedInProfileId, cacheRepo, postRepo, locationRepo, postTextRepo, likeRepo, savedPostRepo)
     val likeUseCase = LikeUseCase(likeRepo)
+    val removeLikeUseCase = RemoveLikeUseCase(likeRepo)
     val savePostUseCase = SavePostUseCase(savedPostRepo)
+    val removeSavePostUseCase = RemoveSavePostUseCase(savedPostRepo)
     
     
     // image util
@@ -37,5 +41,5 @@ class HomeScreenDependencies(context: Context, loggedInProfileId: Long) {
     
     
     // VM Factory - Owner: HomeFragment
-    val viewModelFactory = HomeViewModelFactory(likeUseCase, savePostUseCase, getPostUseCase, postRepo, imageUtil)
+    val viewModelFactory = HomeViewModelFactory(likeUseCase, removeLikeUseCase, savePostUseCase, removeSavePostUseCase, getPostUseCase, postRepo, imageUtil)
 }

@@ -71,7 +71,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.instagram.screen_profilePostGridView.ProfileFragment"
+        android:name="com.example.instagram.screen_profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile">
         <action
@@ -172,7 +172,7 @@
     </dialog>
     <dialog
         android:id="@+id/profileMenu2"
-        android:name="com.example.instagram.screen_profilePostGridView.ProfileMenu"
+        android:name="com.example.instagram.screen_profile.ProfileMenu"
         android:label="ProfileMenu"
         tools:layout="@layout/bottomsheet_my_profile_menu">
         <action
@@ -212,7 +212,7 @@
     </fragment>
     <fragment
         android:id="@+id/listFollowFragment"
-        android:name="com.example.instagram.screen_followerAndFollowingView.ConnectionsFragment"
+        android:name="com.example.instagram.screen_connections.ConnectionsFragment"
         android:label="fragment_list_follow"
         tools:layout="@layout/fragment_list_follow">
         <argument
@@ -245,7 +245,7 @@
 
     <fragment
         android:id="@+id/profilePictureFragment"
-        android:name="com.example.instagram.screen_profilePostGridView.ProfilePictureFragment"
+        android:name="com.example.instagram.screen_profile.ProfilePictureFragment"
         android:label="fragment_profile_picture"
         tools:layout="@layout/fragment_profile_picture" />
     <fragment
@@ -277,7 +277,7 @@
     </fragment>
     <fragment
         android:id="@+id/tagFragment"
-        android:name="com.example.instagram.screen_createPost.AddTagsFragment"
+        android:name="com.example.instagram.screen_createPost.screen_userTag.AddTagsFragment"
         android:label="TagFragment"
         tools:layout="@layout/fragment_add_tag" />
 
@@ -362,7 +362,7 @@
     </fragment>
     <fragment
         android:id="@+id/locationTagFragment"
-        android:name="com.example.instagram.screen_createPost.AddLocationFragment"
+        android:name="com.example.instagram.screen_createPost.screen_locationTag.AddLocationFragment"
         android:label="LocationTagFragment"
         tools:layout="@layout/fragment_location_tag" />
     <fragment

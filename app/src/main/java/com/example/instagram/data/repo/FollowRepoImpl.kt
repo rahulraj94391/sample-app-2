@@ -2,7 +2,7 @@ package com.example.instagram.data.repo
 
 import com.example.instagram.data.dao.FollowDao
 import com.example.instagram.data.entity.Follow
-import com.example.instagram.screen_followerAndFollowingView.model.Connection
+import com.example.instagram.screen_connections.model.Connection
 import com.example.instagram.screen_notification.model.FollowLog
 import com.example.instagram.domain.repo_contract.FollowRepo
 

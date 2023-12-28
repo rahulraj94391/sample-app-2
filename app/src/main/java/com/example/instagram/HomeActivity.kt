@@ -29,10 +29,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-const val HIDDEN = true
-const val NOT_HIDDEN = false
-const val DURATION = 80L
-
 private const val TAG = "HomeActivity_CommTag"
 
 class HomeActivity : AppCompatActivity() {
@@ -173,9 +169,6 @@ class HomeActivity : AppCompatActivity() {
     }
     
     override fun onBackPressed() {
-        /*if (navController.currentDestination?.id == R.id.profileFragment) {
-            if (mainViewModel.profileOpenCount == 1) mainViewModel.profileOpenCount = 0
-        }*/
         mainViewModel.closeSuggestionList.postValue(true)
         super.onBackPressed()
     }

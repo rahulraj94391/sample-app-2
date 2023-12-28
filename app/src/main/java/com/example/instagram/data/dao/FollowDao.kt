@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.instagram.data.entity.Follow
-import com.example.instagram.screen_followerAndFollowingView.model.Connection
+import com.example.instagram.screen_connections.model.Connection
 import com.example.instagram.screen_notification.model.FollowLog
 
 @Dao

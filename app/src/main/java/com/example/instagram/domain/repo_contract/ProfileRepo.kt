@@ -3,7 +3,7 @@ package com.example.instagram.domain.repo_contract
 import androidx.lifecycle.LiveData
 import com.example.instagram.data.entity.Profile
 import com.example.instagram.data.common_model.FullName
-import com.example.instagram.screen_profilePostGridView.model.FullNameBio
+import com.example.instagram.screen_profile.model.FullNameBio
 
 interface ProfileRepo {
     suspend fun insertNewProfile(profile: Profile): Long

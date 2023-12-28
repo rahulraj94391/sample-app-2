@@ -49,3 +49,16 @@ const val BIOMETRIC_KEY = "biometric"
 
 
 
+const val HIDDEN = true
+const val NOT_HIDDEN = false
+const val DURATION = 80L
+
+
+const val PASS_LINE_1 = "Password must contains: "
+const val PASS_LINE_2 = "atleast one uppercase and lowercase character."
+const val PASS_LINE_3 = "eight characters."
+const val PASS_LINE_4 = "atleast one special character."
+const val PASS_LINE_5 = "atleast one number."
+const val CHECK = "✓ "
+const val CROSS = "╳ "
+

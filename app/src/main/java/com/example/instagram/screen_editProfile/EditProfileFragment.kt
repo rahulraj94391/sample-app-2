@@ -20,7 +20,7 @@ import com.example.instagram.common.util.ImageUtil
 import com.example.instagram.data.AppDatabase
 import com.example.instagram.data.entity.ImageCache
 import com.example.instagram.databinding.FragmentEditProfileBinding
-import com.example.instagram.screen_profilePostGridView.ProfileViewModel
+import com.example.instagram.screen_profile.ProfileViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
