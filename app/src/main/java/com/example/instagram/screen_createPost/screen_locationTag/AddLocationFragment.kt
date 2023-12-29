@@ -18,6 +18,8 @@ import com.example.instagram.R
 import com.example.instagram.databinding.FragmentLocationTagBinding
 import com.example.instagram.screen_createPost.CreatePostViewModel
 import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -29,10 +31,14 @@ class AddLocationFragment : Fragment() {
     private lateinit var viewModel: CreatePostViewModel
     private lateinit var locationAdapter: LocationSuggestionAdapter
     private var searchJob: Job? = null
+    private lateinit var placesClient: PlacesClient
+    private lateinit var token: AutocompleteSessionToken
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Places.initialize(requireContext(), BuildConfig.PLACES_API_KEY)
+        placesClient = Places.createClient(requireContext())
+        token = AutocompleteSessionToken.newInstance()
         viewModel = ViewModelProvider(requireActivity())[CreatePostViewModel::class.java]
     }
     
@@ -67,7 +73,7 @@ class AddLocationFragment : Fragment() {
                 searchJob = lifecycleScope.launch(Dispatchers.IO) {
                     delay(500)
                     if (placeName?.isNotBlank() == true) {
-                        val location = viewModel.getLocationUseCase(placeName, requireContext())
+                        val location = viewModel.getLocationUseCase(placeName, token, placesClient)
                         viewModel.locations.apply {
                             clear()
                             addAll(location)
