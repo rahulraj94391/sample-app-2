@@ -32,7 +32,7 @@ class ConnnectionsAdapter(
         
         init {
             view.setOnClickListener {
-                val id = users[adapterPosition].profile_id
+                val id = users[adapterPosition].profileId
                 openProfile(id, adapterPosition)
             }
         }
@@ -47,7 +47,7 @@ class ConnnectionsAdapter(
     
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.apply {
-            fullName.text = "${users[position].first_name} ${users[position].last_name}"
+            fullName.text = "${users[position].firstName} ${users[position].lastName}"
             username.text = users[position].username
             CoroutineScope(Dispatchers.IO).launch {
                 val url = users[position].photoUrl ?: return@launch

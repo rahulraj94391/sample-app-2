@@ -69,7 +69,7 @@ class RecentChatsAdapter(private val myId: Long, val openMessageScreen: (Long) -
         CoroutineScope(Dispatchers.IO).launch {
             val fullName = db.profileDao().getFullName(userId)
             withContext(Dispatchers.Main) {
-                holder.fullName.text = "${fullName.first_name} ${fullName.last_name}"
+                holder.fullName.text = "${fullName.firstName} ${fullName.lastName}"
             }
         }
         holder.lastMsg.text = if (sender == myId && chat.messageType != 3) {

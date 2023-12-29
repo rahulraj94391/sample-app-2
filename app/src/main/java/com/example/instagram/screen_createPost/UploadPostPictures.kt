@@ -21,8 +21,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 const val UPLOAD_IMAGE_PATH_KEY = "photo_uri"
-const val PROFILE_ID_KEY = "profile_id"
-const val POST_TEXT_KEY = "post_text"
+const val PROFILE_ID_KEY = "profileId"
+const val POST_TEXT_KEY = "postText"
 const val POST_TAGS_KEY = "post_tagss"
 const val IS_UPLOAD_FINISHED = "is_upload_finished"
 const val PLACE_ID_KEY = "place_id"

@@ -9,13 +9,13 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = Profile::class,
-            parentColumns = arrayOf("profile_id"),
+            parentColumns = arrayOf("profileId"),
             childColumns = arrayOf("profileId"),
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = Profile::class,
-            parentColumns = arrayOf("profile_id"),
+            parentColumns = arrayOf("profileId"),
             childColumns = arrayOf("ownerId"),
             onDelete = ForeignKey.CASCADE
         )
@@ -28,5 +28,5 @@ data class RecentSearch(
     val ownerId: Long,
 ) {
     @PrimaryKey(autoGenerate = true)
-    var search_id: Long = 0
+    var rowId: Long = 0
 }

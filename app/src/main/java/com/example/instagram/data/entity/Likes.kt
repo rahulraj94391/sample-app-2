@@ -9,23 +9,23 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = Post::class,
-            parentColumns = arrayOf("post_id"),
-            childColumns = arrayOf("post_id"),
+            parentColumns = arrayOf("postId"),
+            childColumns = arrayOf("postId"),
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = Profile::class,
-            parentColumns = arrayOf("profile_id"),
-            childColumns = arrayOf("profile_id"),
+            parentColumns = arrayOf("profileId"),
+            childColumns = arrayOf("profileId"),
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class Likes(
-    val post_id: Long,
-    val profile_id: Long,
-    val like_time: Long,
+    val postId: Long,
+    val profileId: Long,
+    val likeTime: Long,
 ) {
     @PrimaryKey(autoGenerate = true)
-    var like_id: Long = 0
+    var likeId: Long = 0
 }

@@ -180,7 +180,7 @@ class ProfileFragment : Fragment() {
         val profile = viewModel.profileSummary.value
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Block user ?")
-            .setMessage("Block ${profile?.first_name} ${profile?.last_name} ?")
+            .setMessage("Block ${profile?.firstName} ${profile?.lastName} ?")
             .setCancelable(true)
             .setPositiveButton("Yes") { _, _ ->
                 lifecycleScope.launch {
@@ -257,7 +257,7 @@ class ProfileFragment : Fragment() {
     
     private fun bindAllDetails(it: ProfileSummary) {
         binding.toolbarProfileUsername.text = it.username
-        binding.profileFullName.text = requireContext().getString(R.string.full_name, it.first_name, it.last_name)
+        binding.profileFullName.text = requireContext().getString(R.string.full_name, it.firstName, it.lastName)
         binding.profileBio.text = it.bio
         binding.followersCount.text = it.followerCount.toString()
         binding.followingCount.text = it.followingCount.toString()
@@ -326,7 +326,7 @@ class ProfileFragment : Fragment() {
         val profile = viewModel.profileSummary.value
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Unblock user ?")
-            .setMessage("Unblock ${profile?.first_name} ${profile?.last_name} ?")
+            .setMessage("Unblock ${profile?.firstName} ${profile?.lastName} ?")
             .setCancelable(true)
             .setPositiveButton("Yes") { _, _ ->
                 unblockUser()

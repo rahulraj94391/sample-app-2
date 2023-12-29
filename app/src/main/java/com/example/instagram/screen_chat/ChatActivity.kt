@@ -244,7 +244,7 @@ class ChatActivity : AppCompatActivity() {
                     binding.sendHiBtn.apply {
                         visibility = View.VISIBLE
                         setOnClickListener {
-                            onSendButtonClicked("hi ${chatViewModel.userFullName.first_name}")
+                            onSendButtonClicked("hi ${chatViewModel.userFullName.firstName}")
                         }
                     }
                     
@@ -345,7 +345,7 @@ class ChatActivity : AppCompatActivity() {
             if (!chatViewModel.isUserNameInitialized()) {
                 chatViewModel.userFullName = db.profileDao().getFullName(userId)
             }
-            val name = chatViewModel.userFullName.first_name + " " + chatViewModel.userFullName.last_name
+            val name = chatViewModel.userFullName.firstName + " " + chatViewModel.userFullName.lastName
             withContext(Dispatchers.Main) {
                 binding.fullName.text = name
             }
@@ -451,7 +451,7 @@ class ChatActivity : AppCompatActivity() {
     }
     
     private fun spanBuilder(chat: Chat): SpannableStringBuilder {
-        val name = if (chat.senderId == userId) "${chatViewModel.userFullName.first_name} ${chatViewModel.userFullName.last_name}" else resources.getString(R.string.you)
+        val name = if (chat.senderId == userId) "${chatViewModel.userFullName.firstName} ${chatViewModel.userFullName.lastName}" else resources.getString(R.string.you)
         val builder = SpannableStringBuilder()
         builder.append(name)
         builder.setSpan(StyleSpan(Typeface.BOLD), 0, name.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

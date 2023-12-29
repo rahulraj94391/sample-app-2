@@ -11,7 +11,7 @@ interface PostTextDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertPostText(postText: PostText): Long
 
-    @Query("SELECT post_text.post_text FROM post_text WHERE post_id = :postId")
+    @Query("SELECT postText.postText FROM postText WHERE postId = :postId")
     suspend fun getPostText(postId: Long): String
 
 }

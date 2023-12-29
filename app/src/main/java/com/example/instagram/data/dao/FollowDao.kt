@@ -10,27 +10,27 @@ import com.example.instagram.screen_notification.model.FollowLog
 
 @Dao
 interface FollowDao {
-    @Query("SELECT COUNT(follower_id) FROM follow WHERE follower_id = :profileId")
+    @Query("SELECT COUNT(followerId) FROM follow WHERE followerId = :profileId")
     suspend fun getFollowerCount(profileId: Long): Int
     
-    @Query("SELECT COUNT(owner_id) FROM follow WHERE owner_id = :profileId")
+    @Query("SELECT COUNT(ownerId) FROM follow WHERE ownerId = :profileId")
     suspend fun getFollowingCount(profileId: Long): Int
     
-    @Query("SELECT COUNT(follower_id) FROM follow WHERE owner_id = :ownId AND follower_id = :userId")
+    @Query("SELECT COUNT(followerId) FROM follow WHERE ownerId = :ownId AND followerId = :userId")
     suspend fun isUserFollowingUser(ownId: Long, userId: Long): Int
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNewFollow(follow: Follow): Long
     
-    @Query("DELETE FROM follow WHERE owner_id = :ownerId AND follower_id = :followId")
+    @Query("DELETE FROM follow WHERE ownerId = :ownerId AND followerId = :followId")
     suspend fun deleteFollow(ownerId: Long, followId: Long): Int
     
-    @Query("SELECT profile.profile_id, profile.first_name, profile.last_name, login_credential.username FROM profile LEFT JOIN login_credential ON profile.profile_id = login_credential.profile_id WHERE profile.profile_id IN (SELECT owner_id FROM follow WHERE follower_id = :profileId)")
+    @Query("SELECT profile.profileId, profile.firstName, profile.lastName, login_credential.username FROM profile LEFT JOIN login_credential ON profile.profileId = login_credential.profileId WHERE profile.profileId IN (SELECT ownerId FROM follow WHERE followerId = :profileId)")
     suspend fun getFollowerList(profileId: Long): MutableList<Connection>
     
-    @Query("SELECT profile.profile_id, profile.first_name, profile.last_name, login_credential.username FROM profile LEFT JOIN login_credential ON profile.profile_id = login_credential.profile_id WHERE profile.profile_id IN (SELECT follower_id FROM follow WHERE owner_id = :profileId)")
+    @Query("SELECT profile.profileId, profile.firstName, profile.lastName, login_credential.username FROM profile LEFT JOIN login_credential ON profile.profileId = login_credential.profileId WHERE profile.profileId IN (SELECT followerId FROM follow WHERE ownerId = :profileId)")
     suspend fun getFollowingList(profileId: Long): MutableList<Connection>
     
-    @Query("select follow.owner_id, follow.time, login_credential.username from follow left join login_credential on follow.owner_id = login_credential.profile_id where follow.follower_id = :ownerId ORDER BY follow.time DESC")
+    @Query("select follow.ownerId, follow.time, login_credential.username from follow left join login_credential on follow.ownerId = login_credential.profileId where follow.followerId = :ownerId ORDER BY follow.time DESC")
     suspend fun getFollowLog(ownerId: Long): List<FollowLog>
 }

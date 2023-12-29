@@ -33,13 +33,13 @@ class CommentBottomSheetModel(val app: Application) : AndroidViewModel(app) {
         val list = mutableListOf<Comment>()
         val imageList = mutableListOf<String>()
         for (i: EComment in commentsList) {
-            val username = db.loginCredDao().getUsername(i.commenter_id)
+            val username = db.loginCredDao().getUsername(i.commenterId)
             val comment = Comment(
-                i.comment_id,
-                i.commenter_id,
+                i.commentId,
+                i.commenterId,
                 username,
-                DateTime.timeFormatter(i.comment_time, TimeFormatting.COMMENT),
-                i.comment_text
+                DateTime.timeFormatter(i.commentTime, TimeFormatting.COMMENT),
+                i.commentText
             )
             list.add(comment)
         }

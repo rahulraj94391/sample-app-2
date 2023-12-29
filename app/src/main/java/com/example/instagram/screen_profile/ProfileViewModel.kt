@@ -24,8 +24,8 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
             val profSummary = ProfileSummary(
                 username.await(),
                 "",
-                fullNameBio.await().first_name,
-                fullNameBio.await().last_name,
+                fullNameBio.await().firstName,
+                fullNameBio.await().lastName,
                 "---",
                 0,
                 0,
@@ -47,8 +47,8 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
         val profSummary = ProfileSummary(
             username.await(),
             profilePic.await(),
-            fullNameBio.await().first_name,
-            fullNameBio.await().last_name,
+            fullNameBio.await().firstName,
+            fullNameBio.await().lastName,
             fullNameBio.await().bio,
             postCount.await(),
             followerCount.await(),

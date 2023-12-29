@@ -11,13 +11,13 @@ interface LoginCredDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertNewLoginCred(loginCred: LoginCred): Long
 
-    @Query("SELECT profile_id FROM login_credential where username = :username AND password = :password")
+    @Query("SELECT profileId FROM login_credential where username = :username AND password = :password")
     suspend fun loginWithCred(username: String, password: String): Long?
 
     @Query("SELECT 1 FROM login_credential WHERE username = :username")
     suspend fun isUsernameUnique(username: String): Int?
 
-    @Query("SELECT username from login_credential WHERE profile_id = :profileId")
+    @Query("SELECT username from login_credential WHERE profileId = :profileId")
     suspend fun getUsername(profileId: Long): String
 
 }

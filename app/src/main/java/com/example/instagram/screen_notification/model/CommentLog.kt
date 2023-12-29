@@ -3,10 +3,10 @@ package com.example.instagram.screen_notification.model
 import androidx.room.ColumnInfo
 
 data class CommentLog(
-    val comment_id: Long,
-    val commenter_id: Long,
+    val commentId: Long,
+    val commenterId: Long,
     val username: String,
-    val post_id: Long,
-    @ColumnInfo(name = "comment_time")
+    val postId: Long,
+    @ColumnInfo(name = "commentTime")
     val time: Long,
 )

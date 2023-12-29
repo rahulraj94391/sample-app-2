@@ -10,18 +10,18 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = Profile::class,
-            parentColumns = arrayOf("profile_id"),
-            childColumns = arrayOf("profile_id"),
+            parentColumns = arrayOf("profileId"),
+            childColumns = arrayOf("profileId"),
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
 
 data class Post(
-    val profile_id: Long,
-    val post_time: Long,
+    val profileId: Long,
+    val postTime: Long,
     val placeId: String?,
 ) {
     @PrimaryKey(autoGenerate = true)
-    var post_id: Long = System.currentTimeMillis()
+    var postId: Long = System.currentTimeMillis()
 }

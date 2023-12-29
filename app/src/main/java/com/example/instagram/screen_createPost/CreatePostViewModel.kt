@@ -50,7 +50,7 @@ class CreatePostViewModel(private val app: Application) : AndroidViewModel(app) 
     fun insertPost() {
         if (finalTags.isNotEmpty()) {
             finalTags.forEach {
-                tagsToUpload.add(it.profile_id)
+                tagsToUpload.add(it.profileId)
             }
         }
         uploadPostWork(uriToStringArray(postImagesUri))
@@ -110,7 +110,7 @@ class CreatePostViewModel(private val app: Application) : AndroidViewModel(app) 
         val sharedPref = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         val ownID = sharedPref.getLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
         
-        // get profile_id, username, first_name, last_name
+        // get profileId, username, firstName, lastName
         val searchResFormDB = viewModelScope.async {
             db.searchDao().getSearchResult(name, ownID)
         }
@@ -120,7 +120,7 @@ class CreatePostViewModel(private val app: Application) : AndroidViewModel(app) 
         val imageUrlFromFirebase = viewModelScope.async {
             val tempList: MutableList<String> = mutableListOf()
             for (i in finalResultWoPicUrl) {
-                val img = imageUtil.getProfilePictureUrl(i.profile_id)
+                val img = imageUtil.getProfilePictureUrl(i.profileId)
                 tempList.add(img.toString())
             }
             tempList
@@ -130,9 +130,9 @@ class CreatePostViewModel(private val app: Application) : AndroidViewModel(app) 
         val finalListWithImage = mutableListOf<TagSearchResult>()
         for (i in finalResultWoPicUrl.indices) {
             val singleRes = TagSearchResult(
-                finalResultWoPicUrl[i].profile_id,
-                finalResultWoPicUrl[i].first_name,
-                finalResultWoPicUrl[i].last_name,
+                finalResultWoPicUrl[i].profileId,
+                finalResultWoPicUrl[i].firstName,
+                finalResultWoPicUrl[i].lastName,
                 finalResultWoPicUrl[i].username,
                 finalListWithImages[i]
             )

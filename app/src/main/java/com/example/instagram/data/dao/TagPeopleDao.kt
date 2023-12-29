@@ -11,7 +11,7 @@ interface TagPeopleDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertPostTags(tag: MutableList<Tag>)
     
-    @Query("SELECT post_id FROM tag WHERE profile_id = :profileId Order by tag_id Desc LIMIT :limit OFFSET :offset")
+    @Query("SELECT postId FROM tag WHERE profileId = :profileId Order by rowId Desc LIMIT :limit OFFSET :offset")
     suspend fun getAllTaggedPostOfProfile(profileId: Long, limit: Int = 15, offset: Int): MutableList<Long>
     
 }

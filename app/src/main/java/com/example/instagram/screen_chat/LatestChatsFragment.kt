@@ -47,7 +47,7 @@ class LatestChatsFragment : Fragment() {
         
         lifecycleScope.launch {
             val fullName = db.profileDao().getFullName(mainViewModel.loggedInProfileId!!)
-            binding.myName.text = "${fullName.first_name} ${fullName.last_name}"
+            binding.myName.text = "${fullName.firstName} ${fullName.lastName}"
         }
         
         binding.recentChats.apply {

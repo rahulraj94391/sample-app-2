@@ -9,14 +9,14 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = Post::class,
-            parentColumns = arrayOf("post_id"),
-            childColumns = arrayOf("post_id"),
+            parentColumns = arrayOf("postId"),
+            childColumns = arrayOf("postId"),
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class HashTag(
-    var post_id: Long,
+    var postId: Long,
     var tag: String,
 ) {
     @PrimaryKey(autoGenerate = true)

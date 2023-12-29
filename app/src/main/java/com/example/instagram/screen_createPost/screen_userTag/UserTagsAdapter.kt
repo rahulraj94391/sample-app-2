@@ -50,7 +50,7 @@ class UserTagsAdapter(
     override fun onBindViewHolder(holder: TagViewHolder, position: Int) {
         holder.apply {
             username.text = listOfTags[position].username
-            fullName.text = "${listOfTags[position].first_name} ${listOfTags[position].last_name}"
+            fullName.text = "${listOfTags[position].firstName} ${listOfTags[position].lastName}"
             CoroutineScope(Dispatchers.IO).launch {
                 val bitmap = imageUtil.getBitmap(listOfTags[position].profilePicUrl)
                 withContext(Dispatchers.Main) {

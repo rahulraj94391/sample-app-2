@@ -16,7 +16,7 @@ interface RecentSearchDao {
     @Query("DELETE FROM recent_search")
     suspend fun deleteAllSearches()
     
-    @Query("SELECT * FROM recent_search WHERE ownerId = :ownerId AND profileId NOT IN (Select blockerId from blocked_users where blockedId = :ownerId) ORDER BY search_id DESC")
+    @Query("SELECT * FROM recent_search WHERE ownerId = :ownerId AND profileId NOT IN (Select blockerId from blocked_users where blockedId = :ownerId) ORDER BY rowId DESC")
     fun getAllSearchedNames(ownerId: Long): LiveData<List<RecentSearch>>
     
     @Query("DELETE FROM recent_search WHERE profileId = :profileId AND ownerId = :ownerId")

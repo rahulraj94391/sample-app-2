@@ -9,25 +9,25 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = Post::class,
-            parentColumns = arrayOf("post_id"),
-            childColumns = arrayOf("post_id"),
+            parentColumns = arrayOf("postId"),
+            childColumns = arrayOf("postId"),
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = Profile::class,
-            parentColumns = arrayOf("profile_id"),
-            childColumns = arrayOf("commenter_id"),
+            parentColumns = arrayOf("profileId"),
+            childColumns = arrayOf("commenterId"),
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class Comment(
-    val post_id: Long,
-    val commenter_id: Long,
-    val comment_text: String,
-    val comment_time: Long,
-
+    val postId: Long,
+    val commenterId: Long,
+    val commentText: String,
+    val commentTime: Long,
+    
     ) {
     @PrimaryKey(autoGenerate = true)
-    var comment_id: Long = 0
+    var commentId: Long = 0
 }

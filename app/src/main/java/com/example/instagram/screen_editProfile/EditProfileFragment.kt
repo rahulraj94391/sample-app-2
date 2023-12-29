@@ -114,8 +114,8 @@ class EditProfileFragment : Fragment() {
         
         val fullName = db.profileDao().getFullNameBio(mainViewModel.loggedInProfileId!!)
         binding.apply {
-            firstNameField.setText(fullName.first_name)
-            lastNameField.setText(fullName.last_name)
+            firstNameField.setText(fullName.firstName)
+            lastNameField.setText(fullName.lastName)
             bio.setText(fullName.bio)
         }
     }

@@ -7,16 +7,16 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "profile")
 data class Profile(
-    var first_name: String,
-    var last_name: String,
+    var firstName: String,
+    var lastName: String,
     var dob: Long,
-    var phone_number: String,
-    var email_id: String,
+    var phoneNumber: String,
+    var emailId: String,
     var bio: String?,
     var gender: String,
-    @Ignore var profile_img: Bitmap? = null,
-    @PrimaryKey var profile_id: Long,
+    @Ignore var profileImg: Bitmap? = null,
+    @PrimaryKey var profileId: Long,
 ) {
-    constructor(first_name: String, last_name: String, dob: Long, phone_number: String, email_id: String, gender: String)
-            : this(first_name, last_name, dob, phone_number, email_id, null, gender, null, 0)
+    constructor(firstName: String, lastName: String, dob: Long, phoneNumber: String, emailId: String, gender: String)
+            : this(firstName, lastName, dob, phoneNumber, emailId, null, gender, null, 0)
 }

@@ -10,23 +10,23 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = Profile::class,
-            parentColumns = arrayOf("profile_id"),
-            childColumns = arrayOf("owner_id"),
+            parentColumns = arrayOf("profileId"),
+            childColumns = arrayOf("ownerId"),
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = Profile::class,
-            parentColumns = arrayOf("profile_id"),
-            childColumns = arrayOf("follower_id"),
+            parentColumns = arrayOf("profileId"),
+            childColumns = arrayOf("followerId"),
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class Follow(
-    val owner_id: Long,
-    val follower_id: Long,
+    val ownerId: Long,
+    val followerId: Long,
     val time:Long
 ) {
     @PrimaryKey(autoGenerate = true)
-    var follow_row_id: Long = 0
+    var followRowId: Long = 0
 }

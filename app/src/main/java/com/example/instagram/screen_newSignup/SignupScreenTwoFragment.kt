@@ -114,7 +114,7 @@ class SignupScreenTwoFragment : Fragment() {
         
         } else { // run this block when username is unique and password qualifies the condition.
             sharedViewModel.newProfileSignup!!.apply {
-                profile_id = System.currentTimeMillis()
+                profileId = System.currentTimeMillis()
                 val bioText = binding.bio.text.toString()
                 bio = bioText.trim().ifBlank {
                     "\uD83C\uDF0E Hello World.\n" +

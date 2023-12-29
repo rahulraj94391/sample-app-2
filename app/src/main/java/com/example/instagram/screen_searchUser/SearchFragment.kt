@@ -195,8 +195,8 @@ class SearchFragment : Fragment(), OnFocusChangeListener {
         
         searchAdapter.setNewList(mutableListOf())
         searchAdapter.setImagesList(mutableListOf())
-        gotoProfileScreen(person.profile_id)
-        viewModel.addNameToRecentSearch(person.profile_id, person.first_name, mainViewModel.loggedInProfileId!!)
+        gotoProfileScreen(person.profileId)
+        viewModel.addNameToRecentSearch(person.profileId, person.firstName, mainViewModel.loggedInProfileId!!)
         binding.searchViewBar.setQuery("", false)
         
         viewModel.apply {

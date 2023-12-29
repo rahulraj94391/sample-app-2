@@ -26,7 +26,7 @@ class ConnectionsViewModel(private val app: Application) : AndroidViewModel(app)
     private suspend fun getFollowers(profileId: Long) {
         val followerList = db.followDao().getFollowerList(profileId)
         for (i in followerList.indices) {
-            val profileUrl = db.cacheDao().getCachedProfileImage(followerList[i].profile_id) ?: imageUtil.getProfilePictureUrl(followerList[i].profile_id)
+            val profileUrl = db.cacheDao().getCachedProfileImage(followerList[i].profileId) ?: imageUtil.getProfilePictureUrl(followerList[i].profileId)
             followerList[i].photoUrl = profileUrl
         }
         users.postValue(followerList)
@@ -35,7 +35,7 @@ class ConnectionsViewModel(private val app: Application) : AndroidViewModel(app)
     private suspend fun getFollowing(profileId: Long) {
         val followingList = db.followDao().getFollowingList(profileId)
         for (i in followingList.indices) {
-            followingList[i].photoUrl = db.cacheDao().getCachedProfileImage(followingList[i].profile_id) ?: imageUtil.getProfilePictureUrl(followingList[i].profile_id)
+            followingList[i].photoUrl = db.cacheDao().getCachedProfileImage(followingList[i].profileId) ?: imageUtil.getProfilePictureUrl(followingList[i].profileId)
         }
         users.postValue(followingList)
     }

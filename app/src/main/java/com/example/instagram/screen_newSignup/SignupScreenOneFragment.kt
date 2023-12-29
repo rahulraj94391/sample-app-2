@@ -108,11 +108,11 @@ class SignupScreenOneFragment : Fragment() {
             } else {
                 // all ok, proceed forward
                 sharedViewModel.newProfileSignup = Profile(
-                    first_name = etFirstName.text.toString().trim(),
-                    last_name = etLastName.text.toString().trim(),
+                    firstName = etFirstName.text.toString().trim(),
+                    lastName = etLastName.text.toString().trim(),
                     dob = dobDate.timeInMillis,
-                    phone_number = etPhoneNumber.text.toString().trim(),
-                    email_id = etEmail.text.toString().trim(),
+                    phoneNumber = etPhoneNumber.text.toString().trim(),
+                    emailId = etEmail.text.toString().trim(),
                     gender = autoTVGender.text.toString().trim()
                 )
                 findNavController().navigate(R.id.action_createNewAccountScreenOneFragment_to_createNewAccountScreenTwoFragment)

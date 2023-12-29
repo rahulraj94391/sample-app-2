@@ -10,13 +10,13 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = Profile::class,
-            parentColumns = arrayOf("profile_id"),
+            parentColumns = arrayOf("profileId"),
             childColumns = arrayOf("senderId"),
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = Profile::class,
-            parentColumns = arrayOf("profile_id"),
+            parentColumns = arrayOf("profileId"),
             childColumns = arrayOf("receiverId"),
             onDelete = ForeignKey.CASCADE
         )

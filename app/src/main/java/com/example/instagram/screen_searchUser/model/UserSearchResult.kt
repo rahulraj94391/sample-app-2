@@ -1,8 +1,8 @@
 package com.example.instagram.screen_searchUser.model
 
 data class UserSearchResult(
-    var profile_id: Long,
-    var first_name: String,
-    var last_name: String,
+    var profileId: Long,
+    var firstName: String,
+    var lastName: String,
     var username: String,
 )

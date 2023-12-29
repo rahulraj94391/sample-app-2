@@ -9,15 +9,15 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = Post::class,
-            parentColumns = arrayOf("post_id"),
-            childColumns = arrayOf("post_id"),
+            parentColumns = arrayOf("postId"),
+            childColumns = arrayOf("postId"),
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class PostImage(
-    val post_id: Long,
-    val post_image_path: String,
+    val postId: Long,
+    val postImagePath: String,
     @PrimaryKey(autoGenerate = true)
-    val post_img_id: Long = 0,
+    val rowId: Long = 0,
 )

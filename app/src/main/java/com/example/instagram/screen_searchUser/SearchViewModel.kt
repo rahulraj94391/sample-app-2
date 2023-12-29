@@ -23,7 +23,7 @@ class SearchViewModel(private val app: Application) : AndroidViewModel(app) {
         val sharedPref = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         val ownID = sharedPref.getLong(MSharedPreferences.LOGGED_IN_PROFILE_ID, -1)
         
-        // get profile_id, username, first_name, last_name
+        // get profileId, username, firstName, lastName
         val searchResFormDB = viewModelScope.async {
             db.searchDao().getSearchResult(name, ownID)
         }
@@ -33,7 +33,7 @@ class SearchViewModel(private val app: Application) : AndroidViewModel(app) {
         val imageUrlAsync = viewModelScope.async {
             val tempList: MutableList<String> = mutableListOf()
             for (i in finalResult) {
-                val img = imageUtil.getProfilePictureUrl(i.profile_id)
+                val img = imageUtil.getProfilePictureUrl(i.profileId)
                 tempList.add(img.toString())
             }
             tempList

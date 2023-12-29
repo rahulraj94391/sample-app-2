@@ -47,7 +47,7 @@ class TagSearchResultAdapter(
     override fun onBindViewHolder(holder: TagSearchResultViewHolder, position: Int) {
         holder.apply {
             userName.text = list[position].username
-            fullName.text = "${list[position].first_name} ${list[position].last_name}"
+            fullName.text = "${list[position].firstName} ${list[position].lastName}"
             
             CoroutineScope(Dispatchers.IO).launch {
                 val bitmap = imageUtil.getBitmap(list[position].profilePicUrl)

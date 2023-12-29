@@ -44,7 +44,7 @@ class SearchUserAdapter(
                 }
             }
             username.text = searchResultList[adapterPosition].username
-            fullName.text = searchResultList[adapterPosition].first_name + " " + searchResultList[adapterPosition].last_name
+            fullName.text = searchResultList[adapterPosition].firstName + " " + searchResultList[adapterPosition].lastName
         }
     }
     

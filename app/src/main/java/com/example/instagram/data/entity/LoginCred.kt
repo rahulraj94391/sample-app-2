@@ -10,17 +10,17 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = Profile::class,
-            parentColumns = arrayOf("profile_id"),
-            childColumns = arrayOf("profile_id"),
+            parentColumns = arrayOf("profileId"),
+            childColumns = arrayOf("profileId"),
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class LoginCred(
-    var profile_id: Long,
+    var profileId: Long,
     var username: String,
     var password: String,
 ) {
     @PrimaryKey(autoGenerate = true)
-    var login_cred_id: Long = 0
+    var loginCredId: Long = 0
 }
