@@ -73,7 +73,7 @@ class AddLocationFragment : Fragment() {
                 searchJob = lifecycleScope.launch(Dispatchers.IO) {
                     delay(500)
                     if (placeName?.isNotBlank() == true) {
-                        val location = viewModel.getLocationUseCase(placeName, token, placesClient)
+                        val location = viewModel.getLocation(placeName, token, placesClient)
                         viewModel.locations.apply {
                             clear()
                             addAll(location)

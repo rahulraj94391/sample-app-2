@@ -15,11 +15,14 @@ import com.example.instagram.common.util.ImageUtil
 import com.example.instagram.common.util.MSharedPreferences
 import com.example.instagram.data.AppDatabase
 import com.example.instagram.data.entity.Location
-import com.example.instagram.data.repo.LocationCacheRepoImpl
+import com.example.instagram.data.local_repo.LocationCacheRepoImpl
+import com.example.instagram.data.network_repo.NetworkLocationRepoImpl
 import com.example.instagram.screen_createPost.model.TagSearchResult
 import com.example.instagram.screen_createPost.screen_locationTag.GetLocationUseCase
+import com.example.instagram.screen_createPost.screen_locationTag.LocationManager
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.async
-import java.util.UUID
 
 
 class CreatePostViewModel(private val app: Application) : AndroidViewModel(app) {
@@ -31,10 +34,9 @@ class CreatePostViewModel(private val app: Application) : AndroidViewModel(app) 
     val postImagesUri: MutableList<Uri> = mutableListOf()
     var profileId: Long = -1
     var finalTextToUpload = ""
-    var uuidWorkReq = MutableLiveData<UUID>()
     var locationTag: Location? = null
     var locations = mutableListOf<Location>()
-    val getLocationUseCase = GetLocationUseCase(LocationCacheRepoImpl(db.locationCacheDao()))
+    
     
     // this will be used to display only selected tags
     val finalTags = mutableListOf<TagSearchResult>()
@@ -55,6 +57,14 @@ class CreatePostViewModel(private val app: Application) : AndroidViewModel(app) 
         }
         uploadPostWork(uriToStringArray(postImagesUri))
         clearAllAfterDonePosting()
+    }
+    
+    suspend fun getLocation(placeName: String, token: AutocompleteSessionToken, placesClient: PlacesClient): List<Location> {
+        val localLocationRepo = LocationCacheRepoImpl(db.locationCacheDao())
+        val networkLocationRepo = NetworkLocationRepoImpl(token, placesClient)
+        val locationManager = LocationManager(localLocationRepo, networkLocationRepo)
+        val getLocationUseCase = GetLocationUseCase(locationManager)
+        return getLocationUseCase(placeName).map { it.toLocation() }
     }
     
     private fun clearAllAfterDonePosting() {
@@ -102,9 +112,7 @@ class CreatePostViewModel(private val app: Application) : AndroidViewModel(app) 
             .build()
         
         WorkManager.getInstance(app).enqueue(oneTimeWorkRequest)
-        uuidWorkReq.postValue(oneTimeWorkRequest.id)
     }
-    
     
     suspend fun getSearchResults(name: String) {
         val sharedPref = app.getSharedPreferences(MSharedPreferences.SHARED_PREF_NAME, Context.MODE_PRIVATE)

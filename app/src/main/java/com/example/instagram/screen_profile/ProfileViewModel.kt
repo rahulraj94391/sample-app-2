@@ -36,9 +36,7 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         
-        val profilePic = viewModelScope.async {
-            db.cacheDao().getCachedProfileImage(userId) ?: imageUtil.getProfilePictureUrl(userId) ?: ""
-        }
+        val profilePic = viewModelScope.async { db.cacheDao().getCachedProfileImage(userId) ?: imageUtil.getProfilePictureUrl(userId) ?: "" }
         val postCount = viewModelScope.async { db.postDao().getPostCount(userId) }
         val followerCount = viewModelScope.async { db.followDao().getFollowerCount(userId) }
         val followingCount = viewModelScope.async { db.followDao().getFollowingCount(userId) }
